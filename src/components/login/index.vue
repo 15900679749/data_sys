@@ -1,15 +1,40 @@
 <template>
-	<div class="divbg">login</div>
+	<div class="divCenter">
+		<el-row>
+			<el-col :span="8">
+				<el-input id="name" v-model="name" placeholder="请输入帐号">
+					<template slot="prepend">帐号</template>
+				</el-input>
+			</el-col>
+		</el-row>
+		<el-row>
+			<el-col :span="8">
+				<el-input id="password" v-model="password" type="password" placeholder="请输入密码">
+					<template slot="prepend">密码</template>
+				</el-input>
+			</el-col>
+		</el-row>
+		<el-row>
+			<el-col :span="8">
+				<el-button id="login" @click='loginin' style="width:70%；a" type="primary">登录</el-button>
+			</el-col>
+		</el-row>
+	</div>
 </template>
 
 <script type="text/javascript">
 	export default {
 		data() {
 			return {
-				lg: "login"
+				name: '',
+				password: ""
 			}
 		},
-		methods: {},
+		methods: {
+			loginin: function() {
+				alert("login ok!");
+			}
+		},
 		mounted() {
 			console.log("login mounted");
 		}
@@ -18,9 +43,9 @@
 
 <style scoped="scoped" lang="scss">
 	@import "~scss/common.scss";
-	.divbg {
-		width: 100px;
-		height: 100px;
-		border: 2px solid red;
+	.divCenter {
+		margin-left:50%;
+		transform: rotateX(-50%);
+		width: 80%;
 	}
 </style>
