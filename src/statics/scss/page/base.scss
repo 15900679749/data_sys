@@ -1,0 +1,11 @@
+
+$default-font-family: "Hiragino Sans GB", "Microsoft YaHei", 微软雅黑, 宋体, Arial, Verdana, sans-serif !default;
+$default-font-size: 14px !default;
+$font-size-big:17px;
+$font-size-middle:20px;
+$font-size-small:12px;
+
+//上下对齐的方式
+@mixin vertical-align($direction:middle){
+    vertical-align:$direction;
+}
