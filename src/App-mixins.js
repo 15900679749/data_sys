@@ -5,7 +5,7 @@ export default {
 		},
 		initializationLogin(path, next) {
 			let goPath = next || this.$router.push.bind(this.$router);
-			console.log("token=" + this.token);
+			console.log("token=" + this.token);			
 			// return next('/home');
 		}
 	}

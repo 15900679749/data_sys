@@ -33,6 +33,7 @@
 		methods: {
 			loginin: function() {
 				alert("login ok!");
+				this.$router.push({path:'/'});
 			}
 		},
 		mounted() {

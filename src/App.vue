@@ -25,6 +25,8 @@
 		mounted() {
 			let self = this;
 			self.$router.beforeEach((to, from, next) => {
+				//this.initializationLogin(router);
+				document.title=to?to.meta.title:"后台管理";
 				console.log("=======");
 				next();
 			});
