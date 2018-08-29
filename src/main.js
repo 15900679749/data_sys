@@ -4,7 +4,7 @@ import Vue from 'vue';
 import App from './App.vue';
 import VueRouter from 'vue-router';
 import routes from 'javascripts/routers';
-
+import { get, post } from 'javascripts/http';
 
 import 'scss/common.scss';
 
@@ -14,7 +14,8 @@ const router = new VueRouter({
 
 Vue.use(ElementUI);
 Vue.use(VueRouter);
-
+Vue.prototype.$post = post;
+Vue.prototype.$get = get;
 
 new Vue({
 	el: '#app',
