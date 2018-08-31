@@ -1,32 +1,46 @@
 /*
  * @desc 初始化本地localStorage,如果被阻止,使用cookie存储
  */
-import  cookie from './cookie';
+import cookie from './cookie';
 let
-    localStorage = (function () {
-        let
-            testKey = '__LOCALSTORAGETEST',
-            storage = window.localStorage;
-        try {
-            storage.setItem(testKey, '1');
-            storage.removeItem(testKey);
-            return storage;
-        }
-        catch (error) {
-            storage.setItem = function (key, value) {
-                cookie.set(key, value);
-            };
-            storage.getItem = function (key) {
-                return cookie.get(key);
-            };
-            storage.removeItem = function (key) {
-                cookie.remove(key);
-            };
-            storage.clear = function () {
-                cookie.remove();
-            };
-            return storage;
-        }
-    }());
+	localStorage = {
+		isSet: function() {
+			let b = true;
+			try {
+				window.localStorage.setItem("testKey", 1);
+				window.localStorage.removeItem("testKey");
+			} catch(err) {
+				b = false;
+			}
+			return b;
+		},
+		set: function(key, value, day = 7) {
+			if(this.isSet()) {
+				window.localStorage.setItem(key, value);
+			} else {
+				cookie.setCookie(key, value, day);
+			}
+		},
+		remove: function(key) {
+			window.localStorage.removeItem(key);
+		},
+		clear: function() {
+			window.localStorage.clear();
+		},
+		get(key) {
+			if(this.isSet()) {
+				return window.localStorage.getItem(key);
+			} else {
+				return cookie.getCookie(key);
+			}
+		},
+		getObject(key) {
+			if(this.isSet()) {
+				return JSON.parse(window.localStorage.getItem(key));
+			} else {
+				return cookie.getCookie(key);
+			}
+		}
+	};
 
-export  default localStorage;
+export default localStorage;

@@ -32,8 +32,8 @@
 </template>
 
 <script type="text/javascript">
-	import cookie from 'javascripts/utils/cookie';
-
+	//import cookie from 'javascripts/utils/cookie';
+	import { cookie, storage } from 'javascripts/utils';
 	export default {
 		data() {
 			return {
@@ -53,13 +53,18 @@
 				});
 			},
 			add() {
-				cookie.setCookie("zx", "123467");
+				//cookie.setCookie("zx", "123467");
+				storage.set("zx1", JSON.stringify({
+					"name": "433",
+					"age": "12"
+				}));
 			},
 			getc() {
-				console.log(cookie.getCookie("zx"));
+				console.log(storage.get("zx1"));
 			},
 			del() {
-				cookie.delCookie("zx", "123467");
+				//cookie.delCookie("zx", "123467");
+				storage.remove("zx1");
 			}
 		},
 		mounted() {
