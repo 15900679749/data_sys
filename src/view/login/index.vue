@@ -48,7 +48,7 @@
 		},
 		methods: {
 			loginin: function() {
-				this.$post('http://192.168.1.91/Home/Login/login', this.loginForm).then((res) => {
+				this.$post('/Home/Login/login', this.loginForm).then((res) => {
 					console.log(JSON.parse(res));
 				}).catch((err) => {
 

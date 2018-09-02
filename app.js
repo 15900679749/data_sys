@@ -10,7 +10,7 @@ app.all('*', function(req, res, next) {
 	res.header('Access-Control-Allow-Methods', 'PUT, POST, GET, DELETE, OPTIONS')
 	next()
 })
-app.use(express.static(path.join(__dirname, './dist')))
+app.use(express.static(path.join(__dirname, './dist')));
 
 app.listen('8083', (err) => {
 	if(err) {

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Message, Loading } from "element-ui";
-import vue from "vue";
+import storage from 'javascripts/utils/storage';
 
 let
 	cfig = {
@@ -23,9 +23,8 @@ axios.defaults.headers.post['Content-Type'] = cfig.ContentType;
 
 //请求拦截 统一处理 
 axios.interceptors.request.use(config => {
-
 		loading = Loading.service(loption);
-
+//		config.headers.Authorization = "Authorization";
 		if(config.method == "get") {
 			config.data = {
 				_t: Date.parse(new Date()) / 1000,
@@ -35,7 +34,7 @@ axios.interceptors.request.use(config => {
 		return config;
 	},
 	error => {
-		loading = Loading.service(loption);
+		loading && loading.close();
 		return Promise.reject(error);
 	});
 
@@ -44,7 +43,7 @@ axios.interceptors.response.use(response => {
 		loading && loading.close();
 		let data = response.data;
 		Message.closeAll();
-		if(data.code != "0") {
+		if(data.code == "0") {
 			if(data.code == "100") {
 				Message({
 					showClose: true,
@@ -59,7 +58,15 @@ axios.interceptors.response.use(response => {
 		return response;
 	},
 	error => {
-		loading = Loading.service(loption);
+		loading && loading.close();
+		if(error.code == "ECONNABORTED") {
+			Message({
+				showClose: true,
+				message: "网络异常,请求接口错误!",
+				type: 'warning',
+				duration: 3000
+			});
+		}
 		return Promise.reject(error);
 	});
 
@@ -74,18 +81,18 @@ axios.defaults.transformRequest = [function(data) {
 
 export function post(url, data = {}) {
 	return new Promise((resolve, reject) => {
-		axios.post(url, data)
+		axios.post(cfig.root + url, data)
 			.then(response => {
 				resolve(response.data);
 			}, err => {
-				reject(err)
+				reject(err);
 			});
 	});
 }
 
 export function get(url, data = {}) {
 	return new Promise((resolve, reject) => {
-		axios.get(url, {
+		axios.get(cfig.root + url, {
 				params: data
 			})
 			.then(response => {
