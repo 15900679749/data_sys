@@ -33,3 +33,9 @@
 		}
 	};
 </script>
+<style scoped="scoped" lang="scss">
+div{
+	height:100%;
+	width:100%;
+}
+</style>	
