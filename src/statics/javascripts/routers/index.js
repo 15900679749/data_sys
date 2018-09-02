@@ -48,5 +48,21 @@ export default [
 			title: '用户管理'
 		}
 	},
+	{
+		path: '/edit/edit_template',
+		name: '/edit_template',
+		component: require('view/edit/edit_template'),
+		meta: {
+			title: '编辑模板'
+		}
+	},
+	{
+		path: '/edit_questionnaire',
+		name: '/edit_questionnaire',
+		component: require('view/edit/edit_questionnaire'),
+		meta: {
+			title: '编辑问卷'
+		}
+	},
 	...login
 ]

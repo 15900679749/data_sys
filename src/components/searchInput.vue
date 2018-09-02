@@ -54,9 +54,11 @@
 <style>
 	.el-autocomplete{
 		width: 50%;
+		margin-bottom:45px;
 	}
 	.el-autocomplete .el-input__inner{
 		width: 100%;
 		border-radius: 14px;
+		
 	}
 </style>
