@@ -18,5 +18,9 @@ data(){
 }
 </script>
 
-<style>
+<style scoped="scoped" lang="scss">
+@import "~scss/common.scss";
+.el-button{
+	text-align: right;
+}
 </style>

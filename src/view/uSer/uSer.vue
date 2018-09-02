@@ -2,7 +2,7 @@
 	<div class="Templatecontain">
 		
 	
-	<el-table :data="tableData" border :header-cell-style="{background:'#f7f7f7',color:'#1f1f1f'}" style="width:1100px">
+	<el-table :data="tableData" border :header-cell-style="{background:'#f7f7f7',color:'#1f1f1f'}" style="width:100%">
 		<el-table-column prop="id" label="ID" width="100" align="center"></el-table-column>
 		<el-table-column prop="photo" label="微信头像/ID/昵称" width="200" align="center"></el-table-column>
 		<el-table-column prop="name" label="姓名" width="100" align="center"></el-table-column>
@@ -38,6 +38,11 @@
 	}
 </script>
 
+<style>
+	.Templatecontain .el-table__header,.Templatecontain .el-table__body{
+		width: auto !important;
+	}
+</style>
 <style scoped="scoped" lang="scss">
 	.Templatecontain{
 		width:100%;
@@ -45,4 +50,5 @@
 		padding:90px 10% 0px 10%;
 		box-sizing: border-box;
 	}
+	
 </style>

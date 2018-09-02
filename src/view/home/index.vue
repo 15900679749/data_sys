@@ -3,6 +3,9 @@
 		<el-header>
 			<headTop></headTop>
 		</el-header>
+		<el-main>
+			<router-view></router-view>
+		</el-main>
 	</el-container>
 </template>
 <script>
@@ -22,6 +25,17 @@
 	}
 </script>
 
-<style>
-
+<style scoped="scoped" lang="scss">
+@import "~scss/common.scss";
+.el-header{
+	width:100%;
+	padding:0;
+}
+.el-main{
+	/*max-width:100%;
+	max-height:100%;
+	overflow-x: hidden;
+	overflow-y: scroll;*/
+	
+}
 </style>

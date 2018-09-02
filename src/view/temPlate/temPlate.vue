@@ -35,7 +35,36 @@
 					creator: "xxxxxx",
 					timeNum: "11111",
 					actionType: false
-				}]
+				},
+				{
+					idNum: 1,
+					status: '已完成',
+					answerNum: 0,
+					creator: "xxxxxx",
+					timeNum: "11111",
+					actionType: false
+				},
+				{
+					idNum: 1,
+					status: '已完成',
+					answerNum: 0,
+					creator: "xxxxxx",
+					timeNum: "11111",
+					actionType: false
+				},
+				{
+					idNum: 1,
+					status: '已完成',
+					answerNum: 0,
+					creator: "xxxxxx",
+					timeNum: "11111",
+					actionType: false
+				}
+				
+				
+				
+				
+				]
 			}
 		},
 		methods: {

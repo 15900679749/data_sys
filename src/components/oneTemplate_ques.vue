@@ -115,7 +115,7 @@
 	
 	.el-col.ontemplateTopR {
 		display: flex;
-		justify-content: flex-end;
+		justify-content: space-between;
 		>div {
 			width: 66%;
 			display: flex;
