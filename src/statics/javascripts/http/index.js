@@ -4,7 +4,7 @@ import storage from 'javascripts/utils/storage';
 
 let
 	cfig = {
-		"timeout": 5000,
+		"timeout": 4000,
 		"root": process.env.http.root,
 		"ContentType": "application/x-www-form-urlencoded;charset=UTF-8"
 	};
@@ -18,13 +18,12 @@ let loption = {
 	background: 'rgba(0, 0, 0, 0.7)'
 };
 
-axios.defaults.timeout = 5000;
-axios.defaults.headers.post['Content-Type'] = cfig.ContentType;
-
+axios.defaults.timeout = cfig.timeout;
+//axios.defaults.headers.post['Content-Type'] = cfig.ContentType;
 //请求拦截 统一处理 
 axios.interceptors.request.use(config => {
 		loading = Loading.service(loption);
-//		config.headers.Authorization = "Authorization";
+		config.headers["token"] = storage.get("token") || "";
 		if(config.method == "get") {
 			config.data = {
 				_t: Date.parse(new Date()) / 1000,
@@ -43,17 +42,19 @@ axios.interceptors.response.use(response => {
 		loading && loading.close();
 		let data = response.data;
 		Message.closeAll();
-		if(data.code == "0") {
-			if(data.code == "100") {
+		if(data.code != "400") {
+			if(data.code == "500") {
+				return location.href = location.protocol + "//" + location.host + location.pathname + "#/login";
+			} else {
 				Message({
 					showClose: true,
 					message: data.msg,
 					type: 'warning',
 					duration: 3000
 				});
-			} else {
-				return location.href = location.protocol + "//" + location.host + location.pathname + "#/login";
 			}
+		} else {
+			data.token && (storage.set("token", data.token))
 		}
 		return response;
 	},
