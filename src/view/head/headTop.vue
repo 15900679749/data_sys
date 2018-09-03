@@ -2,7 +2,7 @@
 	<div>
 		<el-row type="flex" justify="space-around">
 			<el-col :span="9">
-				<el-menu :default-active="defaultActive" class="el-menu-demo" mode="horizontal" background-color="#303033" text-color="#fff" active-text-color="#fff" router>
+				<el-menu :default-active="defaultActive" class="el-menu-demo" @select="handleSelect" mode="horizontal" background-color="#303033" text-color="#fff" active-text-color="#fff" router>
 					<el-menu-item index="uSer" class="is-active">用户管理</el-menu-item>
 					<el-menu-item index="temPlate">模板管理</el-menu-item>
 					<el-menu-item index="questionNaire">问卷管理</el-menu-item>
@@ -25,9 +25,9 @@
 			</el-col>
 		</el-row>
 		<!--<el-col :span="24" style="width:100%;overflow: auto;">-->
-			<!--<keep-alive>-->
-				
-			<!--</keep-alive>-->
+		<!--<keep-alive>-->
+
+		<!--</keep-alive>-->
 		<!--</el-col>-->
 	</div>
 </template>
@@ -40,33 +40,28 @@
 				d: "abc",
 				baseImgPath: "../../src/statics/images/photoicon.png",
 				avtar: '上海申华有限科技公司',
-				key:''
+				key: ''
 			}
 		},
 		methods: {
-			handleSelect(key,keyPath){
-				console.log(key,keyPath);
-//				this.$router.push({path:'/'+key})
-				
+			handleSelect(key, keyPath) {
+				sessionStorage.setItem("MenuActive",key);
+//				this.$store.commit("saveMenuActive", key);
 			},
 		},
 		mounted() {},
 		computed: {
 			defaultActive: function() {
-//				return "uSer"
-//debugger
-//				return this.$router.push({
-//					path: "uSer"
-//				});
-//			return this.$route.path.replace('/', '');
-return window.location.hash.split('/')[2];
+				return sessionStorage.getItem("MenuActive") || "uSer"
+				//return this.$store.getters.guserInfo;
+				//return this.$store.state.menuActive;
 			}
 		}
 	}
 </script>
 
 <style scoped="scoped" lang="scss">
-@import "~scss/common.scss";
+	@import "~scss/common.scss";
 	.hdiv {
 		font-size: 20px;
 	}
@@ -91,12 +86,14 @@ return window.location.hash.split('/')[2];
 			}
 		}
 	}
-	.el-menu--horizontal{
+	
+	.el-menu--horizontal {
 		border-bottom: none;
 		display: flex;
 		justify-content: space-around;
 	}
-	.el-menu--horizontal>.el-menu-item{
-		height:55px;
+	
+	.el-menu--horizontal>.el-menu-item {
+		height: 55px;
 	}
 </style>
