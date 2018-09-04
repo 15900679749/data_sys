@@ -5,7 +5,7 @@ import App from './App.vue';
 import VueRouter from 'vue-router';
 import routes from 'javascripts/routers';
 import { get, post } from 'javascripts/http';
-
+import store from 'javascripts/store';
 import 'scss/common.scss';
 
 const router = new VueRouter({
@@ -20,5 +20,6 @@ Vue.prototype.$get = get;
 new Vue({
 	el: '#app',
 	render: h => h(App),
+	store,
 	router
 });
