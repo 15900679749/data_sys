@@ -55,7 +55,22 @@
 		}
 	}
 </script>
-
+<style>
+	.conBottom .el-collapse-item__wrap{
+		border:none;
+		    border-radius: 0 0 4px 4px;
+	}
+	.conBottom .el-collapse-item__header{
+	padding-left:22px;	
+	    border:none;
+	    
+	    border-radius: 4px;
+	}
+	.conBottom .el-collapse-item__content{
+		padding:10px 0;
+		border-top:1px solid #ebeef5;
+	}
+</style>
 <style scoped="scoped" lang="scss">
 @import "~scss/common.scss";
 *{
@@ -127,5 +142,12 @@
 		border-color:#e0e0e0;
 		border-radius: 4px;
 		margin-bottom:20px;
+		border: 1px solid #ebeef5;
+		
 	}
+	
+	.el-collapse{
+		border:none;
+	}
+	
 </style>

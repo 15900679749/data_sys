@@ -2,7 +2,7 @@
 
 	<div>
 
-		<el-row class="oneTcontain" v-for="item in list">
+		<el-row class="oneTcontain" v-for="(item,index) in list" :key="index">
 			<el-row type="flex" justify="space-between" class="ontemplateTopL">
 				<el-col :span="6">
 					<span class="vote">投票&nbsp;&nbsp;ID:{{item.idNum}}</span>

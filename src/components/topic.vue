@@ -1,6 +1,6 @@
 <template>
 	<div class="topic">
-		<p><i v-if="must" v-text="'*'"></i>{{itemindex}}{{itemName}}</p>
+		<p><i v-if="must" v-text="'*'"></i><span>{{itemindex+'.'}}</span>{{itemName}}</p>
 		<fill :formlist="formlist"></fill>
 	</div>
 </template>
@@ -11,14 +11,19 @@
 		data() {
 			return {
 				must:true,
-				itemindex:"一",
+				itemindex:"1",
 					 itemName:"基本信息",		
 				 formlist:[{
 					 	labelname:"姓名",
-						name:"11"
+						name:"11",
+						namevalue:'',
+						show:false,
+						edittextinput:false,
 					 },{
 					 	labelname:"姓名",
-						name:"22"
+						name:"22",
+						show:false,
+						edittextinput:false,
 					 }],
 			}
 		},
@@ -37,8 +42,13 @@
 <style scoped="scoped" lang="scss">
 @import "~scss/common.scss";
 .topic{
+	padding:30px 22px 0px;
 	p{
-		padding:0 22px;
+		padding-bottom:20px;
+		>span{
+			margin-right:13px;
+		}
+		
 	}
 	
 }

@@ -1,5 +1,5 @@
 <template>
- <el-button icon="el-icon-plus" type="primary" round>创建问卷</el-button>
+ <el-button icon="el-icon-plus" type="primary" round @click="establish">创建问卷</el-button>
 </template>
 
 <script>
@@ -10,7 +10,9 @@ data(){
 		}
 	},
 	methods:{
-		
+		establish(){
+			return this.$router.push({path:'/edit/edit_template'});
+		}
 	},
 	mounted() {
 		
