@@ -2,22 +2,18 @@
 	<div>	
 	<el-form>
 		<el-form-item :label="item.labelname+':'"  v-for="(item,index) in formlist" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}" >
+		<!--<p><i v-if="item.must" v-text="'*'"></i><span>{{item.itemindex+'.'}}</span>{{item.itemName}}</p>-->
 		<el-input v-model="item.name" ></el-input>
-		<transition name="el-fade-in-linear" >
 			<div v-show="item.show" class="transition-box">
 				<span @click="showedit(item)">编辑</span>
 				<span @click.prevent="removeDomain(item)">删除</span>
-				<el-dropdown menu-align='end' trigger="click" size="medium">
-						<span class="el-dropdown-link" role="button">位置变更<i class="el-icon-arrow-down el-icon--right"></i></span>
-						<el-dropdown-menu slot="dropdown" @command="command($event,show)">
-							<el-dropdown-item command="">上移一题</el-dropdown-item>
-							<el-dropdown-item command="">下移一题</el-dropdown-item>
-							<el-dropdown-item command="">移至【】题</el-dropdown-item>
-						</el-dropdown-menu>
-					</el-dropdown>
-
+				<span @click.prevent="changeposition(item)">位置变更</span>
+				<div class="changeposition" v-if="item.changeButton">
+					<el-button type="info" plain>上移一题</el-button>
+					<el-button type="info" plain>下移一题</el-button>
+					<div>移至【<el-input v-model="poSition" class="inputposition"></el-input>】题</div>
+				</div>
 			</div>
-		</transition>
 		<el-row v-if="item.edittextinput">
 			<el-col>
 				<el-form-item :label="'题目文本'" >
@@ -41,7 +37,7 @@
 	export default{
 		data(){
 			return{	
-			
+			poSition:''
 			}
 		},
 		props: ["formlist"],
@@ -76,6 +72,9 @@
 							ctx.getAreaListDataSearch(vc,1);
 						}
 					}
+				},
+				changeposition(item){
+					item.changeButton=!item.changeButton;
 				}
 			},
 		components:{
@@ -83,7 +82,21 @@
 		}
 	}
 </script>
-
+<style>
+	.changeposition .inputposition .el-input__inner{
+		background-color:rgb(245,245,245) ;
+		height:14px;
+		line-height: 14px;
+		margin:0;
+		border:none;
+		padding:0 5px;
+		
+	}
+	.el-form-item .el-input.inputposition{
+		margin-left:0;
+		
+	}
+</style>
 <style scoped="scoped" lang="scss">
 @import "~scss/common.scss";
 .el-input{
@@ -97,7 +110,7 @@
 	padding:10px 5% 0;
 	border:1px solid transparent;
 	margin-bottom:5px;
-	height:75px;
+	padding-bottom:40px;
 	
 }
 .el-form-item__label{
@@ -107,11 +120,13 @@
 .el-form>.el-form-item.itemborder{
 	
 	border:1px solid #eee;
+	padding-bottom:0;
 }
 .el-form>.el-form-item.bordernone{
-	border:none;
+	border:1px solid transparent;
 	height:auto;
-	margin-bottom:30px;
+	/*margin-bottom:30px;*/
+	padding-bottom:40px;
 }
 .el-button{
 	width:100%;
@@ -127,6 +142,7 @@
 
 .el-form-item .el-checkbox{
 	margin-left:10%;
+	position: relative;
 }
 .el-form-item .el-input{
 	height:32px;
@@ -142,5 +158,38 @@
 	cursor: pointer;
 	    display: inline-block;
     width: 80px;
+}
+
+.el-dropdown-menu{
+	/*position:static !important;*/
+}
+.changeposition{
+	padding:5px 0;
+	width:20%;
+	position: absolute;
+    right: 23%;
+    z-index: 1000;
+    top: 5%;
+    background: rgb(245,245,245);
+    text-align: center;
+    >*{
+    	color:#000;
+    	height:24px;
+    	line-height: 24px;
+    	margin:0;
+    	padding:0;
+    }
+    
+}
+.changeposition .el-button{
+	border:none;
+	
+}
+.changeposition>div>span{
+	display: inline-block;
+	width:0;
+}
+.el-button+.el-button{
+	margin-left:0;
 }
 </style>

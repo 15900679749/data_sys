@@ -12,7 +12,7 @@
 			<el-col :span="6" class="headtopRight">
 				<el-col :span="18">
 					<img :src="baseImgPath" alt="" class="avator" />
-					<el-dropdown menu-align='end' trigger="click">
+					<el-dropdown menu-align='end' trigger="click" size="medium">
 						<span class="el-dropdown-link" role="button">{{avtar}}<i class="el-icon-arrow-down el-icon--right"></i></span>
 						<el-dropdown-menu slot="dropdown">
 							<el-dropdown-item command="">修改信息</el-dropdown-item>
