@@ -1,23 +1,22 @@
 import login from 'view/login/login-router';
 export default [{
 		path: '/',
-		redirect:{
-			name:'/uSer'
-		},
-		component: require('view/home'),
-		meta: {
-			title: '后台管理中心'
+		redirect: {
+			name: '/uSer'
 		}
 	},
 	{
-		path: '/',
-		name: '/',
+		path: '/home',
+		name: '/home',
+		redirect: {
+			name: '/uSer'
+		},
 		component: require('view/home'),
 		meta: {
 			title: '后台管理中心'
 		},
 		children: [{
-				path: '/myQuestion',
+				path: '/home/myQuestion',
 				name: '/myQuestion',
 				component: require('view/myQuestion/myQuestion'),
 				meta: {
@@ -25,7 +24,7 @@ export default [{
 				}
 			},
 			{
-				path: '/questionNaire',
+				path: '/home/questionNaire',
 				name: '/questionNaire',
 				component: require('view/questionNaire/questionNaire'),
 				meta: {
@@ -33,7 +32,7 @@ export default [{
 				}
 			},
 			{
-				path: '/temPlate',
+				path: '/home/temPlate',
 				name: '/temPlate',
 				component: require('view/temPlate/temPlate'),
 				meta: {
@@ -41,7 +40,7 @@ export default [{
 				}
 			},
 			{
-				path: '/uSer',
+				path: '/home/uSer',
 				name: '/uSer',
 				component: require('view/uSer/uSer'),
 				meta: {
