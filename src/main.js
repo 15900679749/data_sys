@@ -1,4 +1,3 @@
-import 'element-ui/lib/theme-chalk/index.css';
 import ElementUI from 'element-ui';
 import Vue from 'vue';
 import App from './App.vue';
@@ -7,6 +6,7 @@ import routes from 'javascripts/routers';
 import { get, post } from 'javascripts/http';
 import store from 'javascripts/store';
 import 'scss/common.scss';
+import 'element-ui/lib/theme-chalk/index.css';
 
 const router = new VueRouter({
 	routes

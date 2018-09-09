@@ -193,7 +193,7 @@
 	}
 </style>
 <style scoped="scoped" lang="scss">
-	@import "~scss/common.scss";
+	
 	.el-input {
 		width: 30%;
 		margin-left: 76px;
@@ -398,7 +398,7 @@
 			}
 			.el-slider {
 				display: inline-block;
-				width: 70%;
+				width: 100%;
 				margin-left: 6%;
 			}
 		}

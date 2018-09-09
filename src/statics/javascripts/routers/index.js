@@ -3,28 +3,38 @@ export default [{
 		path: '/',
 		redirect: {
 			name: '/uSer'
-		}
-	},
-	{
-		path: '/home',
-		name: '/home',
-		redirect: {
-			name: '/uSer'
 		},
 		component: require('view/home'),
 		meta: {
 			title: '后台管理中心'
+		}
+	},
+	{
+		path: '/',
+		name: '/',
+		component: require('view/home'),
+		meta: {
+			title: '后台管理中心'
 		},
-		children: [{
-				path: '/home/myQuestion',
-				name: '/myQuestion',
-				component: require('view/myQuestion/myQuestion'),
+		children: [
+			{
+				path: '/uSer',
+				name: '/uSer',
+				component: require('view/uSer/uSer'),
 				meta: {
-					title: '我的问卷'
+					title: '用户管理'
 				}
 			},
 			{
-				path: '/home/questionNaire',
+				path: '/analysis',
+				name: '/uSer',
+				component: require('view/analysis/analysis'),
+				meta: {
+					title: '分析&下载'
+				}
+			},
+			{
+				path: '/questionNaire',
 				name: '/questionNaire',
 				component: require('view/questionNaire/questionNaire'),
 				meta: {
@@ -32,21 +42,14 @@ export default [{
 				}
 			},
 			{
-				path: '/home/temPlate',
+				path: '/temPlate',
 				name: '/temPlate',
 				component: require('view/temPlate/temPlate'),
 				meta: {
 					title: '模板管理'
 				}
-			},
-			{
-				path: '/home/uSer',
-				name: '/uSer',
-				component: require('view/uSer/uSer'),
-				meta: {
-					title: '用户管理'
-				}
 			}
+			
 		]
 	},
 	{

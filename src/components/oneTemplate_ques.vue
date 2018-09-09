@@ -9,40 +9,91 @@
 					<span @click="edting" class="edting"><i class="el-icon-edit-outline"></i>编辑</span>
 				</el-col>
 				<el-col :span="6" class="ontemplateTopR">
-					
-						<span>状态:{{item.status}}</span>
-						<span>答卷:<b>{{item.answerNum}}</b></span>
-					
-					
+
+					<span>状态:{{item.status}}</span>
+					<span>答卷:<b>{{item.answerNum}}</b></span>
+
 					<span v-text="item.timeNum"></span>
 
 				</el-col>
 			</el-row>
 			<el-row type="flex" justify="space-between">
 				<el-col :span="8" class="ontemplateBotL">
-					
-						<span @click="designAn"><i class="designAnicon"></i>设计问卷</span>
-						<span @click="sendAn"><i class="sendAn"></i>发送问卷</span>
-						<span @click="analyzeDown"><i class="analyzeDown"></i>分析&下载</span>
-					
-					
+
+					<span @click="designAn"><i class="designAnicon"></i>设计问卷</span>
+					<span @click="sendAn"><i class="sendAn"></i>发送问卷</span>
+					<span @click="analyzeDown"><i class="analyzeDown"></i>分析&下载</span>
+
 				</el-col>
 				<el-col :span="6" class="ontemplateBotR">
-					
-						<el-button class="active"><i class="el-icon-edit"></i>发布</el-button>
-					
-					
+
+					<el-button class="active"><i class="el-icon-edit"></i>发布</el-button>
+
 					<el-button><i class="el-icon-delete"></i>删除</el-button>
 				</el-col>
 			</el-row>
+			
 		</el-row>
+		<div v-show="jumpshow" class="jump">
+				<div class="jumpitem">
+
+					<p>创建问卷</p>
+					<template>
+						<el-radio v-model="ckRadio" label="1">从模板创建</el-radio>
+						<el-radio v-model="ckRadio" label="2">从空白创建</el-radio>
+					</template>
+					<div class="jumpitemcontent">
+						<ul>
+							<li>选择模板：</li>
+							<li>所属区：</li>
+						</ul>
+						<ul>
+							<li>
+								<el-select v-model="modelId" placeholder="请选择" :disabled="ckRadio=='2'">
+									<el-option v-for="item in moptions" :key="item.value" :label="item.label" :value="item.value">
+									</el-option>
+								</el-select>
+							</li>
+							<li>
+								<el-select v-model="region" placeholder="请选择">
+									<el-option v-for="item in qoptions" :key="item.value" :label="item.label" :value="item.value">
+									</el-option>
+								</el-select>
+							</li>
+						</ul>
+					</div>
+					<el-button @click="canclejump" size="medium">取消</el-button>
+					<el-button size="medium" @click="submit">确定</el-button>
+				</div>
+			</div>
 	</div>
 </template>
 
 <script>
+	import bus from './eventBus';
+	import { Message } from "element-ui";
 	export default {
 		data() {
 			return {
+				jumpshow: false,
+				ckRadio: '1',
+				region: "",
+				modelId: "",
+				qoptions: [{
+					value: '黄浦区',
+					label: '黄浦区'
+				}, {
+					value: '虹口区',
+					label: '虹口区'
+				}],
+				moptions: [{
+					value: '模板1',
+					label: '模板1'
+				}, {
+					value: '模板2',
+					label: '模板2'
+				}],
+				value: ''
 			}
 		},
 		props: ["list"],
@@ -60,15 +111,77 @@
 
 			},
 			analyzeDown() {
-
+				return this.$router.push({
+					path: '/analysis'
+				});
+			},
+			jump() {
+				//this.jumpshow = true
+			},
+			canclejump() {
+				this.jumpshow = false;
+			},
+			submit() {
+				if(this.ckRadio == "1") {
+					if(this.modelId == "") {
+						Message({
+							showClose: true,
+							message: "请选择模板!",
+							type: 'warning',
+							duration: 2000
+						});
+						return false;
+					}
+					if(this.modelId == "" || this.region == "") {
+						Message({
+							showClose: true,
+							message: "请选择所属区域!",
+							type: 'warning',
+							duration: 2000
+						});
+						return false;
+					}
+				} else {
+					if(this.region == "") {
+						Message({
+							showClose: true,
+							message: "请选择所属区域!",
+							type: 'warning',
+							duration: 3000
+						});
+						return false;
+					}
+				}
+				this.$router.push({
+					path: 'edit/edit_template',
+					query: {
+						modelId: this.modelId,
+						region: this.region
+					}
+				});
 			}
 		},
 		mounted() {
+			let self = this;
+			bus.$on("getStatus", function(b) {
+				self.jumpshow = b;
+			});
+		},
+		created() {
 
 		}
 	}
 </script>
-
+<style>
+	.el-radio__input.is-checked+.el-radio__label {
+		color: #fff;
+	}
+	
+	.el-radio__input.is-checked .el-radio__inner {
+		border-color: #333;
+		background: #333;
+	}
+</style>
 <style scoped="scoped" lang="scss">
 	.oneTcontain {
 		margin-bottom: 14px;
@@ -199,5 +312,63 @@
 	.edtingTemplate {
 		background-image: url(../statics/images/edtingTemplateicon.png);
 		height: 16px;
+	}
+	
+	.jump {
+		position: fixed;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, .3);
+		top: 0;
+		z-index: 200;
+		p {
+			padding: 10px 0 20px;
+		}
+		.el-radio__inner {
+			background-color: #333;
+		}
+		.el-radio {
+			color: #fff;
+		}
+		.jumpitem {
+			position: absolute;
+			z-index: 300;
+			top: 50%;
+			left: 50%;
+			width: 30%;
+			background: #409EFF;
+			color: #fff;
+			transform: translate(-50%, -50%);
+			padding: 20px 2% 30px;
+			text-align: center;
+			.el-button {
+				width: 40%;
+				display: inline-block;
+				margin-top: 30px;
+				&:nth-of-type(1) {
+					margin-left: 5%;
+				}
+			}
+			.jumpitemcontent {
+				width: 100%;
+				margin: 30px auto 0;
+				float: left;
+				ul {
+					&:nth-of-type(1) {
+						width: 30%;
+						li {
+							padding: 14px 0;
+						}
+					}
+					width: 70%;
+					float:left;
+					li {
+						text-align: center;
+						padding: 8px 0;
+					}
+				}
+			}
+		}
 	}
 </style>

@@ -183,7 +183,7 @@
   }
 </style>
 <style scoped="scoped" lang="scss">
-	@import "~scss/common.scss";
+	
 	.el-input {
 		width: 30%;
 		margin-left: 76px;

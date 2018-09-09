@@ -89,7 +89,7 @@
 	}
 </style>
 <style scoped="scoped" lang="scss">
-	@import "~scss/common.scss";
+	
 	/*.divCenter {
 		margin-left:50%;
 		transform: rotateX(-50%);

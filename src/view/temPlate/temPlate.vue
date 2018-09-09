@@ -21,54 +21,51 @@
 	export default {
 		data() {
 			return {
+				jumpshow: false,
 				list: [{
-					idNum: 1,
-					status: '已完成',
-					answerNum: 0,
-					creator: "xxxxxx",
-					timeNum: "11111"
-				},
-				{
-					idNum: 1,
-					status: '已完成',
-					answerNum: 0,
-					creator: "xxxxxx",
-					timeNum: "11111",
-					actionType: false
-				},
-				{
-					idNum: 1,
-					status: '已完成',
-					answerNum: 0,
-					creator: "xxxxxx",
-					timeNum: "11111",
-					actionType: false
-				},
-				{
-					idNum: 1,
-					status: '已完成',
-					answerNum: 0,
-					creator: "xxxxxx",
-					timeNum: "11111",
-					actionType: false
-				},
-				{
-					idNum: 1,
-					status: '已完成',
-					answerNum: 0,
-					creator: "xxxxxx",
-					timeNum: "11111",
-					actionType: false
-				}
-				
-				
-				
-				
+						idNum: 1,
+						status: '已完成',
+						answerNum: 0,
+						creator: "xxxxxx",
+						timeNum: "11111"
+					},
+					{
+						idNum: 1,
+						status: '已完成',
+						answerNum: 0,
+						creator: "xxxxxx",
+						timeNum: "11111",
+						actionType: false
+					},
+					{
+						idNum: 1,
+						status: '已完成',
+						answerNum: 0,
+						creator: "xxxxxx",
+						timeNum: "11111",
+						actionType: false
+					},
+					{
+						idNum: 1,
+						status: '已完成',
+						answerNum: 0,
+						creator: "xxxxxx",
+						timeNum: "11111",
+						actionType: false
+					},
+					{
+						idNum: 1,
+						status: '已完成',
+						answerNum: 0,
+						creator: "xxxxxx",
+						timeNum: "11111",
+						actionType: false
+					}
+
 				]
 			}
 		},
 		methods: {
-
 		},
 		components: {
 			searchInput,
@@ -96,7 +93,6 @@
 	}
 </style>
 <style scoped="scoped" lang="scss">
-	@import "~scss/common.scss";
 	.Templatecontain .el-input__inner {
 		height: 34px;
 		line-height: 34px;

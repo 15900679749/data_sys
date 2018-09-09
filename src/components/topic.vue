@@ -264,7 +264,7 @@
 </script>
 
 <style scoped="scoped" lang="scss">
-	@import "~scss/common.scss";
+	
 	.topic {
 		padding: 30px 22px 0px;
 		p {

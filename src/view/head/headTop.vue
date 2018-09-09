@@ -6,7 +6,7 @@
 					<el-menu-item index="uSer" class="is-active">用户管理</el-menu-item>
 					<el-menu-item index="temPlate">模板管理</el-menu-item>
 					<el-menu-item index="questionNaire">问卷管理</el-menu-item>
-					<el-menu-item index="myQuestion">我的问卷</el-menu-item>
+					<el-menu-item index="analysis">我的问卷</el-menu-item>
 				</el-menu>
 			</el-col>
 			<el-col :span="6" class="headtopRight">
@@ -61,7 +61,7 @@
 </script>
 
 <style scoped="scoped" lang="scss">
-	@import "~scss/common.scss";
+
 	.hdiv {
 		font-size: 20px;
 	}

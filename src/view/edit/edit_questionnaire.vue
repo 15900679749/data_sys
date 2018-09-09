@@ -5,7 +5,10 @@
 </script>
 
 <style scoped="scoped" lang="scss">
-@import "~scss/common.scss";
 
+/*var option = {};
+						option.title = (self.list.length + 1) + "、" + value;
+						option.tlist = [];
+						self.list.push(option);*/
 
 </style>

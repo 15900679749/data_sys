@@ -28,7 +28,7 @@
 </script>
 
 <style scoped="scoped" lang="scss">
-@import "~scss/common.scss";
+
 .el-header{
 	width:100%;
 	padding:0;
@@ -38,6 +38,6 @@
 	max-height:100%;
 	overflow-x: hidden;
 	overflow-y: scroll;*/
-	
+	padding:0;
 }
 </style>

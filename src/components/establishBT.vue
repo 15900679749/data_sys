@@ -1,28 +1,33 @@
 <template>
- <el-button icon="el-icon-plus" type="primary" round @click="establish">创建问卷</el-button>
+	<el-button icon="el-icon-plus" type="primary" round @click="establish">创建问卷</el-button>
 </template>
 
 <script>
-export default{
-data(){
-	return{
-		
+	import bus from './eventBus';
+	export default {
+		data() {
+			return {
+
+			}
+		},
+		methods: {
+			establish() {
+				if(location.hash.endsWith("#/questionNaire")) {
+					bus.$emit("getStatus", true);
+				} else {
+					bus.$emit("getStatustemp", true);
+				}
+				//return this.$router.push({path:'/edit/edit_template'});
+			}
+		},
+		mounted() {
+
 		}
-	},
-	methods:{
-		establish(){
-			return this.$router.push({path:'/edit/edit_template'});
-		}
-	},
-	mounted() {
-		
 	}
-}
 </script>
 
 <style scoped="scoped" lang="scss">
-@import "~scss/common.scss";
-.el-button{
-	text-align: right;
-}
+	.el-button {
+		text-align: right;
+	}
 </style>
