@@ -15,8 +15,8 @@
 					<span @click.prevent="removeDomain(item)">删除</span>
 					<span @click.prevent="changeposition(item)">位置变更</span>
 					<div class="changeposition" v-if="item.changeButton">
-						<el-button type="info" plain>上移一题</el-button>
-						<el-button type="info" plain>下移一题</el-button>
+						<el-button type="info" plain @click.prevent="moveupDomain(item)">上移一题</el-button>
+						<el-button type="info" plain @click.prevent="movedownDomain(item)">下移一题</el-button>
 						<div>移至【
 							<el-input v-model="poSition" class="inputposition"></el-input>】题</div>
 					</div>
@@ -92,6 +92,10 @@
 				//				this.formlistOne.domain.domains.push({我不动了
 				//					value: ''
 				//				});
+			},
+			moveupDomain(){
+				var index = this.formlistSix.indexOf(item);
+				var netitem=this.formlistSix[index-1]
 			},
 			changeposition(item) {
 				item.changeButton = !item.changeButton;

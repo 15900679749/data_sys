@@ -1,13 +1,13 @@
 <template>
 	<div class="topic">
 		<p><i v-if="must" v-text="'*'"></i><span>{{itemindex}}</span>{{itemName}}</p>
-		<fill :formlist="formlist"></fill>
-		<single :formlistOne="formlistOne"></single>
+		<fill :formlist="qlist.tlist"></fill>
+		<!--<single :formlistOne="formlistOne"></single>
 		<multiple :formlistTwo="formlistTwo"></multiple>
 		<multistage :formlistThree="formlistThree"></multistage>
 		<uploadimg :formlistFour="formlistFour"></uploadimg>
 		<loCation :formlistFive="formlistFive"></loCation>
-		<fractions :formlistSix="formlistSix"></fractions>
+		<fractions :formlistSix="formlistSix"></fractions>-->
 	</div>
 </template>
 
@@ -26,26 +26,18 @@
 				must: true,
 				itemindex: "1",
 				itemName: "基本信息",
-				formlist: [{
-					must: true,
-					itemindex: "1",
-					itemName: "基本信息",
-					labelname: "姓名",
-					name: "11",
-					namevalue: '',
-					show: false,
-					edittextinput: false,
-					changeButton: false
-				}, {
-					must: true,
-					itemindex: "1",
-					itemName: "基本信息",
-					labelname: "姓名",
-					name: "22",
-					show: false,
-					edittextinput: false,
-					changeButton: false
-				}],
+				qlist:[],
+//				formlist: [{
+//					must: true,
+//					itemindex: "1",
+//					itemName: "基本信息",
+//					labelname: "姓名",
+//					name: "11",
+//					namevalue: '',
+//					show: false,
+//					edittextinput: false,
+//					changeButton: false
+//				}],
 				formlistOne: [{
 					must: false,
 					itemindex: "",
@@ -178,10 +170,9 @@
 					checkedGroup: ['篮球', '足球'],
 					GroupList: checkOptions,
 					options: [{
-							imagescr: '',
-						}
-					],
-					imageLength:1
+						imagescr: '',
+					}],
+					imageLength: 1
 				}],
 				formlistFive: [{
 					must: false,
@@ -206,13 +197,12 @@
 					checkedGroup: ['篮球', '足球'],
 					GroupList: checkOptions,
 					options: [{
-							imagescr: '',
-						}
-					],
-					imageLength:1
+						imagescr: '',
+					}],
+					imageLength: 1
 				}],
 				formlistSix: [{
-					silidervalue:100,
+					silidervalue: 100,
 					must: false,
 					itemindex: "",
 					itemName: "",
@@ -235,19 +225,24 @@
 					checkedGroup: ['篮球', '足球'],
 					GroupList: checkOptions,
 					options: [{
-							imagescr: '',
-						}
-					],
-					imageLength:1
+						imagescr: '',
+					}],
+					imageLength: 1
 				}],
-				
+
 			}
 		},
-		methods: {
-			//			addDomains(item) {
-			//				this.formlistOne.domains.push(item);
-			//			}
+		props: {
+			list: {
+				type: Array,
+				default: []
+			}
 		},
+		created(){
+			debugger
+			this.qlist=this.list;
+		},
+		methods: {},
 		mounted() {
 
 		},
@@ -264,7 +259,6 @@
 </script>
 
 <style scoped="scoped" lang="scss">
-	
 	.topic {
 		padding: 30px 22px 0px;
 		p {
@@ -281,7 +275,8 @@
 		font-style: normal;
 		font-weight: bold;
 	}
-	 .transition-box{
-		 	position:relative
-		 }
+	
+	.transition-box {
+		position: relative
+	}
 </style>

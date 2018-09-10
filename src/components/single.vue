@@ -1,18 +1,13 @@
 <template>
 	<div>
 		<el-form>
-			<el-form-item :label="item.labelname+':'" v-for="(item,index) in cformlistOne" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
-				<p><i v-if="item.must" v-text="'*'"></i><span>{{item.itemindex+'.'}}</span>{{item.itemName}}</p>
-				<!--<el-form-item>-->
-				<!--<el-radio-group v-model="item.radiock">
-					<el-radio :label="im.value" v-for="(im,index) in item.question">{{im.name}}</el-radio>
-				</el-radio-group>-->
-				<el-radio-group v-model="item.radiock">
-					<el-radio :label="im.value" v-for="(im,inx) in item.question" :key="inx">{{im.name}}</el-radio>
-					<!--<el-radio :label="item.radiock">备选项1</el-radio>
-					<el-radio :label="9">备选项2</el-radio>-->
+
+			<el-form-item :label="item.qtitle+'、'+item.namevalue+':'" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
+				<i v-if="item.must" v-text="'*'" class="itemmust"></i>
+
+				<el-radio-group v-model="item.domack" @change="dochange">
+					<el-radio :label="im.value" v-for="(im,inx) in item.domains" :key="inx">{{im.value}}</el-radio>
 				</el-radio-group>
-				<!--</el-form-item>-->
 
 				<div v-show="item.show" class="transition-box">
 					<span @click="showedit(item)">编辑</span>
@@ -29,7 +24,7 @@
 					<el-col class="singleinputcontent">
 						<el-form-item :label="'题目文本'">
 							<el-input v-model="item.namevalue"></el-input>
-							<el-checkbox label="必答" name="type"></el-checkbox>
+							<el-checkbox label="必答" name="type" v-model="item.must"></el-checkbox>
 							<div class="singleedit">
 								<el-row type="flex">
 									<el-col :span="16">项目编辑:</el-col>
@@ -37,25 +32,29 @@
 									<el-col :span="5" style="text-align: center;">操作</el-col>
 								</el-row>
 								<!--	<el-form-item v-for="(domain, index) in item.domains" :label="'域名' + index" :key="domain.key" :prop="'domains.' + index + '.value'" :rules="{required: true, message: '域名不能为空', trigger: 'blur'}">-->
-								<el-form-item v-for="(domain, index) in item.domains" :rules="{required: true, message: '域名不能为空', trigger: 'blur'}" :key="index">
-									<el-row>
-										<el-col :span="16">
-											<el-input v-model="item.radioinput1"></el-input>
-										</el-col>
-										<el-col :span="3">
-											<el-radio v-model="item.radiock" :label="index" border>备</el-radio>
-										</el-col>
-										<el-col :span="5" class="iconplus">
-											<i class="el-icon-circle-plus-outline"></i><i class="el-icon-remove-outline"></i><i class="el-icon-back"></i><i class="el-icon-back backright"></i>
-										</el-col>
-									</el-row>
-								</el-form-item>
+								
+									<el-form-item v-for="(domain, index) in item.domains" :rules="{required: true, message: '域名不能为空', trigger: 'blur'}" :key="index">
+										<el-row>
+											<el-col :span="16">
+												<el-input v-model="domain.value"></el-input>
+											</el-col>
+											<el-col :span="3">
+<el-radio-group v-model="gdomack" @change="gdochange">
+												<el-radio :label="domain.value" border></el-radio>
+</el-radio-group>
+											</el-col>
+											<el-col :span="5" class="iconplus">
+												<i class="el-icon-circle-plus-outline"></i><i class="el-icon-remove-outline"></i><i class="el-icon-back"></i><i class="el-icon-back backright"></i>
+											</el-col>
+										</el-row>
+									</el-form-item>
+								
 								<div class="btngroup">
-									<el-button @click="addDomain()" type="primary" plain>+新增选项</el-button>
+									<el-button @click="addDomain" type="primary" plain>+新增选项</el-button>
 									<el-button @click="addDomain()" type="primary" plain>+关联逻辑</el-button>
 									<el-button @click="jump()" type="primary" plain>+跳转逻辑</el-button>
 								</div>
-								
+
 							</div>
 							<p class="tips">注：关联逻辑与跳转逻辑只能设置其中一项</p>
 							<el-button type="primary" @click="submitForm(item)">保存</el-button>
@@ -64,38 +63,33 @@
 				</el-row>
 				<div v-show="jumpshow" class="jump">
 					<div class="jumpitem">
-						
-					
-					<p>跳题逻辑：</p>
-					<div class="jumpitemcontent">
-						<ul>
-							<li>选项</li>
-							<li>男</li>
-							<li>女</li>
-						</ul>
-						<ul>
-							<li>跳转到</li>
-							<li> <el-select v-model="value" placeholder="请选择">
-    <el-option
-      v-for="item in options"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
-    </el-option>
-  </el-select></li>
-							<li> <el-select v-model="value" placeholder="请选择">
-    <el-option
-      v-for="item in options"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value">
-    </el-option>
-  </el-select></li>
-						</ul>
-					</div>
-					<el-button @click="canclejump" size="medium">取消</el-button>
-					<el-button size="medium">确定</el-button>
-					
+
+						<p>跳题逻辑：</p>
+						<div class="jumpitemcontent">
+							<ul>
+								<li>选项</li>
+								<li>男</li>
+								<li>女</li>
+							</ul>
+							<ul>
+								<li>跳转到</li>
+								<li>
+									<el-select v-model="value" placeholder="请选择">
+										<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+										</el-option>
+									</el-select>
+								</li>
+								<li>
+									<el-select v-model="value" placeholder="请选择">
+										<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+										</el-option>
+									</el-select>
+								</li>
+							</ul>
+						</div>
+						<el-button @click="canclejump" size="medium">取消</el-button>
+						<el-button size="medium">确定</el-button>
+
 					</div>
 				</div>
 			</el-form-item>
@@ -111,32 +105,51 @@
 		data() {
 			return {
 				poSition: '',
-				cformlistOne: {},
-				jumpshow:false,
-				  options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
-        value:''
+				jumpshow: false,
+				gdomack: '',
+				options: [{
+					value: '选项1',
+					label: '黄金糕'
+				}, {
+					value: '选项2',
+					label: '双皮奶'
+				}, {
+					value: '选项3',
+					label: '蚵仔煎'
+				}, {
+					value: '选项4',
+					label: '龙须面'
+				}, {
+					value: '选项5',
+					label: '北京烤鸭'
+				}],
+				value: ''
 
 			}
 		},
-		props: ["formlistOne"],
+		props: {
+			item: {
+				type: Object,
+				default: {}
+			},
+			index: {
+				type: Number,
+				default: 0
+			},
+			qindex: {
+				type: Number,
+				default: 0
+			}
+		},
 		methods: {
 			showedit(item) {
 				item.edittextinput = !item.edittextinput;
+			},
+			dochange(item) {
+				this.gdomack=item;
+			},
+			gdochange(item){
+				this.$emit("changeDomainRadio",this.index, this.qindex,item);
 			},
 			showcart(item) {
 				item.show = item.edittextinput || !item.show;
@@ -149,13 +162,12 @@
 				item.show = !item.show;
 			},
 			removeDomain(item) {
-				var index = this.formlistOne.indexOf(item);
+				var index = this.item.indexOf(item);
 				if(index !== -1) {
-					this.formlistOne.splice(index, 1)
+					this.item.splice(index, 1)
 				}
 			},
 			command(callback, vc) {
-				debugger
 				console.log("回调参数" + callback);
 				if(!callback) {
 					var ctx = this;
@@ -166,28 +178,22 @@
 					}
 				}
 			},
-			addDomain() { //这个相当于是item就是formlistOne的每一项
-				//debugger
-				this.cformlistOne[0].domains.push({
-					"value": ""
-				})
-				//				this.formlistOne.domain.domains.push({我不动了
-				//					value: ''
-				//				});
+			addDomain() {
+				this.$emit("addDomain", this.index, this.qindex);
 			},
 			changeposition(item) {
 				item.changeButton = !item.changeButton;
 			},
-			jump(){
-				this.jumpshow=true
+			jump() {
+				this.jumpshow = true
 			},
-			canclejump(){
-				this.jumpshow=false;
+			canclejump() {
+				this.jumpshow = false;
 			}
-	
+
 		},
 		created() {
-			this.cformlistOne = this.formlistOne;
+			this.gdomack = this.item.domack;
 		},
 		components: {
 			headTop
@@ -222,7 +228,6 @@
 	}
 </style>
 <style scoped="scoped" lang="scss">
-	
 	.el-input {
 		width: 30%;
 		margin-left: 76px;
@@ -385,60 +390,65 @@
 			}
 		}
 	}
-	.jump{
+	
+	.jump {
 		position: fixed;
-		
-		left:0;
+		left: 0;
 		width: 100%;
-		height:100%;
-		background-color: rgba(0,0,0,.8);
-		top:0;
+		height: 100%;
+		background-color: rgba(0, 0, 0, .8);
+		top: 0;
 		z-index: 200;
-		.jumpitem{
-			position:absolute;
+		.jumpitem {
+			position: absolute;
 			z-index: 300;
-			top:50%;
-			left:50%;
-		width: 30%;	
-		border:1px dashed #303133;
-		background: #fff;
-		transform: translate(-50%,-50%);
-		padding:20px 2% 30px;
-		.el-button{
-			width:40%;
-			display: inline-block;
-			margin-top:30px;
-			&:nth-of-type(1){
-				margin-right:10%;
-				margin-left:5%;
-			}
-		}
-		.jumpitemcontent{
-			width:100%;
-			margin:0 auto;
-			border-top:1px solid #303133;
-				border-left:1px solid #303133;
-				float: left;
-			ul{
-				&:nth-of-type(1){
-					width:30%;
+			top: 50%;
+			left: 50%;
+			width: 30%;
+			border: 1px dashed #303133;
+			background: #fff;
+			transform: translate(-50%, -50%);
+			padding: 20px 2% 30px;
+			.el-button {
+				width: 40%;
+				display: inline-block;
+				margin-top: 30px;
+				&:nth-of-type(1) {
+					margin-right: 10%;
+					margin-left: 5%;
 				}
-				width: 70%;
-				float:left;
-				
-				li{
-					border-bottom:1px solid #303133;
-					border-right:1px solid #303133;
-					text-align: center;
-					padding:8px 0;
-					&:nth-of-type(1){
-						background: #409EFF;
-						padding:0;
+			}
+			.jumpitemcontent {
+				width: 100%;
+				margin: 0 auto;
+				border-top: 1px solid #303133;
+				border-left: 1px solid #303133;
+				float: left;
+				ul {
+					&:nth-of-type(1) {
+						width: 30%;
+					}
+					width: 70%;
+					float:left;
+					li {
+						border-bottom: 1px solid #303133;
+						border-right: 1px solid #303133;
+						text-align: center;
+						padding: 8px 0;
+						&:nth-of-type(1) {
+							background: #409EFF;
+							padding: 0;
+						}
 					}
 				}
 			}
 		}
-		}
 	}
-	
+			.itemmust{
+		color:red;
+		font-style: normal;
+		    position: absolute;
+    left: -13px;
+    top: 3px;
+	}
 </style>

@@ -4,12 +4,17 @@
 	
 	<el-table :data="tableData" border :header-cell-style="{background:'#f7f7f7',color:'#1f1f1f'}" style="width:100%">
 		<el-table-column prop="id" label="ID" width="100" align="center"></el-table-column>
-		<el-table-column prop="photo" label="微信头像/ID/昵称" width="200" align="center"></el-table-column>
+		<el-table-column prop="name" label="用户名" width="100" align="center"></el-table-column>
+		<el-table-column prop="wxid" label="微信号" width="100" align="center"></el-table-column>
+		<el-table-column prop="photo" label="微信头像" width="150" align="center"></el-table-column>	
+		<el-table-column prop="wxname" label="微信昵称" width="150" align="center"></el-table-column>
 		<el-table-column prop="name" label="姓名" width="100" align="center"></el-table-column>
-		<el-table-column prop="tel" label="手机号" width="180" align="center"></el-table-column>
-		<el-table-column prop="sex" label="性别" width="100" align="center"></el-table-column>
+		<el-table-column prop="tel" label="手机号" width="150" align="center"></el-table-column>
 		<el-table-column prop="address" label="地址" width="300" align="center"></el-table-column>
 		<el-table-column prop="admin" label="权限" width="110" align="center"></el-table-column>
+		<el-table-column prop="time" label="创建时间" width="100" align="center"></el-table-column>
+		<el-table-column prop="action" label="操作" width="200" align="center"></el-table-column>
+		
 	</el-table>
 	</div>
 </template>
@@ -22,10 +27,14 @@
 					id:'1',
 					photo:"路边的仙人掌",
 					name:'赵敏',
+					wxid:'1',
+					wxname:'赵赵',
 					tel:'18900597456',
 					sex:'男',
 					address:'上海市虹口区虹口龙之梦38A',
-					admin:''
+					admin:'',
+					time:'',
+					action:''
 					
 				}]
 			}

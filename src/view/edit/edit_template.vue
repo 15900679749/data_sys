@@ -12,26 +12,38 @@
 				</el-row>
 				<div class="conBottom">
 					<div class="conBottomT">
-						<h6>问卷标题</h6>
-						<p v-text="contentText"></p>
+						<el-input type="text" v-model="questiontitle" placeholder="问卷标题" class="questiontitle"></el-input>
+						<el-input type="textarea" v-model="contentText" placeholder="问卷说明" class="questiontitle"></el-input>
 					</div>
 
 					<el-collapse v-model="activeNames" @change="handleChange">
-						<div class="edit_item" v-for="item in list">
+						<div class="edit_item" v-for="(item,index) in list">
 							<el-dropdown trigger="click" placement="bottom">
 								<span class="el-dropdown-link">
 						        	<i class="new"></i> 新建题目
 						        </span>
 								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item>填空题</el-dropdown-item>
-									<el-dropdown-item>选择题</el-dropdown-item>
+									<el-dropdown-item @click.native="addfill(index)">填空题</el-dropdown-item>
+									<el-dropdown-item @click.native="addsingle(index)">选择题</el-dropdown-item>
 									<el-dropdown-item>多选题</el-dropdown-item>
 									<el-dropdown-item>位置上传</el-dropdown-item>
 									<el-dropdown-item>分数题</el-dropdown-item>
 								</el-dropdown-menu>
 							</el-dropdown>
-							<el-collapse-item :title="item.title">
-								<!--<topic></topic>-->
+							<el-input v-model="item.title" placeholder="模块名称" class="titlename"></el-input>
+							<el-collapse-item :title="item.qtitle">
+
+								<div class="topic" v-for="(qitem,qindex) in item.qlist">
+
+									<!--<topic :list="list"></topic>-->
+									<template v-if="qitem.qtype=='fill'">
+										<fill :item="qitem"></fill>
+									</template>
+									<template v-if="qitem.qtype=='single'">
+										<single :item="qitem" @changeDomainRadio="changeDomainRadio" @addDomain="addDomain" :index="index" :qindex="qindex"></single>
+									</template>
+
+								</div>
 							</el-collapse-item>
 						</div>
 					</el-collapse>
@@ -45,11 +57,18 @@
 <script>
 	import headTop from 'view/head/headTop.vue';
 	import topic from 'components/topic.vue';
-
+	import fill from 'components/fill.vue';
+	import single from 'components/single.vue';
+	import multiple from 'components/multiple.vue';
+	import multistage from 'components/multistage.vue';
+	import uploadimg from 'components/uploadimg.vue';
+	import loCation from 'components/loCation.vue';
+	import fractions from 'components/fractions.vue';
 	export default {
 		data() {
 			return {
-				contentText: '添加问卷说明添加问卷说明添加问卷说明添加问卷说明添加问卷说明添加问卷说明添加问卷说明添加问卷说明添加问卷说明添加问卷说明添加问卷说明添加添加问卷说明添加问卷说明添加问卷说明添加问卷说明添卷说明',
+				contentText: '',
+				questiontitle: '',
 				activeNames: ['1'],
 				region: "",
 				modelId: "",
@@ -60,28 +79,80 @@
 			handleChange(val) {
 				console.log(val);
 			},
+			addfill(index) {
+				//				option.filllist = [];
+				//				option.singlelist = [];
+				let ix = this.list[index].qlist.length + 1;
+				this.list[index].qlist.push({
+					qtitle: ix,
+					qtype: "fill",
+					must: false,
+					itemindex: "1",
+					itemName: "基本信息",
+					labelname: "",
+					name: "",
+					namevalue: '',
+					show: true,
+					edittextinput: true,
+					changeButton: false
+				})
+			},
+			addsingle(index) {
+				let ix = this.list[index].qlist.length + 1;
+//				let dindex = this.list[index].qlist.domains.length || 1;
+				this.list[index].qlist.push({
+					qtitle: ix,
+					qtype: "single",
+					must: false,
+					itemindex: "",
+					itemName: "",
+					labelname: "",
+					name: "11",
+					namevalue: '',
+					show: true,
+					edittextinput: true,
+					changeButton: false,
+					radioinput1: "",
+					domack: '0',
+					domains: [{
+						value: '',
+						domack: 0,
+//						dindex: dindex
+					}],
+
+				})
+			},
+			addDomain(index, qindex) {
+				this.list[index].qlist[qindex].domains.push({
+					"value": ""
+				});
+			},
+			changeDomainRadio(index, qindex, v) {
+				this.list[index].qlist[qindex].domack = v;
+			},
 			openModel() {
 				let self = this;
-				this.$prompt('请输入模块名称', '新建模块', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
+//				this.$prompt('请输入模块名称', '新建模块', {
+//					confirmButtonText: '确定',
+//					cancelButtonText: '取消',
 					//        inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
 					//      inputErrorMessage: '邮箱格式不正确'
-				}).then(({
-					value
-				}) => {
+//				}).then(({
+//					value
+//				}) => {
 					var option = {};
-					option.title = (self.list.length + 1) + "、" + value;
-					debugger
-					option.tlist = [];
+//					option.title = value;
+					option.title="模板名称";
+					option.qtitle = self.list.length + 1 + '、';
+					option.qlist = [];
 					self.list.push(option);
 
-				}).catch(() => {
-					this.$message({
-						type: 'info',
-						message: '取消输入'
-					});
-				});
+//				}).catch(() => {
+//					this.$message({
+//						type: 'info',
+//						message: '取消输入'
+//					});
+//				});
 			}
 
 		},
@@ -91,7 +162,9 @@
 		},
 		components: {
 			headTop,
-			topic
+			topic,
+			fill,
+			single
 		}
 	}
 </script>
@@ -114,6 +187,21 @@
 	
 	.el-popper[x-placement^=bottom] .popper__arrow::after {
 		border-bottom-color: #005ad4;
+	}
+	
+	.questiontitle .el-input__inner {
+		border: none;
+		text-align: center;
+	}
+	
+	.questiontitle .el-textarea__inner {
+		border: none;
+		text-align: left;
+	}
+	.titlename .el-input__inner{
+		width:40%;
+		    margin-top: 5px;
+		    border:none;
 	}
 </style>
 <style scoped="scoped" lang="scss">
@@ -174,9 +262,11 @@
 		padding-bottom: 35px;
 		border-bottom: 1px dashed #e4e4e4;
 		margin-bottom: 35px;
-		>p {
-			color: #666;
-			line-height: 30px;
+		.el-input {
+			.el-input__inner {
+				border: none;
+				text-align: center;
+			}
 		}
 	}
 	
@@ -248,5 +338,18 @@
 	
 	.edit_item {
 		position: relative;
+	}
+	
+	.questiontitle .el-input__inner {
+		border: none;
+		text-align: center;
+	}
+	
+	.titlename {
+		position: absolute;
+		top: 0;
+		left: 50px;
+		z-index: 200;
+		width: 50%;
 	}
 </style>
