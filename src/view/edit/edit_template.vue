@@ -23,13 +23,13 @@
 						        	<i class="new"></i> 新建题目
 						        </span>
 								<el-dropdown-menu slot="dropdown">
-									<el-dropdown-item @click.native="addfill(index)">填空题</el-dropdown-item>
-									<el-dropdown-item @click.native="addsingle(index)">选择题</el-dropdown-item>
-									<el-dropdown-item @click.native="addmultiple(index)">多选题</el-dropdown-item>
-									<el-dropdown-item @click.native="add">位置上传</el-dropdown-item>
-									<el-dropdown-item>分数题</el-dropdown-item>
-									<el-dropdown-item>分数题</el-dropdown-item>
-									<el-dropdown-item>分数题</el-dropdown-item>
+									<el-dropdown-item @click.native="addItem(index,'fill')">填空题</el-dropdown-item>
+									<el-dropdown-item @click.native="addItem(index,'single')">选择题</el-dropdown-item>
+									<el-dropdown-item @click.native="addItem(index,'multiple')">多选题</el-dropdown-item>
+									<el-dropdown-item @click.native="addItem(index,'loCation')">位置上传</el-dropdown-item>
+									<el-dropdown-item @click.native="addItem(index,'uploadimg')">图片上传题</el-dropdown-item>
+									<el-dropdown-item @click.native="addItem(index,'multistage')">多级下拉</el-dropdown-item>
+									<el-dropdown-item @click.native="addItem(index,'multistage')">综合题</el-dropdown-item>
 								</el-dropdown-menu>
 							</el-dropdown>
 							<el-input v-model="item.title" placeholder="模块名称" class="titlename"></el-input>
@@ -74,7 +74,7 @@
 			return {
 				contentText: '',
 				questiontitle: '',
-				activeNames: "1",
+				activeNames: [],
 				region: "",
 				modelId: "",
 				list: []
@@ -85,8 +85,6 @@
 				console.log(val);
 			},
 			addfill(index) {
-				//				option.filllist = [];
-				//				option.singlelist = [];
 				let ix = this.list[index].qlist.length + 1;
 				this.list[index].qlist.push({
 					qtitle: ix,
@@ -100,10 +98,8 @@
 					show: true,
 					edittextinput: true,
 					changeButton: false
-				})
-				
-				this.activeNames=["1"];
-				console.log(this.activeNames);
+				});
+
 			},
 			addsingle(index) {
 				let ix = this.list[index].qlist.length + 1;
@@ -128,11 +124,9 @@
 						value: '选项',
 						sort: 1
 					}]
-				})
-				this.activeNames=["1"];
-				console.log(this.activeNames);
+				});
 			},
-			addmultiple(index){
+			addmultiple(index) {
 				let ix = this.list[index].qlist.length + 1;
 
 				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
@@ -160,9 +154,30 @@
 						sort: 1
 					}],
 					checkedGroup: ['篮球', '足球'],
-//					GroupList: checkOptions,
-GroupList:''
-				})
+					//					GroupList: checkOptions,
+					GroupList: ''
+				});
+				this.activeNames.push(index);
+			},
+			addItem(index, type) {
+				switch(type) {
+					case "fill":
+						{
+							this.addfill(index);
+						}
+						break;
+					case "single":
+						{
+							this.addsingle(index);
+						}
+						break;
+					case "multiple":
+						{}
+						break;
+					default:
+						break;
+				}
+				this.activeNames.indexOf(index)==-1 && this.activeNames.push(index)
 			},
 			addDomain(index, qindex) {
 				let sort = this.list[index].qlist[qindex].domains.length + 1;
@@ -246,11 +261,17 @@ GroupList:''
 			}
 
 		},
+		mounted: function() {
+
+			console.log(this.activeNames);
+		},
+
 		created() {
 			this.region = this.$route.query.region;
 			this.modelId = this.$route.query.modelId;
+
 		},
-		
+
 		components: {
 			headTop,
 			topic,
@@ -333,6 +354,7 @@ GroupList:''
 	.editTemContain {
 		padding: 68px 120px 0;
 		background-color: #f3f3f3;
+		height: 100%;
 		>div {
 			background-color: #fff;
 		}
