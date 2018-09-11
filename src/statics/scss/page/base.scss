@@ -9,4 +9,10 @@ $font-size-small:12px;
 @mixin vertical-align($direction:middle){
     vertical-align:$direction;
 }
-
+.itemmust{
+        color:red;
+        font-style: normal;
+            position: absolute;
+    left: -13px;
+    top: 3px;
+    }

@@ -49,7 +49,11 @@
 		methods: {
 			loginin: function() {
 				this.$post('/Home/Login/login', this.loginForm).then((res) => {
-					console.log(JSON.parse(res));
+//					debugger
+//					console.log(JSON.parse(res));
+						this.$router.push({
+					path: '/uSer',
+				});
 				}).catch((err) => {
 
 				})

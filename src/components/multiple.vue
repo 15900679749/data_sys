@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<el-form>
-			<el-form-item :label="item.labelname+':'" v-for="(item,index) in cformlistTwo" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
-				<p><i v-if="item.must" v-text="'*'"></i><span>{{item.itemindex+'.'}}</span>{{item.itemName}}</p>
+			<el-form-item :label="(qindex+1)+'、'+item.namevalue" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
+				<i v-if="item.must" v-text="'*'"></i>
 				<el-checkbox-group v-model="checkedGroup" @change="handleChecked">
 					<el-checkbox v-for="(checkoption,index) in GroupList" :label="checkoption" :key="index">{{checkoption}}</el-checkbox>
 				</el-checkbox-group>
@@ -71,7 +71,20 @@
 				
 			}
 		},
-		props: ["formlistTwo"],
+			props: {
+			item: {
+				type: Object,
+				default: {}
+			},
+			index: {
+				type: Number,
+				default: 0
+			},
+			qindex: {
+				type: Number,
+				default: 0
+			}
+		},
 		methods: {
 			showedit(item) {
 				item.edittextinput = !item.edittextinput;

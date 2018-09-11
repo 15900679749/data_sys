@@ -135,8 +135,6 @@ export function getUrlParamsObj(furl) {
 	return p
 }
 
-
-
 export {
 	cookie,
 	storage
@@ -160,5 +158,15 @@ const
 		stringMask,
 		getUrlParamsObj,
 	};
+
+Array.prototype.deleteIndex = function(delIndex) {
+	var temArray = [];
+	for(var i = 0; i < this.length; i++) {
+		if(i != delIndex) {
+			temArray.push(this[i]);
+		}
+	}
+	return temArray;
+}
 
 export default Utils;

@@ -33,8 +33,8 @@
 				<div class="jumpitem">
 					<p>创建问卷</p>
 					<template>
-						<el-radio v-model="ckRadio" label="1">从模板创建</el-radio>
-						<el-radio v-model="ckRadio" label="2">从空白创建</el-radio>
+						<el-radio v-model="ckRadio" label="1" class="establish">从模板创建</el-radio>
+						<el-radio v-model="ckRadio" label="2" class="establish">从空白创建</el-radio>
 					</template>
 					<div class="jumpitemcontent">
 						<ul>

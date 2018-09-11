@@ -2,14 +2,14 @@
 	<div>
 		<el-form>
 			<!--v-for="(item,index) in formlist" :key="index"-->
-			<el-form-item :label="item.qtitle+'、'+item.namevalue+':'"  @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
+			<el-form-item :label="(qindex+1)+'、'+item.namevalue+':'"  @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
 				<i v-if="item.must" v-text="'*'" class="itemmust"></i>
 					
 				<!--<p><i v-if="item.must" v-text="'*'"></i><span>{{item.itemindex+'.'}}</span>{{item.itemName}}</p>-->
 				<el-input v-model="item.name"></el-input>
 				<div v-show="item.show" class="transition-box">
 					<span @click="showedit(item)">编辑</span>
-					<span @click.prevent="removeDomain(item)">删除</span>
+					<span @click.prevent="removeDomain(index,qindex)">删除</span>
 					<span @click.prevent="changeposition(item)">位置变更</span>
 					<div class="changeposition" v-if="item.changeButton">
 						<el-button type="info" plain>上移一题</el-button>
@@ -44,7 +44,20 @@
 //				cformlistSix:[]
 			}
 		},
-		props: ["item"],
+		props: {			
+			item: {
+				type: Object,
+				default: {}
+			},
+			index: {
+				type: Number,
+				default: 0
+			},
+			qindex: {
+				type: Number,
+				default: 0
+			}
+		},
 		methods: {
 			showedit(item) {
 				item.edittextinput = !item.edittextinput;
@@ -60,10 +73,11 @@
 				item.show = !item.show;
 			},
 			removeDomain(item) {
-				var index = this.formlist.indexOf(item);
-				if(index !== -1) {
-					this.formlist.splice(index, 1)
-				}
+//				var index = this.formlist.indexOf(item);
+//				if(index !== -1) {
+//					this.formlist.splice(index, 1)
+//				}
+this.$emit("removeDomain", this.index, this.qindex);
 			},
 			command(callback, vc) {
 				console.log("回调参数" + callback);

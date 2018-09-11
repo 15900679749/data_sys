@@ -25,22 +25,27 @@
 								<el-dropdown-menu slot="dropdown">
 									<el-dropdown-item @click.native="addfill(index)">填空题</el-dropdown-item>
 									<el-dropdown-item @click.native="addsingle(index)">选择题</el-dropdown-item>
-									<el-dropdown-item>多选题</el-dropdown-item>
-									<el-dropdown-item>位置上传</el-dropdown-item>
+									<el-dropdown-item @click.native="addmultiple(index)">多选题</el-dropdown-item>
+									<el-dropdown-item @click.native="add">位置上传</el-dropdown-item>
+									<el-dropdown-item>分数题</el-dropdown-item>
+									<el-dropdown-item>分数题</el-dropdown-item>
 									<el-dropdown-item>分数题</el-dropdown-item>
 								</el-dropdown-menu>
 							</el-dropdown>
 							<el-input v-model="item.title" placeholder="模块名称" class="titlename"></el-input>
-							<el-collapse-item :title="item.qtitle">
+							<el-collapse-item :title="item.qtitle" :name="index">
 
 								<div class="topic" v-for="(qitem,qindex) in item.qlist">
 
 									<!--<topic :list="list"></topic>-->
 									<template v-if="qitem.qtype=='fill'">
-										<fill :item="qitem"></fill>
+										<fill :item="qitem" @removeDomain="removeDomain" :index="index" :qindex="qindex"></fill>
 									</template>
 									<template v-if="qitem.qtype=='single'">
-										<single :item="qitem" @changeDomainRadio="changeDomainRadio" @addDomain="addDomain" :index="index" :qindex="qindex"></single>
+										<single :item="qitem" @changeDomainRadio="changeDomainRadio" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></single>
+									</template>
+									<template v-if="qitem.qtype=='multiple'">
+										<multiple :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></multiple>
 									</template>
 
 								</div>
@@ -69,7 +74,7 @@
 			return {
 				contentText: '',
 				questiontitle: '',
-				activeNames: ['1'],
+				activeNames: "1",
 				region: "",
 				modelId: "",
 				list: []
@@ -91,15 +96,20 @@
 					itemName: "基本信息",
 					labelname: "",
 					name: "",
-					namevalue: '',
+					namevalue: '标题',
 					show: true,
 					edittextinput: true,
 					changeButton: false
 				})
+				
+				this.activeNames=["1"];
+				console.log(this.activeNames);
 			},
 			addsingle(index) {
 				let ix = this.list[index].qlist.length + 1;
-//				let dindex = this.list[index].qlist.domains.length || 1;
+
+				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
+
 				this.list[index].qlist.push({
 					qtitle: ix,
 					qtype: "single",
@@ -108,51 +118,131 @@
 					itemName: "",
 					labelname: "",
 					name: "11",
-					namevalue: '',
+					namevalue: '标题',
 					show: true,
 					edittextinput: true,
 					changeButton: false,
 					radioinput1: "",
 					domack: '0',
 					domains: [{
-						value: '',
-						domack: 0,
-//						dindex: dindex
-					}],
+						value: '选项',
+						sort: 1
+					}]
+				})
+				this.activeNames=["1"];
+				console.log(this.activeNames);
+			},
+			addmultiple(index){
+				let ix = this.list[index].qlist.length + 1;
 
+				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
+				this.list[index].qlist.push({
+					qtitle: ix,
+					qtype: "multiple",
+					must: false,
+					itemindex: "",
+					itemName: "",
+					labelname: "你喜欢的运动",
+					name: "11",
+					namevalue: '标题',
+					show: true,
+					edittextinput: true,
+					changeButton: false,
+					question: {
+						name: "性别",
+						value1: "男",
+						value2: "女"
+					},
+					radioinput1: "",
+					radiock: 0,
+					domains: [{
+						value: '选项',
+						sort: 1
+					}],
+					checkedGroup: ['篮球', '足球'],
+//					GroupList: checkOptions,
+GroupList:''
 				})
 			},
 			addDomain(index, qindex) {
+				let sort = this.list[index].qlist[qindex].domains.length + 1;
 				this.list[index].qlist[qindex].domains.push({
-					"value": ""
+					"value": "",
+					"sort": sort
 				});
 			},
 			changeDomainRadio(index, qindex, v) {
 				this.list[index].qlist[qindex].domack = v;
 			},
+			removeDomain(index, qindex) {
+
+				//				let aindex = this.list[index].qlist[qindex];
+				//					aindex && this.list[index].qlist.splice(aindex, 1)
+				let nlist = this.list[index].qlist.deleteIndex(qindex);
+				this.list[index].qlist = nlist;
+			},
+			removeDomainitem(index, qindex, dindex) {
+				let dlist = this.list[index].qlist[qindex].domains.deleteIndex(dindex);
+				this.list[index].qlist[qindex].domains = dlist;
+			},
+			domainSortdown(index, qindex, dindex, type) {
+				var sdomainItem = this.list[index].qlist[qindex].domains[dindex];
+				var sortList = this.list[index].qlist[qindex].domains;
+				var sortId = sdomainItem.sort; //排序
+				if(type == "up") {
+					if(sortId != 1) {
+						let uitem = sortList.filter(function(item) {
+							return item.sort == (sortId - 1)
+						})[0];
+						let iuitem = this.list[index].qlist[qindex].domains.indexOf(uitem);
+						let usort = uitem.sort;
+						uitem.sort = sortId;
+						sortList.splice(iuitem, 1, uitem);
+						sdomainItem.sort = usort;
+						sortList.splice(dindex, 1, sdomainItem);
+					}
+				} else {
+					if(sortId != sortList.length) {
+						let uitem = sortList.filter(function(item) {
+							return item.sort == (sortId + 1)
+						})[0];
+						let iuitem = this.list[index].qlist[qindex].domains.indexOf(uitem);
+						let usort = uitem.sort;
+						uitem.sort = sortId;
+						sortList.splice(iuitem, 1, uitem);
+						sdomainItem.sort = usort;
+						sortList.splice(dindex, 1, sdomainItem);
+					}
+				}
+				sortList.sort(function(a, b) {
+					return a.sort - b.sort;
+				});
+				this.list[index].qlist[qindex].domains = sortList;
+
+			},
 			openModel() {
 				let self = this;
-//				this.$prompt('请输入模块名称', '新建模块', {
-//					confirmButtonText: '确定',
-//					cancelButtonText: '取消',
-					//        inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-					//      inputErrorMessage: '邮箱格式不正确'
-//				}).then(({
-//					value
-//				}) => {
-					var option = {};
-//					option.title = value;
-					option.title="模板名称";
-					option.qtitle = self.list.length + 1 + '、';
-					option.qlist = [];
-					self.list.push(option);
+				//				this.$prompt('请输入模块名称', '新建模块', {
+				//					confirmButtonText: '确定',
+				//					cancelButtonText: '取消',
+				//        inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
+				//      inputErrorMessage: '邮箱格式不正确'
+				//				}).then(({
+				//					value
+				//				}) => {
+				var option = {};
+				//					option.title = value;
+				option.title = "模板名称";
+				option.qtitle = self.list.length + 1 + '、';
+				option.qlist = [];
+				self.list.push(option);
 
-//				}).catch(() => {
-//					this.$message({
-//						type: 'info',
-//						message: '取消输入'
-//					});
-//				});
+				//				}).catch(() => {
+				//					this.$message({
+				//						type: 'info',
+				//						message: '取消输入'
+				//					});
+				//				});
 			}
 
 		},
@@ -160,11 +250,13 @@
 			this.region = this.$route.query.region;
 			this.modelId = this.$route.query.modelId;
 		},
+		
 		components: {
 			headTop,
 			topic,
 			fill,
-			single
+			single,
+			multiple
 		}
 	}
 </script>
@@ -198,10 +290,17 @@
 		border: none;
 		text-align: left;
 	}
-	.titlename .el-input__inner{
-		width:40%;
-		    margin-top: 5px;
-		    border:none;
+	
+	.titlename .el-input__inner {
+		width: 40%;
+		margin-top: 5px;
+		border: none;
+	}
+	
+	.topic .el-form-item__label {
+		display: block;
+		width: 100%;
+		text-align: left;
 	}
 </style>
 <style scoped="scoped" lang="scss">

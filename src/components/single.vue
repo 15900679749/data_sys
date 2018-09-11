@@ -2,7 +2,7 @@
 	<div>
 		<el-form>
 
-			<el-form-item :label="item.qtitle+'、'+item.namevalue+':'" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
+			<el-form-item :label="(qindex+1)+'、'+item.namevalue+':'" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
 				<i v-if="item.must" v-text="'*'" class="itemmust"></i>
 
 				<el-radio-group v-model="item.domack" @change="dochange">
@@ -11,7 +11,7 @@
 
 				<div v-show="item.show" class="transition-box">
 					<span @click="showedit(item)">编辑</span>
-					<span @click.prevent="removeDomain(item)">删除</span>
+					<span @click.prevent="removeDomain(index,qindex)">删除</span>
 					<span @click.prevent="changeposition(item)">位置变更</span>
 					<div class="changeposition" v-if="item.changeButton">
 						<el-button type="info" plain>上移一题</el-button>
@@ -32,26 +32,30 @@
 									<el-col :span="5" style="text-align: center;">操作</el-col>
 								</el-row>
 								<!--	<el-form-item v-for="(domain, index) in item.domains" :label="'域名' + index" :key="domain.key" :prop="'domains.' + index + '.value'" :rules="{required: true, message: '域名不能为空', trigger: 'blur'}">-->
-								
-									<el-form-item v-for="(domain, index) in item.domains" :rules="{required: true, message: '域名不能为空', trigger: 'blur'}" :key="index">
-										<el-row>
-											<el-col :span="16">
-												<el-input v-model="domain.value"></el-input>
-											</el-col>
-											<el-col :span="3">
-<el-radio-group v-model="gdomack" @change="gdochange">
+
+								<el-form-item v-for="(domain, dindex) in item.domains" :rules="{required: true, message: '域名不能为空', trigger: 'blur'}" :key="dindex">
+									<el-row>
+										<el-col :span="16">
+											<el-input v-model="domain.value"></el-input>
+										</el-col>
+										<el-col :span="3">
+											<el-radio-group v-model="gdomack" @change="gdochange">
 												<el-radio :label="domain.value" border></el-radio>
-</el-radio-group>
-											</el-col>
-											<el-col :span="5" class="iconplus">
-												<i class="el-icon-circle-plus-outline"></i><i class="el-icon-remove-outline"></i><i class="el-icon-back"></i><i class="el-icon-back backright"></i>
-											</el-col>
-										</el-row>
-									</el-form-item>
-								
+											</el-radio-group>
+										</el-col>
+										<el-col :span="5" class="iconplus">
+											<i class="el-icon-circle-plus-outline" @click="addDomain"></i>
+											<i class="el-icon-remove-outline" @click="removeDomainitem(index,qindex,dindex)"></i>
+											<i :class="{radioDisable:(dindex+1)==item.domains.length}" class="el-icon-back" @click="domainSortdown(index,qindex,dindex,'down')"></i>
+											<!--v-show="dindex!=0"-->
+											<i :class="{radioDisable:dindex==0}" class="el-icon-back backright" @click="domainSortdown(index,qindex,dindex,'up')" disabled='true'></i>
+										</el-col>
+									</el-row>
+								</el-form-item>
+
 								<div class="btngroup">
 									<el-button @click="addDomain" type="primary" plain>+新增选项</el-button>
-									<el-button @click="addDomain()" type="primary" plain>+关联逻辑</el-button>
+									<el-button @click="addDomain" type="primary" plain>+关联逻辑</el-button>
 									<el-button @click="jump()" type="primary" plain>+跳转逻辑</el-button>
 								</div>
 
@@ -101,6 +105,7 @@
 
 <script>
 	import headTop from 'view/head/headTop.vue';
+	import bus from './eventBus';
 	export default {
 		data() {
 			return {
@@ -146,10 +151,10 @@
 				item.edittextinput = !item.edittextinput;
 			},
 			dochange(item) {
-				this.gdomack=item;
+				this.gdomack = item;
 			},
-			gdochange(item){
-				this.$emit("changeDomainRadio",this.index, this.qindex,item);
+			gdochange(item) {
+				this.$emit("changeDomainRadio", this.index, this.qindex, item);
 			},
 			showcart(item) {
 				item.show = item.edittextinput || !item.show;
@@ -161,11 +166,11 @@
 				item.edittextinput = !item.edittextinput;
 				item.show = !item.show;
 			},
-			removeDomain(item) {
-				var index = this.item.indexOf(item);
-				if(index !== -1) {
-					this.item.splice(index, 1)
-				}
+			removeDomain() {
+				this.$emit("removeDomain", this.index, this.qindex);
+			},
+			domainSortdown: function(index, qindex, dindex, type) {
+				!event.target.classList.contains("radioDisable") && this.$emit("domainSortdown", index, qindex, dindex, type)
 			},
 			command(callback, vc) {
 				console.log("回调参数" + callback);
@@ -180,6 +185,9 @@
 			},
 			addDomain() {
 				this.$emit("addDomain", this.index, this.qindex);
+			},
+			removeDomainitem(index, qindex, dindex) {
+				this.$emit("removeDomainitem", index, qindex, dindex);
 			},
 			changeposition(item) {
 				item.changeButton = !item.changeButton;
@@ -220,6 +228,11 @@
 	
 	.singleedit .el-radio__label {
 		display: none;
+	}
+	
+	.radioDisable {
+		color: #D9D9D9;
+		border-color: #D9D9D9 !important;
 	}
 	
 	.singleinputcontent .el-input__inner {
@@ -353,8 +366,9 @@
 		.iconplus {
 			display: flex;
 			align-items: center;
-			justify-content: center;
+			justify-content: flex-start;
 			height: 40px;
+			padding-left: 30px;
 		}
 		i {
 			font-size: 24px;
@@ -444,11 +458,12 @@
 			}
 		}
 	}
-			.itemmust{
-		color:red;
+	
+	.itemmust {
+		color: red;
 		font-style: normal;
-		    position: absolute;
-    left: -13px;
-    top: 3px;
+		position: absolute;
+		left: -13px;
+		top: 3px;
 	}
 </style>

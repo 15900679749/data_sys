@@ -39,8 +39,8 @@
 
 					<p>创建问卷</p>
 					<template>
-						<el-radio v-model="ckRadio" label="1">从模板创建</el-radio>
-						<el-radio v-model="ckRadio" label="2">从空白创建</el-radio>
+						<el-radio v-model="ckRadio" label="1" class="establish">从模板创建</el-radio>
+						<el-radio v-model="ckRadio" label="2" class="establish">从空白创建</el-radio>
 					</template>
 					<div class="jumpitemcontent">
 						<ul>
@@ -173,11 +173,11 @@
 	}
 </script>
 <style>
-	.el-radio__input.is-checked+.el-radio__label {
+	.establish .el-radio__input.is-checked+.el-radio__label {
 		color: #fff;
 	}
 	
-	.el-radio__input.is-checked .el-radio__inner {
+	.establish .el-radio__input.is-checked .el-radio__inner {
 		border-color: #333;
 		background: #333;
 	}
