@@ -2,14 +2,14 @@
 	<div>
 		<el-form>
 			<el-form-item :label="(qindex+1)+'、'+item.namevalue" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
-				<i v-if="item.must" v-text="'*'"></i>
+				<i v-if="item.must" v-text="'*'" class="itemmust"></i>
 				<el-checkbox-group v-model="checkedGroup" @change="handleChecked">
 					<el-checkbox v-for="(checkoption,index) in GroupList" :label="checkoption" :key="index">{{checkoption}}</el-checkbox>
 				</el-checkbox-group>
 
 				<div v-show="item.show" class="transition-box">
 					<span @click="showedit(item)">编辑</span>
-					<span @click.prevent="removeDomain(item)">删除</span>
+					<span @click.prevent="removeDomain(index,qindex)">删除</span>
 					<span @click.prevent="changeposition(item)">位置变更</span>
 					<div class="changeposition" v-if="item.changeButton">
 						<el-button type="info" plain>上移一题</el-button>
@@ -22,7 +22,7 @@
 					<el-col class="singleinputcontent">
 						<el-form-item :label="'题目文本'">
 							<el-input v-model="item.namevalue"></el-input>
-							<el-checkbox label="必答" name="type"></el-checkbox>
+							<el-checkbox label="必答" name="type" v-model="item.must"></el-checkbox>
 							<div class="singleedit">
 								<el-row type="flex">
 									<el-col :span="19">选项编辑:</el-col>
@@ -99,11 +99,8 @@
 				item.edittextinput = !item.edittextinput;
 				item.show = !item.show;
 			},
-			removeDomain(item) {
-				var index = this.formlistTwo.indexOf(item);
-				if(index !== -1) {
-					this.formlistTwo.splice(index, 1)
-				}
+				removeDomain() {
+				this.$emit("removeDomain", this.index, this.qindex);
 			},
 			command(callback, vc) {
 				debugger

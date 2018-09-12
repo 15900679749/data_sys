@@ -1,14 +1,14 @@
 <template>
 	<div>
 		<el-form>
-			<el-form-item :label="item.labelname+':'" v-for="(item,index) in cformlistFive" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="[{'bordernone':item.edittextinput,'itemborder':item.show}]" >
-				<p><i v-if="item.must" v-text="'*'"></i><span>{{item.itemindex}}</span>{{item.itemName}}</p>
+			<el-form-item :label="(qindex+1)+'、'+item.namevalue+':'" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="[{'bordernone':item.edittextinput,'itemborder':item.show}]" >
+				<i v-if="item.must" v-text="'*'" class="itemmust"></i>
 				<el-row type="flex" justify="start" class="loCationtips">
 					<i class="el-icon-location"></i>
 				</el-row>
 				<div v-show="item.show" class="transition-box">
 					<span @click="showedit(item)">编辑</span>
-					<span @click.prevent="removeDomain(item)">删除</span>
+					<span @click.prevent="removeDomain(index,qindex)">删除</span>
 					<span @click.prevent="changeposition(item)">位置变更</span>
 					<div class="changeposition" v-if="item.changeButton">
 						<el-button type="info" plain>上移一题</el-button>
@@ -21,7 +21,7 @@
 					<el-col class="singleinputcontent">
 						<el-form-item :label="'题目文本'">
 							<el-input v-model="item.namevalue"></el-input>
-							<el-checkbox label="必答" name="type"></el-checkbox>
+							<el-checkbox label="必答" name="type" v-model="item.must"></el-checkbox>
 						
 							<el-button type="primary" @click="submitForm(item)">保存</el-button>
 						</el-form-item>
@@ -46,7 +46,20 @@
 				
 			}
 		},
-		props: ["formlistFive"],
+	props: {
+			item: {
+				type: Object,
+				default: {}
+			},
+			index: {
+				type: Number,
+				default: 0
+			},
+			qindex: {
+				type: Number,
+				default: 0
+			}
+		},
 		methods: {
 			showedit(item) {
 				item.edittextinput = !item.edittextinput;
@@ -61,11 +74,8 @@
 				item.edittextinput = !item.edittextinput;
 				item.show = !item.show;
 			},
-			removeDomain(item) {
-				var index = this.formlistFive.indexOf(item);
-				if(index !== -1) {
-					this.formlisFive.splice(index, 1)
-				}
+			removeDomain() {
+				this.$emit("removeDomain", this.index, this.qindex);
 			},
 			command(callback, vc) {
 				debugger

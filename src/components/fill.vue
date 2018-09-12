@@ -1,11 +1,9 @@
 <template>
 	<div>
-		<el-form>
+		<el-form class="fillcontent">
 			<!--v-for="(item,index) in formlist" :key="index"-->
 			<el-form-item :label="(qindex+1)+'、'+item.namevalue+':'"  @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
-				<i v-if="item.must" v-text="'*'" class="itemmust"></i>
-					
-				<!--<p><i v-if="item.must" v-text="'*'"></i><span>{{item.itemindex+'.'}}</span>{{item.itemName}}</p>-->
+				<i v-if="item.must" v-text="'*'" class="itemmust"></i>							
 				<el-input v-model="item.name"></el-input>
 				<div v-show="item.show" class="transition-box">
 					<span @click="showedit(item)">编辑</span>
@@ -119,8 +117,15 @@ this.$emit("removeDomain", this.index, this.qindex);
     left: -13px;
     top: 3px;
 	}
+	.topic .fillcontent .el-form-item__label{
+	width: auto;
+}
+.topic .fillcontent .el-form-item__content .el-input{
+	margin-left:10px;
+}
 </style>
 <style scoped="scoped" lang="scss">
+
 	.el-input {
 		width: 30%;
 		margin-left: 76px;

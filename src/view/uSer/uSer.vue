@@ -28,12 +28,16 @@
 				<el-col :span="8">
 					<el-button>查询</el-button>
 					<el-button @click="adduser">新增</el-button>
+					<el-button @click="">删除</el-button>
 				</el-col>
 			</el-row>
 		</el-form>
 
-		<el-table :data="tableData" border :header-cell-style="{background:'#f7f7f7',color:'#1f1f1f'}" style="width:100%">
-
+		<el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" @selection-change="handleSelectionChange" border :header-cell-style="{background:'#f7f7f7',color:'#1f1f1f'}" style="width:100%">
+			 <el-table-column
+      type="selection"
+      width="55">
+    </el-table-column>
 			<el-table-column prop="id" label="ID" width="100" align="center"></el-table-column>
 			<el-table-column prop="name" label="用户名" width="100" align="center"></el-table-column>
 			<el-table-column prop="wxid" label="微信号" width="100" align="center"></el-table-column>
@@ -44,9 +48,33 @@
 			<el-table-column prop="address" label="地址" width="300" align="center"></el-table-column>
 			<el-table-column prop="admin" label="权限" width="110" align="center"></el-table-column>
 			<el-table-column prop="time" label="创建时间" width="100" align="center"></el-table-column>
-			<el-table-column prop="action" label="操作" width="200" align="center"></el-table-column>
+			<el-table-column prop="action" label="操作" width="200" align="center">
+				 <template slot-scope="scope">
+        <el-button
+          size="mini"
+          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+        <el-button
+          size="mini"
+          type="danger"
+          @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+      </template>
+			</el-table-column>
 
 		</el-table>
+		
+					<div class="block">
+    <span class="demonstration"></span>
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage4"
+      :page-sizes="[100, 200, 300, 400]"
+      :page-size="100"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="400">
+    </el-pagination>
+  </div>
+		
 
 		<div class="zhezhao" v-show="addshow">
 			<div class="addedit">
@@ -95,7 +123,13 @@
 	export default {
 		data() {
 			return {
+				 multipleSelection: [],
 				addshow: false,
+				currentRow:null,
+				 currentPage1: 5,
+			        currentPage2: 5,
+			        currentPage3: 5,
+			        currentPage4: 4,
 				form: {
 					name: '',
 					region: '',
@@ -106,20 +140,6 @@
 					resource: '',
 					desc: '',
 				},
-				//				addform: {
-				//					address: '',
-				//					password: '',
-				//					wxid: '',
-				//					name: '',
-				//					tel: '',
-				//					region: '',
-				//					date1: '',
-				//					date2: '',
-				//					delivery: false,
-				//					type: [],
-				//					resource: '',
-				//					desc: ''
-				//				},
 				addform: {
 					id: '',
 					photo: "",
@@ -230,7 +250,31 @@
 					}
 				})
 			},
-
+			   toggleSelection(rows) {
+        if (rows) {
+          rows.forEach(row => {
+            this.$refs.multipleTable.toggleRowSelection(row);
+          });
+        } else {
+          this.$refs.multipleTable.clearSelection();
+        }
+      },
+      handleSelectionChange(val) {
+        this.multipleSelection = val;
+        console.log(val);
+      },
+       handleEdit(index, row) {
+        console.log(index, row);
+      },
+      handleDelete(index, row) {
+        console.log(index, row);
+      },
+       handleSizeChange(val) {
+        console.log(`每页 ${val} 条`);
+      },
+      handleCurrentChange(val) {
+        console.log(`当前页: ${val}`);
+      }
 		},
 		mounted() {
 
@@ -258,6 +302,11 @@
 	}
 </style>
 <style scoped="scoped" lang="scss">
+.block{
+	width: 100%;
+	text-align: center;
+	margin-top:50px;
+}
 	.Templatecontain {
 		width: 100%;
 		height: 100%;

@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="edit_tempbg">
 		<el-row :gutter="20" class="top">
 			<el-col :span="3" :offset="9">
 				<i class="el-icon-search"></i>预览</el-col>
@@ -27,8 +27,9 @@
 									<el-dropdown-item @click.native="addItem(index,'single')">选择题</el-dropdown-item>
 									<el-dropdown-item @click.native="addItem(index,'multiple')">多选题</el-dropdown-item>
 									<el-dropdown-item @click.native="addItem(index,'loCation')">位置上传</el-dropdown-item>
-									<el-dropdown-item @click.native="addItem(index,'uploadimg')">图片上传题</el-dropdown-item>
+									<el-dropdown-item @click.native="addItem(index,'uploadimg')">图片上传</el-dropdown-item>
 									<el-dropdown-item @click.native="addItem(index,'multistage')">多级下拉</el-dropdown-item>
+									<el-dropdown-item @click.native="addItem(index,'fractions')">分数题</el-dropdown-item>
 									<el-dropdown-item @click.native="addItem(index,'multistage')">综合题</el-dropdown-item>
 								</el-dropdown-menu>
 							</el-dropdown>
@@ -47,7 +48,18 @@
 									<template v-if="qitem.qtype=='multiple'">
 										<multiple :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></multiple>
 									</template>
-
+									<template v-if="qitem.qtype=='multistage'">
+										<multistage :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></multistage>
+									</template>
+									<template v-if="qitem.qtype=='loCation'">
+										<loCation :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></loCation>
+									</template>
+									<template v-if="qitem.qtype=='uploadimg'">
+										<uploadimg :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></uploadimg>
+									</template>
+									<template v-if="qitem.qtype=='fractions'">
+										<fractions :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></fractions>
+									</template>									
 								</div>
 							</el-collapse-item>
 						</div>
@@ -90,9 +102,6 @@
 					qtitle: ix,
 					qtype: "fill",
 					must: false,
-					itemindex: "1",
-					itemName: "基本信息",
-					labelname: "",
 					name: "",
 					namevalue: '标题',
 					show: true,
@@ -110,15 +119,10 @@
 					qtitle: ix,
 					qtype: "single",
 					must: false,
-					itemindex: "",
-					itemName: "",
-					labelname: "",
-					name: "11",
 					namevalue: '标题',
 					show: true,
 					edittextinput: true,
 					changeButton: false,
-					radioinput1: "",
 					domack: '0',
 					domains: [{
 						value: '选项',
@@ -134,30 +138,120 @@
 					qtitle: ix,
 					qtype: "multiple",
 					must: false,
-					itemindex: "",
-					itemName: "",
-					labelname: "你喜欢的运动",
-					name: "11",
 					namevalue: '标题',
 					show: true,
 					edittextinput: true,
 					changeButton: false,
-					question: {
-						name: "性别",
-						value1: "男",
-						value2: "女"
-					},
 					radioinput1: "",
-					radiock: 0,
 					domains: [{
 						value: '选项',
 						sort: 1
 					}],
 					checkedGroup: ['篮球', '足球'],
-					//					GroupList: checkOptions,
 					GroupList: ''
 				});
-				this.activeNames.push(index);
+				
+			},
+			addmultistage(index){
+				let ix = this.list[index].qlist.length + 1;
+
+				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
+				this.list[index].qlist.push({
+					qtitle: ix,
+					qtype: "multistage",
+					must: false,
+					namevalue: '标题',
+					show: true,
+					edittextinput: true,
+					changeButton: false,
+					options2: [{
+						value: '选项1',
+						label: "上海"
+					}, {
+						value: '选项2',
+						label: '北京',
+						disabled: true
+					}],
+					options3: [{
+							value: '选项1',
+							label: "一级选项"
+						}, {
+							value: '选项2',
+							label: '二级选项',
+							disabled: true
+						},
+						{
+							value: '选项3',
+							label: '三级选项',
+							disabled: true
+						}
+					],
+					options4: [{
+						value: '选项1',
+						label: "上海"
+					}, {
+						value: '选项2',
+						label: '北京',
+						disabled: true
+					}],
+					options5: [{
+						value: '选项1',
+						label: "上海"
+					}, {
+						value: '选项2',
+						label: '北京',
+						disabled: true
+					}],
+					value2: ''
+				
+				
+				})
+			},
+			adduploadimg(index){
+				let ix = this.list[index].qlist.length + 1;
+
+				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
+				this.list[index].qlist.push({
+					qtitle: ix,
+					qtype: "uploadimg",
+						must: false,
+					show: true,
+					edittextinput: true,
+					changeButton: false,
+					options: [{
+						imagescr: '',
+					}],
+					imageLength: 1
+				})
+			},
+			addloCation(index){
+				let ix = this.list[index].qlist.length + 1;
+
+				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
+				this.list[index].qlist.push({
+					qtitle: ix,
+					qtype: "loCation",
+				must: false,
+					namevalue: '标题',
+					show: true,
+					edittextinput: true,
+					changeButton: false,
+				})
+			},
+			addfractions(index){
+				let ix = this.list[index].qlist.length + 1;
+
+				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
+				this.list[index].qlist.push({
+					qtitle: ix,
+					qtype: "fractions",
+					silidervalue: 100,
+					must: false,
+					namevalue: '标题',
+					show: true,
+					edittextinput: true,
+					changeButton: false,
+				})
 			},
 			addItem(index, type) {
 				switch(type) {
@@ -172,7 +266,29 @@
 						}
 						break;
 					case "multiple":
-						{}
+						{
+							this.addmultiple(index);
+						}
+						break;
+						case "multistage":
+						{
+							this.addmultistage(index);
+						}
+						break;
+						case "uploadimg":
+						{
+							this.adduploadimg(index);
+						}
+						break;
+						case "loCation":
+						{
+							this.addloCation(index);
+						}
+						break;	
+						case "fractions":
+						{
+							this.addfractions(index);
+						}
 						break;
 					default:
 						break;
@@ -277,7 +393,11 @@
 			topic,
 			fill,
 			single,
-			multiple
+			multiple,
+			multistage,
+			loCation,
+			uploadimg,
+			fractions
 		}
 	}
 </script>
@@ -329,8 +449,12 @@
 		box-sizing: border-box;
 	}
 	
+	.edit_tempbg{
+		background-color: #f3f3f3;
+	}
 	.top {
 		padding: 29px 0;
+		background-color:#fff ;
 		>.el-col {
 			display: flex;
 			justify-content: center;

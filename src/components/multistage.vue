@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<el-form>
-			<el-form-item :label="item.labelname+':'" v-for="(item,index) in cformlistThree" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
-				<p><i v-if="item.must" v-text="'*'"></i><span>{{item.itemindex+'.'}}</span>{{item.itemName}}</p>
+			<el-form-item :label="(qindex+1)+'、'+item.namevalue+':'" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
+				<i v-if="item.must" v-text="'*'" class="itemmust"></i>
 					<el-select v-model="item.value" placeholder="请选择" >
 						<el-option v-for="(option,index) in item.options2" :key="index" :value="option.value" :disabeld="option.disabled" :label="option.label">
 							
@@ -22,7 +22,7 @@
 
 				<div v-show="item.show" class="transition-box">
 					<span @click="showedit(item)">编辑</span>
-					<span @click.prevent="removeDomain(item)">删除</span>
+					<span @click.prevent="removeDomain(index,qindex)">删除</span>
 					<span @click.prevent="changeposition(item)">位置变更</span>
 					<div class="changeposition" v-if="item.changeButton">
 						<el-button type="info" plain>上移一题</el-button>
@@ -35,7 +35,7 @@
 					<el-col class="singleinputcontent">
 						<el-form-item :label="'题目文本'">
 							<el-input v-model="item.namevalue"></el-input>
-							<el-checkbox label="必答" name="type"></el-checkbox>
+							<el-checkbox label="必答" name="type" v-model="item.must"></el-checkbox>
 							<div class="singleedit">
 								<el-row type="flex" >
 									<el-col :span="24">多级下拉编辑:</el-col>
@@ -92,7 +92,20 @@
 				
 			}
 		},
-		props: ["formlistThree"],
+			props: {
+			item: {
+				type: Object,
+				default: {}
+			},
+			index: {
+				type: Number,
+				default: 0
+			},
+			qindex: {
+				type: Number,
+				default: 0
+			}
+		},
 		methods: {
 			showedit(item) {
 				item.edittextinput = !item.edittextinput;
@@ -107,11 +120,8 @@
 				item.edittextinput = !item.edittextinput;
 				item.show = !item.show;
 			},
-			removeDomain(item) {
-				var index = this.formlistThree.indexOf(item);
-				if(index !== -1) {
-					this.formlisThree.splice(index, 1)
-				}
+			removeDomain() {
+				this.$emit("removeDomain", this.index, this.qindex);
 			},
 			command(callback, vc) {
 				debugger
