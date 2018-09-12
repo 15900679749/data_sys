@@ -3,23 +3,23 @@
 		<el-form ref="form" :model="form" label-width="80px" class="usersearch">
 			<el-row>
 				<el-form-item label="ID">
-					<el-input v-model="form.name"></el-input>
+					<el-input v-model="form.uid"></el-input>
 				</el-form-item>
 				<el-form-item label="用户名">
 					<el-input v-model="form.name"></el-input>
 				</el-form-item>
 				<el-form-item label="微信号">
-					<el-input v-model="form.name"></el-input>
+					<el-input v-model="form.wx_name"></el-input>
 				</el-form-item>
 			</el-row>
 			<el-row>
 				<el-col :span="16">
 
 					<el-form-item label="手机号">
-						<el-input v-model="form.name"></el-input>
+						<el-input v-model="form.mobile"></el-input>
 					</el-form-item>
 					<el-form-item label="权限">
-						<el-select v-model="form.region" placeholder="请选择用户权限">
+						<el-select v-model="form.level" placeholder="请选择用户权限">
 							<el-option label="一级用户" value="oneadmain"></el-option>
 							<el-option label="二级用户" value="twoadmain"></el-option>
 							<el-option label="三级用户" value="threeadmain"></el-option>
@@ -35,10 +35,8 @@
 		</el-form>
 
 		<el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" @selection-change="handleSelectionChange" border :header-cell-style="{background:'#f7f7f7',color:'#1f1f1f'}" style="width:100%">
-			 <el-table-column
-      type="selection"
-      width="55">
-    </el-table-column>
+			<el-table-column type="selection" width="55">
+			</el-table-column>
 			<el-table-column prop="id" label="ID" width="100" align="center"></el-table-column>
 			<el-table-column prop="name" label="用户名" width="100" align="center"></el-table-column>
 			<el-table-column prop="wxid" label="微信号" width="100" align="center"></el-table-column>
@@ -49,32 +47,19 @@
 			<el-table-column prop="admin" label="权限" width="110" align="center"></el-table-column>
 			<el-table-column prop="time" label="创建时间" width="150" align="center"></el-table-column>
 			<el-table-column prop="action" label="操作" width="200" align="center">
-				 <template slot-scope="scope">
-        <el-button
-          size="mini"
-          @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-        <el-button
-          size="mini"
-          type="danger"
-          @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-      </template>
+				<template slot-scope="scope">
+					<el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+					<el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+				</template>
 			</el-table-column>
 
 		</el-table>
-		
-					<div class="block">
-    <span class="demonstration"></span>
-    <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage4"
-      :page-sizes="[100, 200, 300, 400]"
-      :page-size="100"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="400">
-    </el-pagination>
-  </div>
-		
+
+		<div class="block">
+			<span class="demonstration"></span>
+			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+			</el-pagination>
+		</div>
 
 		<div class="zhezhao" v-show="addshow">
 			<div class="addedit">
@@ -124,22 +109,21 @@
 	export default {
 		data() {
 			return {
-				 multipleSelection: [],
+				multipleSelection: [],
 				addshow: false,
-				currentRow:null,
-				 currentPage1: 5,
-			        currentPage2: 5,
-			        currentPage3: 5,
-			        currentPage4: 4,
+				currentRow: null,
+				currentPage1: 5,
+				currentPage2: 5,
+				currentPage3: 5,
+				currentPage4: 4,
 				form: {
+					token: '',
 					name: '',
-					region: '',
-					date1: '',
-					date2: '',
-					delivery: false,
-					type: [],
-					resource: '',
-					desc: '',
+					uid: '',
+					wx_name: '',
+					mobile: '',
+					level: '',
+					p: ''
 				},
 				addform: {
 					id: '',
@@ -235,49 +219,60 @@
 				this.addshow = false;
 			},
 			submitForm(addform) {
+				this.$post('/Home/User/userList', this.addform).then((res) => {
+					console.log(res);
 
+				}).catch((err) => {
+
+				})
 				this.$refs.addform.validate((valid) => {
 					//this.$refs.addform.resetFields();
 					if(valid) {
 						this.addshow = false;
 						//JSON.stringfy(this.addform));
 						this.tableData.push(JSON.parse(JSON.stringify(this.addform)));
-						this.addform=JSON.parse(JSON.stringify(this.naddform));
+						this.addform = JSON.parse(JSON.stringify(this.naddform));
 					} else {
 						console.log('error submit!');
 						return false;
 					}
 				})
 			},
-			   toggleSelection(rows) {
-        if (rows) {
-          rows.forEach(row => {
-            this.$refs.multipleTable.toggleRowSelection(row);
-          });
-        } else {
-          this.$refs.multipleTable.clearSelection();
-        }
-      },
-      handleSelectionChange(val) {
-        this.multipleSelection = val;
-        console.log(val);
-      },
-       handleEdit(index, row) {
-        console.log(index, row);
-      },
-      handleDelete(index, row) {
-        console.log(index, row);
-      },
-       handleSizeChange(val) {
-        console.log(`每页 ${val} 条`);
-      },
-      handleCurrentChange(val) {
-        console.log(`当前页: ${val}`);
-      }
+			toggleSelection(rows) {
+				if(rows) {
+					rows.forEach(row => {
+						this.$refs.multipleTable.toggleRowSelection(row);
+					});
+				} else {
+					this.$refs.multipleTable.clearSelection();
+				}
+			},
+			handleSelectionChange(val) {
+				this.multipleSelection = val;
+				console.log(val);
+			},
+			handleEdit(index, row) {
+				console.log(index, row);
+			},
+			handleDelete(index, row) {
+				console.log(index, row);
+			},
+			handleSizeChange(val) {
+				console.log(`每页 ${val} 条`);
+			},
+			handleCurrentChange(val) {
+				console.log(`当前页: ${val}`);
+			},
+			formrequest(){
+				
+			}
 		},
 		mounted() {
 
 		},
+		created(){
+			this.formrequest();
+		}
 	}
 </script>
 
@@ -301,11 +296,12 @@
 	}
 </style>
 <style scoped="scoped" lang="scss">
-.block{
-	width: 100%;
-	text-align: center;
-	margin-top:50px;
-}
+	.block {
+		width: 100%;
+		text-align: center;
+		margin-top: 50px;
+	}
+	
 	.Templatecontain {
 		width: 100%;
 		height: 100%;

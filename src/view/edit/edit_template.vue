@@ -179,6 +179,11 @@
 							value: '选项3',
 							label: '三级选项',
 							disabled: true
+						},
+						{
+							value: '选项4',
+							label: '四级选项',
+							disabled: true
 						}
 					],
 					options4: [{

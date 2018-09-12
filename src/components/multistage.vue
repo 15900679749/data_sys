@@ -43,7 +43,7 @@
 									<el-row type="flex" >
 									<el-col :span="24">
 										<el-form-item label="选项级数：">
-											<el-select v-model="item.value" placeholder="请选择" >
+										<el-select v-model="item.value" placeholder="请选择" >
 											<el-option v-for="(option,index) in item.options3" :key="index" :value="option.value" :disabeld="option.disabled" :label="option.label">	
 											</el-option>
 										</el-select>
@@ -51,13 +51,13 @@
 									</el-col>
 								
 								</el-row>
-								<el-row type="flex" justify="space-between" class="cityoptions">
+								<el-row type="flex" justify="space-between" class="cityoptions" v-for="(option,index) in item.options3">
 									<el-col :span="6">
-										<p v-for="(option,index) in item.options3" v-if="index==0" :key="option.value">{{option.label}}</p>	
+										<p  :key="option.value">{{option.label}}</p>	
 										<el-button v-for="(option,index) in item.options2"  :key="index">{{option.label}}</el-button>
 										
 									</el-col>
-									<el-col :span="6">
+									<!--<el-col :span="6">
 										<p v-for="(option,index) in item.options3" v-if="index==1" :key="option.value">{{option.label}}</p>	
 										<el-button v-for="(option,index) in item.options4"  :key="index">{{option.label}}</el-button>
 									</el-col>
@@ -65,6 +65,10 @@
 										<p v-for="(option,index) in item.options3" v-if="index==2" :key="option.value">{{option.label}}</p>	
 										<el-button v-for="(option,index) in item.options5"  :key="index">{{option.label}}</el-button>
 									</el-col>
+									<el-col :span="6">
+										<p  v-if="index==3" :key="option.value">{{option.label}}</p>	
+										<el-button v-for="(option,index) in item.options5"  :key="index">{{option.label}}</el-button>
+									</el-col>-->
 								</el-row>
 							
 								

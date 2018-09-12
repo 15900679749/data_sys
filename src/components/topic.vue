@@ -19,7 +19,6 @@
 	import uploadimg from 'components/uploadimg.vue';
 	import loCation from 'components/loCation.vue';
 	import fractions from 'components/fractions.vue';
-	const checkOptions = ['篮球', '足球', '羽毛球', '乒乓球']
 	export default {
 		data() {
 			return {
