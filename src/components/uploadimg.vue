@@ -6,8 +6,8 @@
 				<el-row  justify="start">
 					
 					<el-col :span="6" v-for="(inx,index) in item.imageLength" :key="index">
-						<el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list='false' :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload"  :limit=1  >
-					<img :src="imageUrl" alt="" v-if="imageUrl" class="avatar"/>
+						<el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list='true' :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload"  :limit="item.imageLength"  >
+					<img :src="imageUrl[index]" alt="" v-if="imageUrl[index]" class="avatar"/>
 					<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 						</el-upload>	
 					</el-col>
@@ -66,7 +66,7 @@
 			return {
 				poSition: '',
 				cformlistFour: {},
-				 imageUrl: ''
+				 imageUrl: []
 			
 				
 			}
@@ -83,7 +83,9 @@
 			qindex: {
 				type: Number,
 				default: 0
-			}
+			},
+			
+			
 		},
 		methods: {
 			showedit(item) {
@@ -125,7 +127,12 @@
 				item.changeButton = !item.changeButton;
 			},
 			handleAvatarSuccess(res,file){
-				this.imageUrl=URL.createObjectURL(file.raw);
+//				this.imageUrl=URL.createObjectURL(file.raw)
+
+				
+				var imgurl=URL.createObjectURL(file.raw);
+			
+				this.imageUrl.push(imgurl);
 			},
 			beforeAvatarUpload(file){
 				const isJPG=file.type==='image/jpeg';
