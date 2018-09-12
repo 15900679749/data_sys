@@ -20,6 +20,7 @@
 </template>
 
 <script type="text/javascript">
+	import storage from 'javascripts/utils/storage';
 	export default {
 		data() {
 			return {
@@ -49,11 +50,10 @@
 		methods: {
 			loginin: function() {
 				this.$post('/Home/Login/login', this.loginForm).then((res) => {
-//					debugger
-//					console.log(JSON.parse(res));
-						this.$router.push({
-					path: '/uSer',
-				});
+					storage.set("token", res.token);
+					this.$router.push({
+						path: '/uSer'
+					});
 				}).catch((err) => {
 
 				})
@@ -93,7 +93,6 @@
 	}
 </style>
 <style scoped="scoped" lang="scss">
-	
 	/*.divCenter {
 		margin-left:50%;
 		transform: rotateX(-50%);

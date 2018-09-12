@@ -52,16 +52,13 @@ axios.interceptors.response.use(response => {
 			if(data.code == "500") {
 				return location.href = location.protocol + "//" + location.host + location.pathname + "#/login";
 			} else {
-				Message({
+				return Message({
 					showClose: true,
 					message: data.msg,
 					type: 'warning',
 					duration: 3000
 				});
-				return;
 			}
-		} else {
-			data.data.token && (storage.set("token", data.data.token))
 		}
 		return response;
 	},
@@ -91,7 +88,9 @@ export function post(url, data = {}) {
 	return new Promise((resolve, reject) => {
 		axios.post(cfig.root + url, data)
 			.then(response => {
-				resolve(response.data);
+				if(response.data) {
+					resolve(response.data.data);
+				}
 			}, err => {
 				reject(err);
 			});
@@ -104,7 +103,9 @@ export function get(url, data = {}) {
 				params: data
 			})
 			.then(response => {
-				resolve(response.data);
+				if(response.data) {
+					resolve(response.data.data);
+				}
 			}, err => {
 				reject(err)
 			});

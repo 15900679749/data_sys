@@ -280,7 +280,7 @@
 				let sendModel = this.searchInfo;
 				delete sendModel.pageTotal;
 				this.$post("/Home/User/userList", sendModel).then((res) => {
-					let resdata = res.data;
+					let resdata = res;
 					this.tableData = resdata.list;
 					this.searchInfo.pageTotal = Number(resdata.page.pageTotal);
 				});
