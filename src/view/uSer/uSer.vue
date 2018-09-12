@@ -1,25 +1,25 @@
 <template>
 	<div class="Templatecontain">
-		<el-form ref="form" :model="form" label-width="80px" class="usersearch">
+		<el-form label-width="80px" class="usersearch">
 			<el-row>
 				<el-form-item label="ID">
-					<el-input v-model="form.uid"></el-input>
+					<el-input v-model="searchInfo.id"></el-input>
 				</el-form-item>
 				<el-form-item label="用户名">
-					<el-input v-model="form.name"></el-input>
+					<el-input v-model="searchInfo.name"></el-input>
 				</el-form-item>
 				<el-form-item label="微信号">
-					<el-input v-model="form.wx_name"></el-input>
+					<el-input v-model="searchInfo.weixin"></el-input>
 				</el-form-item>
 			</el-row>
 			<el-row>
 				<el-col :span="16">
 
 					<el-form-item label="手机号">
-						<el-input v-model="form.mobile"></el-input>
+						<el-input v-model="searchInfo.iphone"></el-input>
 					</el-form-item>
 					<el-form-item label="权限">
-						<el-select v-model="form.level" placeholder="请选择用户权限">
+						<el-select v-model="searchInfo.region" placeholder="请选择用户权限">
 							<el-option label="一级用户" value="oneadmain"></el-option>
 							<el-option label="二级用户" value="twoadmain"></el-option>
 							<el-option label="三级用户" value="threeadmain"></el-option>
@@ -27,7 +27,7 @@
 					</el-form-item>
 				</el-col>
 				<el-col :span="8">
-					<el-button>查询</el-button>
+					<el-button @click="searchBtn">查询</el-button>
 					<el-button @click="adduser">新增</el-button>
 					<el-button @click="">删除</el-button>
 				</el-col>
@@ -57,7 +57,7 @@
 
 		<div class="block">
 			<span class="demonstration"></span>
-			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage4" :page-sizes="[100, 200, 300, 400]" :page-size="100" layout="total, sizes, prev, pager, next, jumper" :total="400">
+			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage1" :page-sizes="pageSizes" :page-size="searchInfo.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="searchInfo.pageTotal">
 			</el-pagination>
 		</div>
 
@@ -110,20 +110,28 @@
 		data() {
 			return {
 				multipleSelection: [],
+				pageSizes: [10, 20, 50, 100],
+				searchInfo: {
+					id: "",
+					name: "",
+					weixin: "",
+					iphone: "",
+					region: "",
+					pageIndex: 1,
+					pageSize: 10,
+					pageTotal: 45
+				},
 				addshow: false,
-				currentRow: null,
-				currentPage1: 5,
-				currentPage2: 5,
-				currentPage3: 5,
-				currentPage4: 4,
+				currentPage1: 1,
 				form: {
-					token: '',
 					name: '',
-					uid: '',
-					wx_name: '',
-					mobile: '',
-					level: '',
-					p: ''
+					region: '',
+					date1: '',
+					date2: '',
+					delivery: false,
+					type: [],
+					resource: '',
+					desc: '',
 				},
 				addform: {
 					id: '',
@@ -183,32 +191,19 @@
 					//          { required: true, message: '请填写活动形式', trigger: 'blur' }
 					//        ]
 				},
-				tableData: [{
-						id: '1',
-						photo: "路边的仙人掌",
-						wxid: '1',
-						wxname: '赵赵',
-						tel: '18900597456',
-						sex: '男',
-						address: '上海市虹口区虹口龙之梦38A',
-						admin: '',
-						time: '',
-						action: ''
-					},
-					{
-						id: '2',
-						photo: "路边的仙人掌",
-						wxid: '1',
-						wxname: '赵赵',
-						tel: '18900597456',
-						sex: '男',
-						address: '上海市虹口区虹口龙之梦38A',
-						admin: '',
-						time: '',
-						action: ''
-
-					}
-				]
+				optionItem: {
+					id: 0,
+					photo: "路边的仙人掌",
+					wxid: '1',
+					wxname: '赵赵',
+					tel: '18900597456',
+					sex: '男',
+					address: '上海市虹口区虹口龙之梦38A',
+					admin: '',
+					time: '',
+					action: ''
+				},
+				tableData: []
 			}
 		},
 		methods: {
@@ -219,12 +214,7 @@
 				this.addshow = false;
 			},
 			submitForm(addform) {
-				this.$post('/Home/User/userList', this.addform).then((res) => {
-					console.log(res);
 
-				}).catch((err) => {
-
-				})
 				this.$refs.addform.validate((valid) => {
 					//this.$refs.addform.resetFields();
 					if(valid) {
@@ -255,23 +245,52 @@
 				console.log(index, row);
 			},
 			handleDelete(index, row) {
-				console.log(index, row);
+				this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+
+					this.tableData.splice(index, 1);
+
+					this.$message({
+						type: 'success',
+						message: '删除成功!'
+					});
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消删除'
+					});
+				})
 			},
 			handleSizeChange(val) {
-				console.log(`每页 ${val} 条`);
+				this.searchInfo.pageSize = val;
+				this.searchBtn();
+			},
+			searchBtn() {
+				let ls = this.getList();
+				this.tableData = ls;
 			},
 			handleCurrentChange(val) {
-				console.log(`当前页: ${val}`);
+				this.searchInfo.pageIndex = val;
+				this.searchBtn();
 			},
-			formrequest(){
-				
+			getList() {
+				let resobj = [];
+				for(let i = (this.searchInfo.pageIndex - 1) * this.searchInfo.pageSize; i < this.searchInfo.pageIndex * this.searchInfo.pageSize && i < this.searchInfo.pageTotal; i++) {
+					let nobj = JSON.parse(JSON.stringify(this.optionItem));
+					nobj.id = i;
+					resobj.push(nobj);
+				}
+				return resobj;
 			}
 		},
 		mounted() {
 
 		},
-		created(){
-			this.formrequest();
+		created() {
+			this.searchBtn();
 		}
 	}
 </script>
