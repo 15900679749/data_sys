@@ -48,7 +48,7 @@
 									<template v-if="qitem.qtype=='multiple'">
 										<multiple :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></multiple>
 									</template>
-									<!--<template v-if="qitem.qtype=='multistage'">
+									<template v-if="qitem.qtype=='multistage'">
 										<multistage :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></multistage>
 									</template>
 									<template v-if="qitem.qtype=='loCation'">
@@ -59,7 +59,7 @@
 									</template>
 									<template v-if="qitem.qtype=='fractions'">
 										<fractions :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></fractions>
-									</template>									-->
+									</template>								
 								</div>
 							</el-collapse-item>
 						</div>
@@ -81,6 +81,7 @@
 	import uploadimg from 'components/uploadimg.vue';
 	import loCation from 'components/loCation.vue';
 	import fractions from 'components/fractions.vue';
+	import { Message } from "element-ui";
 	export default {
 		data() {
 			return {
@@ -207,6 +208,7 @@
 				this.list[index].qlist.push({
 					qtitle: ix,
 					qtype: "uploadimg",
+					namevalue: '标题',
 					must: false,
 					show: true,
 					edittextinput: true,
@@ -214,7 +216,8 @@
 					options: [{
 						imagescr: '',
 					}],
-					imageLength: 1
+					imageLength: 1,
+					imageUrl:''
 				})
 			},
 			addloCation(index) {
