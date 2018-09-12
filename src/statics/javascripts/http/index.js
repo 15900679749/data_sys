@@ -23,7 +23,13 @@ axios.defaults.timeout = cfig.timeout;
 //请求拦截 统一处理 
 axios.interceptors.request.use(config => {
 		loading = Loading.service(loption);
-		config.headers["token"] = storage.get("token") || "";
+		//config.headers["token"] = storage.get("token") || "";
+		if(!config.data.hasOwnProperty("token") && !config.url.endsWith("Home/Login/login")) {
+			config.data = {
+				token: storage.get("token") || "",
+				...config.data
+			}
+		}
 		if(config.method == "get") {
 			config.data = {
 				_t: Date.parse(new Date()) / 1000,
@@ -42,7 +48,7 @@ axios.interceptors.response.use(response => {
 		loading && loading.close();
 		let data = response.data;
 		Message.closeAll();
-		if(data.code != "400") {
+		if(data.code != "200") {
 			if(data.code == "500") {
 				return location.href = location.protocol + "//" + location.host + location.pathname + "#/login";
 			} else {
@@ -52,9 +58,10 @@ axios.interceptors.response.use(response => {
 					type: 'warning',
 					duration: 3000
 				});
+				return;
 			}
 		} else {
-			data.token && (storage.set("token", data.token))
+			data.data.token && (storage.set("token", data.data.token))
 		}
 		return response;
 	},

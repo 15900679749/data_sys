@@ -3,23 +3,23 @@
 		<el-form label-width="80px" class="usersearch">
 			<el-row>
 				<el-form-item label="ID">
-					<el-input v-model="searchInfo.id"></el-input>
+					<el-input v-model="searchInfo.uid"></el-input>
 				</el-form-item>
 				<el-form-item label="用户名">
 					<el-input v-model="searchInfo.name"></el-input>
 				</el-form-item>
 				<el-form-item label="微信号">
-					<el-input v-model="searchInfo.weixin"></el-input>
+					<el-input v-model="searchInfo.wx_name"></el-input>
 				</el-form-item>
 			</el-row>
 			<el-row>
 				<el-col :span="16">
 
 					<el-form-item label="手机号">
-						<el-input v-model="searchInfo.iphone"></el-input>
+						<el-input v-model="searchInfo.mobile"></el-input>
 					</el-form-item>
 					<el-form-item label="权限">
-						<el-select v-model="searchInfo.region" placeholder="请选择用户权限">
+						<el-select v-model="searchInfo.level" placeholder="请选择用户权限">
 							<el-option label="一级用户" value="oneadmain"></el-option>
 							<el-option label="二级用户" value="twoadmain"></el-option>
 							<el-option label="三级用户" value="threeadmain"></el-option>
@@ -112,14 +112,14 @@
 				multipleSelection: [],
 				pageSizes: [10, 20, 50, 100],
 				searchInfo: {
-					id: "",
+					uid: "",
 					name: "",
-					weixin: "",
-					iphone: "",
-					region: "",
+					wx_name: "",
+					mobile: "",
+					level: "",
 					pageIndex: 1,
 					pageSize: 10,
-					pageTotal: 45
+					pageTotal: 0
 				},
 				addshow: false,
 				currentPage1: 1,
@@ -266,31 +266,31 @@
 			},
 			handleSizeChange(val) {
 				this.searchInfo.pageSize = val;
-				this.searchBtn();
+				this.getList();
 			},
 			searchBtn() {
-				let ls = this.getList();
-				this.tableData = ls;
+				this.getList();
 			},
 			handleCurrentChange(val) {
 				this.searchInfo.pageIndex = val;
-				this.searchBtn();
+				this.getList();
 			},
 			getList() {
 				let resobj = [];
-				for(let i = (this.searchInfo.pageIndex - 1) * this.searchInfo.pageSize; i < this.searchInfo.pageIndex * this.searchInfo.pageSize && i < this.searchInfo.pageTotal; i++) {
-					let nobj = JSON.parse(JSON.stringify(this.optionItem));
-					nobj.id = i;
-					resobj.push(nobj);
-				}
-				return resobj;
+				let sendModel = this.searchInfo;
+				delete sendModel.pageTotal;
+				this.$post("/Home/User/userList", sendModel).then((res) => {
+					let resdata = res.data;
+					this.tableData = resdata.list;
+					this.searchInfo.pageTotal = Number(resdata.page.pageTotal);
+				});
 			}
 		},
 		mounted() {
 
 		},
 		created() {
-			this.searchBtn();
+			this.getList();
 		}
 	}
 </script>
