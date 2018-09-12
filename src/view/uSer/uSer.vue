@@ -19,9 +19,10 @@
 						<el-input v-model="form.name"></el-input>
 					</el-form-item>
 					<el-form-item label="权限">
-						<el-select v-model="form.region" placeholder="请选择活动区域">
-							<el-option label="区域一" value="shanghai"></el-option>
-							<el-option label="区域二" value="beijing"></el-option>
+						<el-select v-model="form.region" placeholder="请选择用户权限">
+							<el-option label="一级用户" value="oneadmain"></el-option>
+							<el-option label="二级用户" value="twoadmain"></el-option>
+							<el-option label="三级用户" value="threeadmain"></el-option>
 						</el-select>
 					</el-form-item>
 				</el-col>
@@ -43,11 +44,10 @@
 			<el-table-column prop="wxid" label="微信号" width="100" align="center"></el-table-column>
 			<el-table-column prop="photo" label="微信头像" width="150" align="center"></el-table-column>
 			<el-table-column prop="wxname" label="微信昵称" width="150" align="center"></el-table-column>
-			<el-table-column prop="name" label="姓名" width="100" align="center"></el-table-column>
 			<el-table-column prop="tel" label="手机号" width="150" align="center"></el-table-column>
-			<el-table-column prop="address" label="地址" width="300" align="center"></el-table-column>
+			<el-table-column prop="address" label="地址" width="250" align="center"></el-table-column>
 			<el-table-column prop="admin" label="权限" width="110" align="center"></el-table-column>
-			<el-table-column prop="time" label="创建时间" width="100" align="center"></el-table-column>
+			<el-table-column prop="time" label="创建时间" width="150" align="center"></el-table-column>
 			<el-table-column prop="action" label="操作" width="200" align="center">
 				 <template slot-scope="scope">
         <el-button
@@ -82,9 +82,10 @@
 				<el-form ref="addform" :model="addform" label-width="80px" class="useradd" :rules="rules">
 					<el-form-item label="权限" prop="region">
 						<i class="itemmust">*</i>
-						<el-select v-model="addform.region" placeholder="请选择活动区域">
-							<el-option label="区域一" value="shanghai"></el-option>
-							<el-option label="区域二" value="beijing"></el-option>
+						<el-select v-model="addform.region" placeholder="请选择用户权限">
+							<el-option label="一级用户" value="oneadmain"></el-option>
+							<el-option label="二级用户" value="twoadmain"></el-option>
+							<el-option label="三级用户" value="threeadmain"></el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="用户名" prop="name">
@@ -201,7 +202,6 @@
 				tableData: [{
 						id: '1',
 						photo: "路边的仙人掌",
-						name: '赵敏',
 						wxid: '1',
 						wxname: '赵赵',
 						tel: '18900597456',
@@ -214,7 +214,6 @@
 					{
 						id: '2',
 						photo: "路边的仙人掌",
-						name: '赵敏',
 						wxid: '1',
 						wxname: '赵赵',
 						tel: '18900597456',

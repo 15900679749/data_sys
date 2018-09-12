@@ -4,9 +4,8 @@
 			<el-form-item :label="(qindex+1)+'、'+item.namevalue" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
 				<i v-if="item.must" v-text="'*'" class="itemmust"></i>
 				<el-checkbox-group v-model="checkedGroup" @change="handleChecked">
-					<el-checkbox v-for="(checkoption,index) in GroupList" :label="checkoption" :key="index">{{checkoption}}</el-checkbox>
+					<el-checkbox v-for="(checkoption,index) in item.domains" :label="checkoption" :key="index">{{checkoption.value}}</el-checkbox>
 				</el-checkbox-group>
-
 				<div v-show="item.show" class="transition-box">
 					<span @click="showedit(item)">编辑</span>
 					<span @click.prevent="removeDomain(index,qindex)">删除</span>
@@ -28,21 +27,25 @@
 									<el-col :span="19">选项编辑:</el-col>
 									<el-col :span="5" style="text-align: center;">操作</el-col>
 								</el-row>
-							<!--	<el-form-item v-for="(domain, index) in item.domains" :label="'域名' + index" :key="domain.key" :prop="'domains.' + index + '.value'" :rules="{required: true, message: '域名不能为空', trigger: 'blur'}">-->
-									<el-form-item v-for="(domain, index) in item.domains" :rules="{required: true, message: '域名不能为空', trigger: 'blur'}" :key="index">
+								<!--	<el-form-item v-for="(domain, index) in item.domains" :label="'域名' + index" :key="domain.key" :prop="'domains.' + index + '.value'" :rules="{required: true, message: '域名不能为空', trigger: 'blur'}">-->
+								<el-form-item v-for="(domain, dindex) in item.domains" :rules="{required: true, message: '域名不能为空', trigger: 'blur'}" :key="dindex">
 									<el-row>
 										<el-col :span="19">
-											<el-input v-model="item.radioinput1"></el-input>
+											<el-input v-model="domain.value"></el-input>
 										</el-col>
 										<el-col :span="5" class="iconplus">
-											<i class="el-icon-circle-plus-outline"></i><i class="el-icon-remove-outline"></i><i class="el-icon-back"></i><i class="el-icon-back backright"></i>
+											<i class="el-icon-circle-plus-outline" @click="addDomain"></i>
+											<i class="el-icon-remove-outline" @click="removeDomainitem(index,qindex,dindex)"></i>
+											<i :class="{radioDisable:(dindex+1)==item.domains.length}" class="el-icon-back" @click="domainSortdown(index,qindex,dindex,'down')"></i>
+											<i :class="{radioDisable:dindex==0}" class="el-icon-back backright" @click="domainSortdown(index,qindex,dindex,'up')" disabled='true'></i>
+
 										</el-col>
 									</el-row>
 								</el-form-item>
 								<div class="btngroup">
-									<el-button @click="addDomain()" type="primary" plain>+新增选项</el-button>
-									<el-button @click="addDomain()" type="primary" plain>+关联逻辑</el-button>
-									<el-button @click="addDomain()" type="primary" plain>+跳转逻辑</el-button>
+									<el-button @click="addDomain" type="primary" plain>+新增选项</el-button>
+									<el-button @click="addDomain" type="primary" plain>+关联逻辑</el-button>
+									<el-button @click="jump()" type="primary" plain>+跳转逻辑</el-button>
 								</div>
 							</div>
 							<p class="tips">注：关联逻辑与跳转逻辑只能设置其中一项</p>
@@ -59,19 +62,14 @@
 
 <script>
 	import headTop from 'view/head/headTop.vue';
-	const checkOptions=['篮球','足球','羽毛球','乒乓球']
 	export default {
 		data() {
 			return {
-				poSition: '',
-				cformlistTwo:{},
-				checkedGroup:['篮球','足球'],
-				GroupList:checkOptions,
-				
-				
+				checkedGroup: ['篮球', '足球'],
+				GroupList: ['篮球', '足球', '羽毛球', '乒乓球']
 			}
 		},
-			props: {
+		props: {
 			item: {
 				type: Object,
 				default: {}
@@ -99,8 +97,11 @@
 				item.edittextinput = !item.edittextinput;
 				item.show = !item.show;
 			},
-				removeDomain() {
-				this.$emit("removeDomain", this.index, this.qindex);
+			removeDomainitem(index, qindex, dindex) {
+				this.$emit("removeDomainitem", index, qindex, dindex);
+			},
+			domainSortdown: function(index, qindex, dindex, type) {
+				!event.target.classList.contains("radioDisable") && this.$emit("domainSortdown", index, qindex, dindex, type)
 			},
 			command(callback, vc) {
 				debugger
@@ -114,24 +115,18 @@
 					}
 				}
 			},
-			addDomain() { //这个相当于是item就是formlistOne的每一项
-				//debugger
-				this.cformlistTwo[0].domains.push({"value":""})
-				//				this.formlistOne.domain.domains.push({我不动了
-				//					value: ''
-				//				});
+			addDomain() {
+				this.$emit("addDomain", this.index, this.qindex);
 			},
 			changeposition(item) {
 				item.changeButton = !item.changeButton;
 			},
-			handleChecked(value){
-				let checkedCount=value.length;
-				
+			handleChecked(value) {
+				let checkedCount = value.length;
+
 			}
 		},
-		created(){
-			this.cformlistTwo=this.formlistTwo;
-		},
+		created() {},
 		components: {
 			headTop
 		}
@@ -150,19 +145,21 @@
 	.el-form-item .el-input.inputposition {
 		margin-left: 0;
 	}
-	.singleedit .el-radio__input.is-checked+.el-radio__label{
-			display: none;
-		}
-	.singleedit	.el-radio__label{
-			display: none;
-		}
-		.singleinputcontent .el-input__inner{
-		height:34px;
+	
+	.singleedit .el-radio__input.is-checked+.el-radio__label {
+		display: none;
+	}
+	
+	.singleedit .el-radio__label {
+		display: none;
+	}
+	
+	.singleinputcontent .el-input__inner {
+		height: 34px;
 		line-height: 34px;
 	}
 </style>
 <style scoped="scoped" lang="scss">
-	
 	.el-input {
 		width: 30%;
 		margin-left: 76px;
@@ -247,11 +244,15 @@
 			margin: 0;
 			padding: 0;
 		}
-		
 	}
 	
 	.changeposition .el-button {
 		border: none;
+	}
+	
+	.radioDisable {
+		color: #D9D9D9;
+		border-color: #D9D9D9 !important;
 	}
 	
 	.changeposition>div>span {
@@ -263,71 +264,67 @@
 		margin-left: 0;
 	}
 	
-	.singleinputcontent p{
-			width:70%;
-			padding-left:5px;
-		    color:red;
-		    background: rgb(242,242,242);
-		    margin-top:20px;
-		}
-	.singleinputcontent .el-input{
-		margin-left:0;
+	.singleinputcontent p {
+		width: 70%;
+		padding-left: 5px;
+		color: red;
+		background: rgb(242, 242, 242);
+		margin-top: 20px;
 	}
-	.singleedit .el-row{
+	
+	.singleinputcontent .el-input {
+		margin-left: 0;
+	}
+	
+	.singleedit .el-row {
 		margin-bottom: 10px;
-		>.el-col{
+		>.el-col {
 			text-align: center;
-			&:nth-of-type(1){
+			&:nth-of-type(1) {
 				text-align: left;
 			}
 		}
 	}
 	
-	.singleedit{
-		.iconplus{
+	.singleedit {
+		.iconplus {
 			display: flex;
 			align-items: center;
-			    justify-content: center;
-			    height:40px;
+			justify-content: center;
+			height: 40px;
 		}
-		i{
-			font-size:24px;
-			    align-items: center;
-			    margin-right:5px;
+		i {
+			font-size: 24px;
+			align-items: center;
+			margin-right: 5px;
 		}
-		.el-radio{
-		color:rgba(255,255,255,0);
-		border:none;
+		.el-radio {
+			color: rgba(255, 255, 255, 0);
+			border: none;
 		}
-		.el-input{
-			width:60%;
+		.el-input {
+			width: 60%;
 		}
-		.el-icon-back{
+		.el-icon-back {
 			display: flex;
-			  transform: rotate(-90deg);
-		    border: 1px solid #303133;
-		    border-radius: 50%;
-		    font-weight: bold;
-		    padding: 2px;
-		        height: 15px;
-    width: 15px;
-    font-size: 14px;
+			transform: rotate(-90deg);
+			border: 1px solid #303133;
+			border-radius: 50%;
+			font-weight: bold;
+			padding: 2px;
+			height: 15px;
+			width: 15px;
+			font-size: 14px;
 		}
-			.backright{
-			  transform: rotate(90deg);
-		   
+		.backright {
+			transform: rotate(90deg);
 		}
-		.btngroup{
+		.btngroup {
 			display: flex;
 			justify-content: space-between;
-		.el-button{
-			width:25%;
-			
-		}	
+			.el-button {
+				width: 25%;
+			}
 		}
-		
-		
-	} 
-	
-		
+	}
 </style>

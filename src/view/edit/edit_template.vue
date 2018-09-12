@@ -22,7 +22,7 @@
 								<span class="el-dropdown-link">
 						        	<i class="new"></i> 新建题目
 						        </span>
-								<el-dropdown-menu slot="dropdown">
+								<el-dropdown-menu slot="dropdown" class="topicdropdown">
 									<el-dropdown-item @click.native="addItem(index,'fill')">填空题</el-dropdown-item>
 									<el-dropdown-item @click.native="addItem(index,'single')">选择题</el-dropdown-item>
 									<el-dropdown-item @click.native="addItem(index,'multiple')">多选题</el-dropdown-item>
@@ -48,7 +48,7 @@
 									<template v-if="qitem.qtype=='multiple'">
 										<multiple :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></multiple>
 									</template>
-									<template v-if="qitem.qtype=='multistage'">
+									<!--<template v-if="qitem.qtype=='multistage'">
 										<multistage :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></multistage>
 									</template>
 									<template v-if="qitem.qtype=='loCation'">
@@ -59,7 +59,7 @@
 									</template>
 									<template v-if="qitem.qtype=='fractions'">
 										<fractions :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></fractions>
-									</template>									
+									</template>									-->
 								</div>
 							</el-collapse-item>
 						</div>
@@ -112,9 +112,6 @@
 			},
 			addsingle(index) {
 				let ix = this.list[index].qlist.length + 1;
-
-				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
-
 				this.list[index].qlist.push({
 					qtitle: ix,
 					qtype: "single",
@@ -132,8 +129,6 @@
 			},
 			addmultiple(index) {
 				let ix = this.list[index].qlist.length + 1;
-
-				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
 					qtitle: ix,
 					qtype: "multiple",
@@ -142,7 +137,6 @@
 					show: true,
 					edittextinput: true,
 					changeButton: false,
-					radioinput1: "",
 					domains: [{
 						value: '选项',
 						sort: 1
@@ -150,9 +144,9 @@
 					checkedGroup: ['篮球', '足球'],
 					GroupList: ''
 				});
-				
+
 			},
-			addmultistage(index){
+			addmultistage(index) {
 				let ix = this.list[index].qlist.length + 1;
 
 				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
@@ -203,18 +197,17 @@
 						disabled: true
 					}],
 					value2: ''
-				
-				
+
 				})
 			},
-			adduploadimg(index){
+			adduploadimg(index) {
 				let ix = this.list[index].qlist.length + 1;
 
 				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
 					qtitle: ix,
 					qtype: "uploadimg",
-						must: false,
+					must: false,
 					show: true,
 					edittextinput: true,
 					changeButton: false,
@@ -224,21 +217,21 @@
 					imageLength: 1
 				})
 			},
-			addloCation(index){
+			addloCation(index) {
 				let ix = this.list[index].qlist.length + 1;
 
 				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
 					qtitle: ix,
 					qtype: "loCation",
-				must: false,
+					must: false,
 					namevalue: '标题',
 					show: true,
 					edittextinput: true,
 					changeButton: false,
 				})
 			},
-			addfractions(index){
+			addfractions(index) {
 				let ix = this.list[index].qlist.length + 1;
 
 				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
@@ -270,22 +263,22 @@
 							this.addmultiple(index);
 						}
 						break;
-						case "multistage":
+					case "multistage":
 						{
 							this.addmultistage(index);
 						}
 						break;
-						case "uploadimg":
+					case "uploadimg":
 						{
 							this.adduploadimg(index);
 						}
 						break;
-						case "loCation":
+					case "loCation":
 						{
 							this.addloCation(index);
 						}
-						break;	
-						case "fractions":
+						break;
+					case "fractions":
 						{
 							this.addfractions(index);
 						}
@@ -293,14 +286,15 @@
 					default:
 						break;
 				}
-				this.activeNames.indexOf(index)==-1 && this.activeNames.push(index)
+				this.activeNames.indexOf(index) == -1 && this.activeNames.push(index)
 			},
 			addDomain(index, qindex) {
 				let sort = this.list[index].qlist[qindex].domains.length + 1;
-				this.list[index].qlist[qindex].domains.push({
+				let options = {
 					"value": "",
 					"sort": sort
-				});
+				}
+				this.list[index].qlist[qindex].domains.push(options);
 			},
 			changeDomainRadio(index, qindex, v) {
 				this.list[index].qlist[qindex].domack = v;
@@ -322,9 +316,7 @@
 				var sortId = sdomainItem.sort; //排序
 				if(type == "up") {
 					if(sortId != 1) {
-						let uitem = sortList.filter(function(item) {
-							return item.sort == (sortId - 1)
-						})[0];
+						let uitem = this.list[index].qlist[qindex].domains[dindex - 1];
 						let iuitem = this.list[index].qlist[qindex].domains.indexOf(uitem);
 						let usort = uitem.sort;
 						uitem.sort = sortId;
@@ -334,9 +326,7 @@
 					}
 				} else {
 					if(sortId != sortList.length) {
-						let uitem = sortList.filter(function(item) {
-							return item.sort == (sortId + 1)
-						})[0];
+						let uitem = this.list[index].qlist[qindex].domains[dindex + 1];
 						let iuitem = this.list[index].qlist[qindex].domains.indexOf(uitem);
 						let usort = uitem.sort;
 						uitem.sort = sortId;
@@ -418,8 +408,12 @@
 		border-top: 1px solid #ebeef5;
 	}
 	
-	.el-popper[x-placement^=bottom] .popper__arrow::after {
+	.topicdropdown.el-popper[x-placement^=bottom] .popper__arrow::after {
 		border-bottom-color: #005ad4;
+	}
+	
+	.topicdropdown.el-popper[x-placement^=top] .popper__arrow::after {
+		border-top-color: #005ad4;
 	}
 	
 	.questiontitle .el-input__inner {
@@ -449,12 +443,13 @@
 		box-sizing: border-box;
 	}
 	
-	.edit_tempbg{
+	.edit_tempbg {
 		background-color: #f3f3f3;
 	}
+	
 	.top {
 		padding: 29px 0;
-		background-color:#fff ;
+		background-color: #fff;
 		>.el-col {
 			display: flex;
 			justify-content: center;
