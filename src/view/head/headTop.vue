@@ -9,19 +9,20 @@
 					<el-menu-item index="analysis">我的问卷</el-menu-item>
 				</el-menu>
 			</el-col>
-			<el-col :span="6" class="headtopRight">
-				<el-col :span="18">
+			<el-col :span="4" class="headtopRight">
+				<el-col :span="15">
 					<img :src="baseImgPath" alt="" class="avator" />
-					<el-dropdown menu-align='end' trigger="click" size="medium">
-						<span class="el-dropdown-link" role="button">{{avtar}}<i class="el-icon-arrow-down el-icon--right"></i></span>
+					<span role="button">{{name}}</span>
+					<!--<el-dropdown menu-align='end' trigger="click" size="medium">
+						<span class="el-dropdown-link" role="button">{{name}}<i class="el-icon-arrow-down el-icon--right"></i></span>
 						<el-dropdown-menu slot="dropdown">
 							<el-dropdown-item command="">修改信息</el-dropdown-item>
 							<el-dropdown-item command="">修改密码</el-dropdown-item>
 							<el-dropdown-item command="">退出</el-dropdown-item>
 						</el-dropdown-menu>
-					</el-dropdown>
+					</el-dropdown>-->
 				</el-col>
-				<el-col class="exit" :span="4">退出</el-col>
+				<el-col class="exit" :span="4" @click.native="exit">退出</el-col>
 			</el-col>
 		</el-row>
 		<!--<el-col :span="24" style="width:100%;overflow: auto;">-->
@@ -33,21 +34,42 @@
 </template>
 
 <script type="text/javascript">
-	//	import {signout} from '@/api/getData'
+	import storage from 'javascripts/utils/storage';
 	export default {
 		data() {
 			return {
 				d: "abc",
 				baseImgPath: "../../src/statics/images/photoicon.png",
-				avtar: '上海申华有限科技公司',
+				name: '',
 				key: ''
 			}
 		},
 		methods: {
 			handleSelect(key, keyPath) {
-				sessionStorage.setItem("MenuActive",key);
-//				this.$store.commit("saveMenuActive", key);
+				sessionStorage.setItem("MenuActive", key);
+				//				this.$store.commit("saveMenuActive", key);
 			},
+			getname() {
+				if(storage.getObject("user").name){
+					this.name = storage.getObject("user").name
+				}
+				
+			},
+			exit() {
+				this.$post("/Home/Login/loginOut", {
+					token: storage.get("token")
+				}).then((res) => {
+					//					this.$message({
+					//						type: 'success',
+					//						message: '成功退出登录'
+					//					});
+					storage.remove("token");
+					storage.remove("user");
+					
+						this.$router.replace({ path: '/login' })
+					
+				})
+			}
 		},
 		mounted() {},
 		computed: {
@@ -56,12 +78,18 @@
 				//return this.$store.getters.guserInfo;
 				//return this.$store.state.menuActive;
 			}
+		},
+		created() {
+			this.getname();
 		}
 	}
 </script>
 
 <style scoped="scoped" lang="scss">
-
+	.avator {
+		margin-right: 20px;
+	}
+	
 	.hdiv {
 		font-size: 20px;
 	}

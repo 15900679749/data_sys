@@ -51,7 +51,7 @@
 									</el-col>
 								
 								</el-row>
-								<el-row type="flex" justify="space-between" class="cityoptions" v-for="(option,index) in item.options3">
+								<el-row type="flex" justify="space-between" class="cityoptions" v-for="(option,index) in item.options3" :key="index">
 									<el-col :span="6">
 										<p  :key="option.value">{{option.label}}</p>	
 										<el-button v-for="(option,index) in item.options2"  :key="index">{{option.label}}</el-button>

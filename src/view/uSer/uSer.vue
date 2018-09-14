@@ -29,27 +29,28 @@
 				<el-col :span="8">
 					<el-button @click="searchBtn">查询</el-button>
 					<el-button @click="adduser">新增</el-button>
-					<el-button @click="">删除</el-button>
+					<el-button @click="handleDelete" data-type="deletlist">删除</el-button>
 				</el-col>
 			</el-row>
 		</el-form>
 
 		<el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" @selection-change="handleSelectionChange" border :header-cell-style="{background:'#f7f7f7',color:'#1f1f1f'}" style="width:100%">
-			<el-table-column type="selection" width="55">
+			<el-table-column type="selection" width="35">
 			</el-table-column>
-			<el-table-column prop="id" label="ID" width="100" align="center"></el-table-column>
+			<el-table-column prop="uid" label="ID" width="90" align="center"></el-table-column>
 			<el-table-column prop="name" label="用户名" width="100" align="center"></el-table-column>
-			<el-table-column prop="wxid" label="微信号" width="100" align="center"></el-table-column>
-			<el-table-column prop="photo" label="微信头像" width="150" align="center"></el-table-column>
-			<el-table-column prop="wxname" label="微信昵称" width="150" align="center"></el-table-column>
-			<el-table-column prop="tel" label="手机号" width="150" align="center"></el-table-column>
-			<el-table-column prop="address" label="地址" width="250" align="center"></el-table-column>
-			<el-table-column prop="admin" label="权限" width="110" align="center"></el-table-column>
-			<el-table-column prop="time" label="创建时间" width="150" align="center"></el-table-column>
-			<el-table-column prop="action" label="操作" width="200" align="center">
+			<el-table-column prop="wx_name" label="微信号" width="100" align="center"></el-table-column>
+			<el-table-column prop="wx_url" label="微信头像" width="80" align="center"></el-table-column>
+			<el-table-column prop="wx_nickname" label="微信昵称" width="83" align="center"></el-table-column>
+			<el-table-column prop="mobile" label="手机号" width="110" align="center"></el-table-column>
+			<el-table-column prop="addr" label="地址" width="150" align="center"></el-table-column>
+			<el-table-column prop="level" label="权限" width="80" align="center"></el-table-column>
+			<el-table-column prop="create_at" label="创建时间" width="100" align="center"></el-table-column>
+			<el-table-column prop="action" label="操作" width="150" align="center">
 				<template slot-scope="scope">
-					<el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-					<el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+					<!--<el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>-->
+					<el-button size="mini" @click="editUser(scope.$index, scope.row)">编辑</el-button>
+					<el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)" data-type="deletone">删除</el-button>
 				</template>
 			</el-table-column>
 
@@ -65,38 +66,36 @@
 			<div class="addedit">
 				<h6>用户：新增/编辑</h6>
 				<el-form ref="addform" :model="addform" label-width="80px" class="useradd" :rules="rules">
-					<el-form-item label="权限" prop="region">
-						<i class="itemmust">*</i>
-						<el-select v-model="addform.region" placeholder="请选择用户权限">
+					<el-form-item label="权限" prop="level">
+
+						<el-select v-model="addform.level" placeholder="请选择用户权限">
 							<el-option label="一级用户" value="oneadmain"></el-option>
 							<el-option label="二级用户" value="twoadmain"></el-option>
 							<el-option label="三级用户" value="threeadmain"></el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="用户名" prop="name">
-						<i class="itemmust">*</i>
+
 						<el-input v-model="addform.name"></el-input>
 					</el-form-item>
 					<el-form-item label="密码" prop="password">
-						<i class="itemmust">*</i>
-						<el-input v-model="addform.password"></el-input>
-					</el-form-item>
-					<el-form-item label="手机号" prop="tel">
-						<i class="itemmust">*</i>
-						<el-input v-model="addform.tel"></el-input>
-					</el-form-item>
-					<el-form-item label="微信号" prop="wxid">
-						<i class="itemmust">*</i>
-						<el-input v-model="addform.wxid"></el-input>
-					</el-form-item>
-					<el-form-item label="地址" prop="address">
 
-						<el-input v-model="addform.address"></el-input>
+						<el-input v-model="addform.password" type="password"></el-input>
+					</el-form-item>
+					<el-form-item label="手机号" prop="mobile">
+
+						<el-input v-model="addform.mobile"></el-input>
+					</el-form-item>
+					<el-form-item label="微信号" prop="wx_name">
+
+						<el-input v-model="addform.wx_name"></el-input>
+					</el-form-item>
+					<el-form-item label="地址" prop="addr">
+						<el-input v-model="addform.addr"></el-input>
 					</el-form-item>
 					<el-form-item>
 						<el-button @click="cancleadd">取消</el-button>
 						<el-button type="primary" @click="submitForm('addform')">确定</el-button>
-
 					</el-form-item>
 				</el-form>
 
@@ -111,6 +110,9 @@
 			return {
 				multipleSelection: [],
 				pageSizes: [10, 20, 50, 100],
+				deleteList:[],
+				idList:[],
+				tag:'',
 				searchInfo: {
 					uid: "",
 					name: "",
@@ -124,6 +126,7 @@
 				addshow: false,
 				currentPage1: 1,
 				form: {
+					id: '',
 					name: '',
 					region: '',
 					date1: '',
@@ -134,81 +137,61 @@
 					desc: '',
 				},
 				addform: {
-					id: '',
-					photo: "",
-					name: '',
-					wxid: '',
-					wxname: '',
-					tel: '',
-					sex: '',
-					address: '',
-					admin: '',
-					time: '',
-					action: ''
-				},
-				naddform: {
-					id: '',
-					photo: "",
-					name: '',
-					wxid: '',
-					wxname: '',
-					tel: '',
-					sex: '',
-					address: '',
-					admin: '',
-					time: '',
-					action: ''
+					id: "",
+					name: "",
+					password: '',
+					wx_name: '',
+					mobile: '',
+					level: '',
+					addr: ''
 				},
 				rules: {
 					name: [{
 							required: true,
-							message: '请输入活动名称',
+							message: '请输入用户名',
 							trigger: 'blur'
 						},
-						{
-							min: 3,
-							max: 5,
-							message: '长度在 3 到 5 个字符',
-							trigger: 'blur'
-						}
+						//					{min: 3,max: 5,message: '长度在 3 到 5 个字符',trigger: 'blur'}
 					],
-					//        region: [
-					//          { required: true, message: '请选择活动区域', trigger: 'change' }
-					//        ],
-					//        date1: [
-					//          { type: 'date', required: true, message: '请选择日期', trigger: 'change' }
-					//        ],
-					//        date2: [
-					//          { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
-					//        ],
-					//        type: [
-					//          { type: 'array', required: true, message: '请至少选择一个活动性质', trigger: 'change' }
-					//        ],
-					//        resource: [
-					//          { required: true, message: '请选择活动资源', trigger: 'change' }
-					//        ],
+					password: [{
+						required: true,
+						message: '最少输入六位数密码',
+						trigger: 'blur'
+					}],
+					mobile: [{
+						required: true,
+						message: '请输入手机号',
+						trigger: 'blur'
+					}],
+					wx_name: [{
+						required: true,
+						message: '请输入微信号',
+						trigger: 'blur'
+					}],
+					addr: [{
+						required: false,
+						message: '请输入地址',
+						trigger: 'blur'
+					}],
+					level: [{
+						required: true,
+						message: '请选择用户权限',
+						trigger: 'change'
+					}],
 					//        desc: [
 					//          { required: true, message: '请填写活动形式', trigger: 'blur' }
 					//        ]
-				},
-				optionItem: {
-					id: 0,
-					photo: "路边的仙人掌",
-					wxid: '1',
-					wxname: '赵赵',
-					tel: '18900597456',
-					sex: '男',
-					address: '上海市虹口区虹口龙之梦38A',
-					admin: '',
-					time: '',
-					action: ''
 				},
 				tableData: []
 			}
 		},
 		methods: {
 			adduser() {
+				this.tag='add';
+				this.$refs.addform.resetFields();
+			    
 				this.addshow = true;
+				
 			},
 			cancleadd() {
 				this.addshow = false;
@@ -220,13 +203,55 @@
 					if(valid) {
 						this.addshow = false;
 						//JSON.stringfy(this.addform));
-						this.tableData.push(JSON.parse(JSON.stringify(this.addform)));
-						this.addform = JSON.parse(JSON.stringify(this.naddform));
+						//						this.tableData.push(JSON.parse(JSON.stringify(this.addform)));
+						//						this.addform = JSON.parse(JSON.stringify(this.naddform));
+						let oData = this.addform;
+						let smessage='';
+						let	subUrl='';
+						if(this.tag=="add"){
+							
+						 smessage = "新增成功!";
+						 subUrl = "/Home/User/createUser";
+						}else{
+							subUrl = "/Home/User/editUser";
+						smessage = "修改成功!";
+						}
+						
+//						if(oData.id == "") {
+//							delete oData.id;
+//						} else {
+//							subUrl = "/Home/User/editUser";
+//							smessage = "修改成功!";
+//						}
+						this.$post(subUrl, oData).then((res) => {
+							this.$message({
+								type: 'success',
+								message: smessage
+							});
+							this.getList();
+						});
+
 					} else {
-						console.log('error submit!');
 						return false;
 					}
 				})
+			},
+			editUser(rindex, rdata) {
+this.tag='edit';
+				//根据Id等到 对象，赋值给修改的对象
+//				this.$post("/Home/User/getUser", {
+//					id: rdata.id
+//				}).then((res) => {
+	this.addshow = true;
+	
+					for(let k in this.addform) {
+						
+						this.addform[k] = rdata[k];
+						
+					}
+					
+//				});
+
 			},
 			toggleSelection(rows) {
 				if(rows) {
@@ -238,25 +263,49 @@
 				}
 			},
 			handleSelectionChange(val) {
+				
 				this.multipleSelection = val;
 				console.log(val);
+			
+			if(val.length){this.deleteList.push(val[val.length-1])};
+			return this.deleteList;
 			},
 			handleEdit(index, row) {
 				console.log(index, row);
 			},
 			handleDelete(index, row) {
+				for(let i in this.deleteList) {
+					
+this.idList[i] = this.deleteList[i].id;
+						
+					}
+				console.log(this.idList);
+				let idtem='';
+				var eventbtn=event.target.parentElement.dataset.type;
+				if(eventbtn=="deletlist"){
+					idtem=this.idList;
+				}else if(eventbtn=="deletone"){
+					idtem=row.id;
+				}
 				this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
 
-					this.tableData.splice(index, 1);
-
-					this.$message({
-						type: 'success',
-						message: '删除成功!'
+					this.$post("/Home/User/delUser", {
+						id: idtem
+					}).then((res) => {
+						this.getList();
+						this.$message({
+							type: 'success',
+							message: '删除成功!'
+						});
+						this.deleteList=[];
 					});
+					//					this.tableData.splice(index, 1);
+					
+
 				}).catch(() => {
 					this.$message({
 						type: 'info',
@@ -276,7 +325,6 @@
 				this.getList();
 			},
 			getList() {
-				let resobj = [];
 				let sendModel = this.searchInfo;
 				delete sendModel.pageTotal;
 				this.$post("/Home/User/userList", sendModel).then((res) => {
@@ -284,7 +332,8 @@
 					this.tableData = resdata.list;
 					this.searchInfo.pageTotal = Number(resdata.page.pageTotal);
 				});
-			}
+			},
+		
 		},
 		mounted() {
 
@@ -296,10 +345,16 @@
 </script>
 
 <style>
-	.Templatecontain .el-table__header,
+	body .el-table th.gutter{
+    display: table-cell!important;
+}
+	
+
+	
+	/*.Templatecontain .el-table__header,
 	.Templatecontain .el-table__body {
 		width: auto !important;
-	}
+	}*/
 	
 	.usersearch .el-input {
 		width: 200px;
@@ -313,12 +368,27 @@
 		width: 300px;
 		display: inline-block;
 	}
+	.useradd .el-form-item__content{
+		margin-bottom:5px;
+	}
 </style>
 <style scoped="scoped" lang="scss">
+	.zhezhao .el-button {
+		&:nth-of-type(1) {
+			margin-right: 40%;
+		}
+	}
+	
+	.zhezhao .el-input__inner {
+		height: 36px;
+		line-height: 36px;
+	}
+	
 	.block {
 		width: 100%;
 		text-align: center;
 		margin-top: 50px;
+		padding-bottom:20px;
 	}
 	
 	.Templatecontain {
@@ -365,4 +435,5 @@
 	.itemmust {
 		left: -71px;
 	}
+	
 </style>

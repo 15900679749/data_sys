@@ -24,7 +24,9 @@ axios.defaults.timeout = cfig.timeout;
 axios.interceptors.request.use(config => {
 		loading = Loading.service(loption);
 		//config.headers["token"] = storage.get("token") || "";
-		if(!config.data.hasOwnProperty("token") && !config.url.endsWith("Home/Login/login")) {
+		
+		if(!config.data.hasOwnProperty("token") && !config.url.endsWith("/Home/Login/login")) {
+	
 			config.data = {
 				token: storage.get("token") || "",
 				...config.data

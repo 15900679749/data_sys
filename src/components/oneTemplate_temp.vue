@@ -6,7 +6,7 @@
 			<el-row type="flex" justify="space-between" class="ontemplateTopL">
 				<el-col :span="6">
 					<span class="vote">投票&nbsp;&nbsp;ID:{{item.idNum}}</span>
-					<span @click="edting" class="edting"><i class="el-icon-edit-outline"></i>编辑</span>
+					<!--<span @click="edting" class="edting"><i class="el-icon-edit-outline"></i>编辑</span>-->
 				</el-col>
 				<el-col :span="6" class="ontemplateTopR">
 					<span>创建者:{{item.creator}}</span>

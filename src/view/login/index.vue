@@ -51,6 +51,7 @@
 			loginin: function() {
 				this.$post('/Home/Login/login', this.loginForm).then((res) => {
 					storage.set("token", res.token);
+					storage.set("user", JSON.stringify(res));
 					this.$router.push({
 						path: '/uSer'
 					});
@@ -71,13 +72,13 @@
 		border: none;
 		border-bottom: 1px solid #303033;
 		border-radius: 0;
-		padding-left: 30px;
+		padding-left: 40px;
 	}
 	
 	.login-container input.el-input__inner[type="text"] {
 		background-image: url(../../statics/images/usernameicon.png);
 		background-repeat: no-repeat;
-		background-position: 10px center;
+		background-position: 10px 9px;
 	}
 	
 	.login-container input.el-input__inner[type="password"] {

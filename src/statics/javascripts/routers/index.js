@@ -68,5 +68,13 @@ export default [{
 			title: '编辑问卷'
 		}
 	},
+		{
+		path: '/sendpage',
+		name: '/sendpage',
+		component: require('view/sendpage/sendpage'),
+		meta: {
+			title: '发送问卷'
+		}
+	},
 	...login
 ]

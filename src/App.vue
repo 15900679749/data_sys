@@ -29,7 +29,7 @@
 			let self = this;
 			self.$router.beforeEach((to, from, next) => {
 				//this.initializationLogin(router);
-				if(!storage.get("token")) {
+				if(!storage.get("token")&&to.path!='/login') {
 					return next("/login");
 				}
 				document.title = to ? to.meta.title : "后台管理";

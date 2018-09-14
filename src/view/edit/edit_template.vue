@@ -17,8 +17,8 @@
 					</div>
 
 					<el-collapse v-model="activeNames" @change="handleChange">
-						<div class="edit_item" v-for="(item,index) in list">
-							<el-dropdown trigger="click" placement="bottom">
+						<div class="edit_item" v-for="(item,index) in list" :key="index">
+							<el-dropdown placement="bottom">
 								<span class="el-dropdown-link">
 						        	<i class="new"></i> 新建题目
 						        </span>
@@ -36,7 +36,7 @@
 							<el-input v-model="item.title" placeholder="模块名称" class="titlename"></el-input>
 							<el-collapse-item :title="item.qtitle" :name="index">
 
-								<div class="topic" v-for="(qitem,qindex) in item.qlist">
+								<div class="topic" v-for="(qitem,qindex) in item.qlist" :key="qindex">
 
 									<!--<topic :list="list"></topic>-->
 									<template v-if="qitem.qtype=='fill'">
@@ -299,7 +299,7 @@
 			addDomain(index, qindex) {
 				let sort = this.list[index].qlist[qindex].domains.length + 1;
 				let options = {
-					"value": "",
+					"value": "选项",
 					"sort": sort
 				}
 				this.list[index].qlist[qindex].domains.push(options);
