@@ -8,16 +8,7 @@
 							
 						</el-option>
 					</el-select>
-					<el-select v-model="item.value" placeholder="请选择" >
-						<el-option v-for="(option,index) in item.options4" :key="index" :value="option.value" :disabeld="option.disabled" :label="option.label">
-							
-						</el-option>
-					</el-select>
-					<el-select v-model="item.value" placeholder="请选择" >
-						<el-option v-for="(option,index) in item.options5" :key="index" :value="option.value" :disabeld="option.disabled" :label="option.label">
-							
-						</el-option>
-					</el-select>
+			
 					
 
 				<div v-show="item.show" class="transition-box">

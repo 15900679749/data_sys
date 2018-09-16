@@ -30,7 +30,7 @@
 									<el-dropdown-item @click.native="addItem(index,'uploadimg')">图片上传</el-dropdown-item>
 									<el-dropdown-item @click.native="addItem(index,'multistage')">多级下拉</el-dropdown-item>
 									<el-dropdown-item @click.native="addItem(index,'fractions')">分数题</el-dropdown-item>
-									<el-dropdown-item @click.native="addItem(index,'multistage')">综合题</el-dropdown-item>
+									<el-dropdown-item @click.native="">综合题</el-dropdown-item>
 								</el-dropdown-menu>
 							</el-dropdown>
 							<el-input v-model="item.title" placeholder="模块名称" class="titlename"></el-input>
@@ -59,7 +59,11 @@
 									</template>
 									<template v-if="qitem.qtype=='fractions'">
 										<fractions :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></fractions>
-									</template>								
+									</template>		
+									<!--<template v-if="qitem.qtype=='comprehensive'">
+										<comprehensive :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></comprehensive>
+									</template>								-->
+
 								</div>
 							</el-collapse-item>
 						</div>
@@ -82,6 +86,7 @@
 	import loCation from 'components/loCation.vue';
 	import fractions from 'components/fractions.vue';
 	import { Message } from "element-ui";
+//	import comprehensive from 'components/comprehensive.vue';
 	export default {
 		data() {
 			return {
@@ -246,13 +251,24 @@
 				this.list[index].qlist.push({
 					qtitle: ix,
 					qtype: "fractions",
-					silidervalue: 100,
+					silidervalue:100,
 					must: false,
 					namevalue: '标题',
 					show: true,
 					edittextinput: true,
 					changeButton: false,
 				})
+			},
+			addcomprehensive(index){
+								let ix = this.list[index].qlist.length + 1;
+
+				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
+				this.list[index].qlist.push({
+					qtitle:ix,
+					qtype:"comprehensive",
+					
+				});
+
 			},
 			addItem(index, type) {
 				switch(type) {
@@ -291,6 +307,11 @@
 							this.addfractions(index);
 						}
 						break;
+//						case "comprehensive":
+//						{
+//							this.addcomprehensive(index);
+//						}
+//						break;
 					default:
 						break;
 				}
@@ -395,7 +416,8 @@
 			multistage,
 			loCation,
 			uploadimg,
-			fractions
+			fractions,
+//			comprehensive
 		}
 	}
 </script>

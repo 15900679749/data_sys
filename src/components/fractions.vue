@@ -6,7 +6,10 @@
 				<el-row type="flex" justify="start" class="loCationtips">
 					<div class="block">
 						<span class="demonstration">{{item.silidervalue}}</span>
-						<el-slider v-model="item.silidervalue" show-input></el-slider>
+						<!--<el-slider v-model="item.silidervalue" show-input :max="parseInt(item.silidervalue)"></el-slider>-->
+						<!--<el-slider v-model="item.silidervalue" show-input></el-slider>-->
+					<el-progress :percentage="100" :show-text="false" style="width:85%;left:5%;top:18px;"></el-progress>
+					
 					</div>
 
 				</el-row>
@@ -29,7 +32,7 @@
 
 						</el-form-item>
 						<el-form-item :label="'总分'">
-							<!--<el-input v-model="item.silidervalue"></el-input>-->
+						<el-input v-model="item.silidervalue"></el-input>
 						</el-form-item>
 						<el-button type="primary" @click="submitForm(item)">保存</el-button>
 					</el-col>
@@ -405,6 +408,8 @@
 	
 	.loCationtips {
 		width: 100%;
+		    height: 70px;
+    padding-top: 15px;
 		.block {
 			width: 100%;
 			span.demonstration {

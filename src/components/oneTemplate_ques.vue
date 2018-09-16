@@ -108,7 +108,9 @@
 
 			},
 			sendAn() {
-
+return this.$router.push({
+					path: '/sendpage'
+				});
 			},
 			analyzeDown() {
 				return this.$router.push({
