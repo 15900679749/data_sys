@@ -49,16 +49,16 @@
 					问卷链接与二维码：
 				</el-col>
 			</el-row>
-			<el-row>
-				<el-col>
-					<img src=""/>
+			<el-row type="flex" justify="center">
+				<el-col :span="8">
+					<img src="../../statics/images/wechatcode.png"/>
 				</el-col>
-				<el-col>
+				<el-col :span="16" class="urlrepeat">
 					<div>
 						<el-input></el-input>
-						<el-button></el-button>
+						<el-button>复制</el-button>
 					</div>
-					<el-button></el-button>
+					<el-button>下载二维码</el-button>
 				</el-col>
 
 			</el-row>
@@ -69,7 +69,7 @@
 </template>
 
 <script>
-	import headTop from 'view/head/headTop.vue';
+	
 	
 	export default{
 		data(){
@@ -117,7 +117,7 @@
 		    
 		width: 100%;
 		box-sizing: border-box;
-		padding: 68px 120px 0;
+		padding: 15px 120px 0;
 		height: 100%;
 		>div {
 			background-color: #fff;
@@ -125,15 +125,37 @@
 	}
 	
 	.sendset{
-		padding:20px 0;
+		margin-top:30px;
+		padding:20px 10%;
 		border:1px solid rgba(0,0,0,.2);
 		border-radius: .3em;
 		box-shadow: 0 1px white inset;
 		.el-row{
 			margin:15px 0;
+			&:nth-of-type(2){
+				margin-top:30px;
+			}
 		}
 		.el-input{
 			width:40%;
 		}
+		img{
+			width:40%;
+			padding:5%;
+			border:1px solid rgba(0,0,0,.2);
+			margin-left:20%;
+		}
 	}
+	.urlrepeat{
+		.el-input{width: 60%;}
+		.el-button{
+			margin-top:20px;
+		}
+		div{
+			.el-button{
+				margin-top:0px;
+		margin-left:20px;
+	}
+		}
+	} 
 </style>

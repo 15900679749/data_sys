@@ -1,22 +1,6 @@
 <template>
-	<div class="edit_tempbg">
-		<el-row :gutter="20" class="top">
-			<el-col :span="3" :offset="9">
-				<i class="el-icon-search"></i>预览</el-col>
-			<el-col :span="3"><i class="el-icon-check"></i>完成</el-col>
-		</el-row>
-		<div class="editTemContain">
-			<div>
-				<el-row type="flex" justify="end" class="conTop">
-					<el-col :span="3" @click.native="openModel"><i class="el-icon-plus"></i>新建模块</el-col>
-				</el-row>
-				<div class="conBottom">
-					<div class="conBottomT">
-						<el-input type="text" v-model="questiontitle" placeholder="问卷标题" class="questiontitle"></el-input>
-						<el-input type="textarea" v-model="contentText" placeholder="问卷说明" class="questiontitle"></el-input>
-					</div>
-
-					<el-collapse v-model="activeNames" @change="handleChange">
+	<div class="compre">
+							<el-collapse v-model="activeNames" @change="handleChange">
 						<div class="edit_item" v-for="(item,index) in list" :key="index">
 							<el-dropdown placement="bottom">
 								<span class="el-dropdown-link">
@@ -30,7 +14,7 @@
 									<el-dropdown-item @click.native="addItem(index,'uploadimg')">图片上传</el-dropdown-item>
 									<el-dropdown-item @click.native="addItem(index,'multistage')">多级下拉</el-dropdown-item>
 									<el-dropdown-item @click.native="addItem(index,'fractions')">分数题</el-dropdown-item>
-									<el-dropdown-item @click.native="">综合题</el-dropdown-item>
+									
 								</el-dropdown-menu>
 							</el-dropdown>
 							<el-input v-model="item.title" placeholder="模块名称" class="titlename"></el-input>
@@ -59,19 +43,11 @@
 									</template>
 									<template v-if="qitem.qtype=='fractions'">
 										<fractions :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></fractions>
-									</template>
-									<!--<template v-if="qitem.qtype=='comprehensive'">
-										<comprehensive :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></comprehensive>
-									</template>								-->
-
+									</template>								
 								</div>
 							</el-collapse-item>
 						</div>
 					</el-collapse>
-				</div>
-			</div>
-		</div>
-
 	</div>
 </template>
 
@@ -86,7 +62,7 @@
 	import loCation from 'components/loCation.vue';
 	import fractions from 'components/fractions.vue';
 	import { Message } from "element-ui";
-	//	import comprehensive from 'components/comprehensive.vue';
+	import comprehensive from 'components/comprehensive.vue';
 	export default {
 		data() {
 			return {
@@ -164,52 +140,51 @@
 					show: true,
 					edittextinput: true,
 					changeButton: false,
-					doptions: [{
-							value: '2',
-							label: '2级',
+					options2: [{
+						value: '选项1',
+						label: "上海"
+					}, {
+						value: '选项2',
+						label: '北京',
+						disabled: true
+					}],
+					options3: [{
+							value: '选项1',
+							label: "一级选项"
+						}, {
+							value: '选项2',
+							label: '二级选项',
 							disabled: true
 						},
 						{
-							value: '3',
-							label: '3级',
+							value: '选项3',
+							label: '三级选项',
 							disabled: true
 						},
 						{
-							value: '4',
-							label: '4级',
+							value: '选项4',
+							label: '四级选项',
 							disabled: true
 						}
 					],
-					value: "2",
-					olist: [{
-						"name": "",
-						"value": "",
-						"id": 1,
-						"svalue": "",
-						"options": [],
-						"childList": []
+					options4: [{
+						value: '选项1',
+						label: "上海"
 					}, {
-						"name": "",
-						"id": 2,
-						"svalue": "",
-						"value": "",
-						"options": [],
-						"childList": []
+						value: '选项2',
+						label: '北京',
+						disabled: true
+					}],
+					options5: [{
+						value: '选项1',
+						label: "上海"
 					}, {
-						"name": "",
-						"svalue": "",
-						"value": "",
-						"id": 3,
-						"options": [],
-						"childList": []
-					}, {
-						"name": "",
-						"svalue": "",
-						"value": "",
-						"id": 4,
-						"options": [],
-						"childList": []
-					}]
+						value: '选项2',
+						label: '北京',
+						disabled: true
+					}],
+					value2: ''
+
 				})
 			},
 			adduploadimg(index) {
@@ -228,7 +203,7 @@
 						imagescr: '',
 					}],
 					imageLength: 1,
-					imageUrl: ''
+					imageUrl:''
 				})
 			},
 			addloCation(index) {
@@ -260,14 +235,14 @@
 					changeButton: false,
 				})
 			},
-			addcomprehensive(index) {
-				let ix = this.list[index].qlist.length + 1;
+			addcomprehensive(index){
+								let ix = this.list[index].qlist.length + 1;
 
 				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
-					qtitle: ix,
-					qtype: "comprehensive",
-
+					qtitle:ix,
+					qtype:"comprehensive",
+					
 				});
 
 			},
@@ -308,11 +283,11 @@
 							this.addfractions(index);
 						}
 						break;
-						//						case "comprehensive":
-						//						{
-						//							this.addcomprehensive(index);
-						//						}
-						//						break;
+						case "comprehensive":
+						{
+							this.addcomprehensive(index);
+						}
+						break;
 					default:
 						break;
 				}
@@ -418,7 +393,7 @@
 			loCation,
 			uploadimg,
 			fractions,
-			//			comprehensive
+			comprehensive
 		}
 	}
 </script>
