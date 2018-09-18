@@ -1,29 +1,26 @@
 <template>
 	<div v-show="relevanceshow" class="relevance">
-					<div class="relevanceitem">
-
-						<p>关联逻辑设置：</p>
-						<div class="relevanceitemcontent">
-							<ul>
-								<li>选项</li>
-								<li v-for="(domainitem,doindex) in domains" :key="doindex">{{domainitem.value}}</li>
-							</ul>
-							<ul>
-								<li>关联题目</li>
-								<li v-for="(domainitem,doindex) in domains">
-									<el-select v-model="limited" placeholder="请选择">
-										<!--<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">-->
+		<div class="relevanceitem">
+			<p>关联逻辑设置：</p>
+			<ul class="relevanceitemcontent">
+				<li>
+					<span>选项</span>
+					<span>关联题目</span>
+				</li>
+				<li v-for="(domainitem,doindex) in domains" :key="doindex">
+					<span>{{domainitem.value}}</span>
+					<span>
+									<el-select v-model="domainitem.selectoption" placeholder="请选择">									
 											<el-option v-for="(itemoption,itindex) in qlist" :key="itindex"  :label="itemoption.qtitle+itemoption.namevalue" :value="itindex">
 										</el-option>
 									</el-select>
-								</li>
-							</ul>
-						</div>
-						<el-button @click="canclerelevance" size="medium">取消</el-button>
-						<el-button size="medium" @click="surerelevance">确定</el-button>
-
-					</div>
-				</div>
+								</span>
+				</li>
+			</ul>
+			<el-button @click="canclerelevance" size="medium">取消</el-button>
+			<el-button size="medium" @click="surerelevance">确定</el-button>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -32,56 +29,42 @@
 		data() {
 			return {
 				value: '',
-				limited:''
+				limited: ''
 			}
 		},
 		props: {
-			relevanceshow:{
-				type:Boolean,
-				default:false
+			relevanceshow: {
+				type: Boolean,
+				default: false
 			},
-			domains:{
+			domains: {
 				type: Array,
 				default: []
-			},		
-			qlist:{
-				type:Array,
-				default:[]
 			},
-			item:{
-				type:Object,
-				default:{}
+			qlist: {
+				type: Array,
+				default: []
 			},
 		},
 		methods: {
-			canclerelevance(){
+			canclerelevance() {
 				this.$emit("canclerelevance")
 			},
-			surerelevance(){
-				
-			},
-//			handselect(index, qindex){
-//				debugger
-//				this.$emit("handselect", index, qindex);
-//			},
+			surerelevance() {
 
-			selectedList(){
-				for(let i in this.qlist){
-					this.limited=this.qlist[i].value;
-				}
-			}
+			},
 		},
 		created() {
-//			this.selectedList();
+			//			this.selectedList();
 		},
 		components: {
-			
+
 		}
 	}
 </script>
 
 <style scoped="scoped" lang="scss">
-.relevance{
+	.relevance {
 		position: fixed;
 		left: 0;
 		width: 100%;
@@ -114,21 +97,27 @@
 				border-top: 1px solid #303133;
 				border-left: 1px solid #303133;
 				float: left;
-				ul {
+				li {
+					border-bottom: 1px solid #303133;
+					border-right: 1px solid #303133;
+					text-align: center;
+					float: left;
+					width: 100%;
+					
 					&:nth-of-type(1) {
-						width: 30%;
+						background: #409EFF;
+						padding: 0;
 					}
-					width: 70%;
-					float:left;
-					li {
-						border-bottom: 1px solid #303133;
-						border-right: 1px solid #303133;
-						text-align: center;
+					span {
+						
+						display: inline-block;
 						padding: 8px 0;
 						&:nth-of-type(1) {
-							background: #409EFF;
-							padding: 0;
+							width: 30%;
+							border-right: 1px solid #303133;
 						}
+						width: 69%;
+						float:left;
 					}
 				}
 			}

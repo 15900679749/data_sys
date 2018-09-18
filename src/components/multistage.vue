@@ -16,10 +16,12 @@
 					<span @click.prevent="removeDomain(index,qindex)">删除</span>
 					<span @click.prevent="changeposition(item)">位置变更</span>
 					<div class="changeposition" v-if="item.changeButton">
-						<el-button type="info" plain>上移一题</el-button>
-						<el-button type="info" plain>下移一题</el-button>
+						<el-button type="info" plain @click="itemSortdown(index,qindex,'up')">上移一题</el-button>
+						<el-button type="info" plain @click="itemSortdown(index,qindex,'down')">下移一题</el-button>
 						<div>移至【
-							<el-input v-model="poSition" class="inputposition"></el-input>】题</div>
+							<el-input v-model="item.poSition" class="inputposition"></el-input>】题
+							<el-button type="primary" plain class="positionsure" @click.native="itemSortdown(index,qindex,'jumpitem')">确定</el-button>
+						</div>
 					</div>
 				</div>
 				<el-row v-if="item.edittextinput" class="edittextinput">
@@ -44,7 +46,7 @@
 								<el-row type="flex" justify="space-between">
 									<el-col :span="5" v-for='(oitem,oindex) in item.olist' :key='oindex' >
 										<template v-if="oitem.id<=parseInt(item.value)" >
-											<label>{{oindex+1}}级选项</label>
+											<label class="oindex">{{oindex+1}}级选项</label>
 											<!--<el-input placeholder="" v-model="oitem.name"></el-input>-->
 											<el-input type="textarea" @blur="txtBlur(oitem,oindex)" v-model="oitem.value" :autosize="{ minRows: 2, maxRows: 4}">
 											</el-input>
@@ -242,7 +244,10 @@
 			},
 			changeposition(item) {
 				item.changeButton = !item.changeButton;
-			}
+			},
+			itemSortdown:function(index, qindex,type){
+				this.$emit("itemSortdown", index, qindex,type);
+			},
 		},
 		created() {
 
@@ -508,4 +513,9 @@
 }
 .olistlabel .el-textarea .el-textarea__inner{
 	height:200px !important;}
+	.oindex{
+		width: 100%;
+		display: inline-block;
+		text-align: center;
+	}
 </style>

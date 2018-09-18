@@ -58,7 +58,9 @@
 
 		<div class="block">
 			<span class="demonstration"></span>
-			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage1" :page-sizes="pageSizes" :page-size="searchInfo.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="searchInfo.pageTotal">
+			<!--<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage1" :page-sizes="pageSizes" :page-size="searchInfo.pageSize" layout="total, sizes, prev, pager, next, jumper" :total="searchInfo.pageTotal">
+			</el-pagination>-->
+			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="currentPage1" :page-sizes="pageSizes" :page-size="searchInfo.pageSize" layout="total, prev, pager, next, jumper" :total="searchInfo.pageTotal">
 			</el-pagination>
 		</div>
 

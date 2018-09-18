@@ -14,10 +14,12 @@
 					<span @click.prevent="removeDomain(index,qindex)">删除</span>
 					<span @click.prevent="changeposition(item)">位置变更</span>
 					<div class="changeposition" v-if="item.changeButton">
-						<el-button type="info" plain>上移一题</el-button>
-						<el-button type="info" plain>下移一题</el-button>
+						<el-button type="info" plain @click="itemSortdown(index,qindex,'up')">上移一题</el-button>
+						<el-button type="info" plain @click="itemSortdown(index,qindex,'down')">下移一题</el-button>
 						<div>移至【
-							<el-input v-model="poSition" class="inputposition"></el-input>】题</div>
+							<el-input v-model="item.poSition" class="inputposition"></el-input>】题
+							<el-button type="primary" plain class="positionsure" @click.native="itemSortdown(index,qindex,'jumpitem')">确定</el-button>
+						</div>
 					</div>
 				</div>
 				<el-row v-if="item.edittextinput" class="edittextinput">
@@ -46,9 +48,9 @@
 										<el-col :span="5" class="iconplus">
 											<i class="el-icon-circle-plus-outline" @click="addDomain"></i>
 											<i class="el-icon-remove-outline" @click="removeDomainitem(index,qindex,dindex)"></i>
-											<i :class="{radioDisable:(dindex+1)==item.domains.length}" class="el-icon-back" @click="domainSortdown(index,qindex,dindex,'down')"></i>
+											<i :class="{radioDisable:(dindex+1)==item.domains.length}" class="el-icon-back" @click=""></i>
 											<!--v-show="dindex!=0"-->
-											<i :class="{radioDisable:dindex==0}" class="el-icon-back backright" @click="domainSortdown(index,qindex,dindex,'up')" disabled='true'></i>
+											<i :class="{radioDisable:dindex==0}" class="el-icon-back backright" @click="" disabled='true'></i>
 										</el-col>
 									</el-row>
 								</el-form-item>
@@ -65,8 +67,8 @@
 						</el-form-item>
 					</el-col>
 				</el-row>
-				<jump  :jumpshow='jumpshow' :domains="item.domains" @canclejump='canclejump' :item="item" :qlist="qlist" ></jump>
-				<relevance :relevanceshow='relevanceshow' :domains="item.domains" @canclerelevance='canclerelevance'  :item="item" :qlist="qlist"></relevance>
+				<jump  :jumpshow='jumpshow' :domains="item.domains" @canclejump='canclejump' :qlist="qlist" ></jump>
+				<relevance :relevanceshow='relevanceshow' :domains="item.domains" @canclerelevance='canclerelevance' :qlist="qlist"></relevance>
 			</el-form-item>
 		</el-form>
 
@@ -105,7 +107,7 @@
 			},
 			qlist:{
 				type:Array,
-				default:[]
+				default:[{'0':'标题1'}]
 			}
 		},
 		methods: {
@@ -130,6 +132,9 @@
 			},
 			removeDomain() {
 				this.$emit("removeDomain", this.index, this.qindex);
+			},
+			itemSortdown:function(index, qindex,type){
+				this.$emit("itemSortdown", index, qindex,type);
 			},
 			domainSortdown: function(index, qindex, dindex, type) {
 				!event.target.classList.contains("radioDisable") && this.$emit("domainSortdown", index, qindex, dindex, type)
@@ -167,10 +172,6 @@
 			canclerelevance() {
 				this.relevanceshow = false;
 			},
-//			handselect(index,qindex){
-//				debugger
-//				console.log(index,qindex);
-//			}
 
 		},
 		created() {
@@ -194,6 +195,7 @@
 	}
 	
 	.el-form-item .el-input.inputposition {
+		width:18%;
 		margin-left: 0;
 	}
 	
@@ -388,4 +390,10 @@
 		left: -13px;
 		top: 3px;
 	}
+	.positionsure{
+    width: 40px;
+    display: inline-block;
+    margin: 0;
+    padding: 3px 0;
+}
 </style>

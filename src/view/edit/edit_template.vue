@@ -39,28 +39,28 @@
 								<div class="topic" v-for="(qitem,qindex) in item.qlist" :key="qindex">
 
 									<template v-if="qitem.qtype=='fill'">
-										<fill :item="qitem" @removeDomain="removeDomain" :index="index" :qindex="qindex"></fill>
+										<fill :item="qitem" @removeDomain="removeDomain" :index="index" :qindex="qindex" @itemSortdown="itemSortdown"></fill>
 									</template>
 									<template v-if="qitem.qtype=='single'">
-										<single :item="qitem" :qlist="item.qlist" @changeDomainRadio="changeDomainRadio" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></single>
+										<single :item="qitem" :qlist="item.qlist" @changeDomainRadio="changeDomainRadio" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></single>
 									</template>
 									<template v-if="qitem.qtype=='multiple'">
-										<multiple :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></multiple>
+										<multiple :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></multiple>
 									</template>
 									<template v-if="qitem.qtype=='multistage'">
-										<multistage :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></multistage>
+										<multistage :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></multistage>
 									</template>
 									<template v-if="qitem.qtype=='loCation'">
-										<loCation :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></loCation>
+										<loCation :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></loCation>
 									</template>
 									<template v-if="qitem.qtype=='uploadimg'">
-										<uploadimg :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></uploadimg>
+										<uploadimg :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></uploadimg>
 									</template>
 									<template v-if="qitem.qtype=='fractions'">
-										<fractions :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></fractions>
+										<fractions :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></fractions>
 									</template>
 									<template v-if="qitem.qtype=='comprehensive'">
-										<comprehensive @deleCom="delem" :index="index" :list="qitem.list" :qindex="qindex"></comprehensive>
+										<comprehensive @deleCom="delem" :index="index" :list="qitem.list" :qindex="qindex" @itemSortdown="itemSortdown"></comprehensive>
 									</template>
 
 								</div>
@@ -104,12 +104,12 @@
 			addfill(index) {
 				let ix = this.list[index].qlist.length + 1;
 				this.list[index].qlist.push({
+					poSition:'',
 					qtitle: ix,
 					qtype: "fill",
 					must: false,
 					name: "",
 					namevalue: '标题',
-					value: '',
 					show: true,
 					edittextinput: true,
 					changeButton: false
@@ -118,30 +118,32 @@
 			addsingle(index) {
 				let ix = this.list[index].qlist.length + 1;
 				this.list[index].qlist.push({
+					poSition:'',
 					qtitle: ix,
+					poSition:'',
 					qtype: "single",
 					must: false,
 					namevalue: '标题',
 					show: true,
-					value: '',
 					edittextinput: true,
 					changeButton: false,
 					domack: '0',
 					domains: [{
 						value: '选项',
-						sort: 1
+						sort: 1,
+						selectoption:''
 					}]
 				});
 			},
 			addmultiple(index) {
 				let ix = this.list[index].qlist.length + 1;
 				this.list[index].qlist.push({
+					poSition:'',
 					qtitle: ix,
 					qtype: "multiple",
 					must: false,
 					namevalue: '标题',
 					show: true,
-					value: '',
 					edittextinput: true,
 					changeButton: false,
 					domains: [{
@@ -158,6 +160,7 @@
 
 				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
+					poSition:'',
 					qtitle: ix,
 					qtype: "multistage",
 					must: false,
@@ -218,6 +221,7 @@
 
 				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
+					poSition:'',
 					qtitle: ix,
 					qtype: "uploadimg",
 					namevalue: '标题',
@@ -225,7 +229,6 @@
 					show: true,
 					edittextinput: true,
 					changeButton: false,
-					value: '',
 					options: [{
 						imagescr: '',
 					}],
@@ -238,11 +241,11 @@
 
 				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
+					poSition:'',
 					qtitle: ix,
 					qtype: "loCation",
 					must: false,
 					namevalue: '标题',
-					value: '',
 					show: true,
 					edittextinput: true,
 					changeButton: false,
@@ -250,15 +253,15 @@
 			},
 			addfractions(index) {
 				let ix = this.list[index].qlist.length + 1;
-
+				
 				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
+					poSition:'',
 					qtitle: ix,
 					qtype: "fractions",
 					silidervalue: 100,
 					must: false,
 					namevalue: '标题',
-					value: '',
 					show: true,
 					edittextinput: true,
 					changeButton: false,
@@ -271,6 +274,7 @@
 				option.qtitle = this.list[index].qlist.length + 1 + '、';
 				option.qlist = [];
 				this.list[index].qlist.push({
+					poSition:'',
 					qtitle: ix,
 					qtype: "comprehensive",
 					list: [option]
@@ -344,6 +348,71 @@
 			removeDomainitem(index, qindex, dindex) {
 				let dlist = this.list[index].qlist[qindex].domains.deleteIndex(dindex);
 				this.list[index].qlist[qindex].domains = dlist;
+			},
+			itemSortdown(index, qindex,type){
+				
+				var listItem=this.list[index].qlist[qindex];
+				var sortList=this.list[index].qlist;
+				var sortId=listItem.qtitle;
+				if(type=='up'){
+					if(sortId!=1){
+						let uitem=this.list[index].qlist[qindex-1];
+						let iuitem = this.list[index].qlist.indexOf(uitem);
+						let usort = uitem.qtitle;
+						uitem.qtitle = sortId;
+						sortList.splice(iuitem, 1, uitem);
+						listItem.qtitle = usort;
+						sortList.splice(qindex, 1, listItem);
+					}else{
+						this.$message({
+							type: 'error',
+							message: '已经是第一题，无法继续上移!'
+						});
+					}
+				}else if(type=='down'){
+					if(sortId != sortList.length) {
+						let uitem = this.list[index].qlist[qindex+1];
+						let iuitem = this.list[index].qlist.indexOf(uitem);
+						let usort = uitem.qtitle;
+						uitem.qtitle = sortId;
+						sortList.splice(iuitem, 1, uitem);
+						listItem.qtitle = usort;
+						sortList.splice(qindex, 1, listItem);
+						
+					}else{
+						this.$message({
+							type: 'error',
+							message: '已经是最后一题，无法继续下移!'
+						});
+						
+					}
+				}else{
+					let jumpnum=parseInt(this.list[index].qlist[qindex].poSition);
+					if(jumpnum!=sortId){
+						let uitem = this.list[index].qlist[jumpnum-1];					
+						let iuitem = this.list[index].qlist.indexOf(uitem);						
+						let usort = jumpnum;
+						uitem.qtitle = sortId;
+						sortList.splice(iuitem, 1, uitem);
+						listItem.qtitle = usort;
+						sortList.splice(qindex, 1, listItem);
+						listItem.changeButton=!listItem.changeButton;
+						listItem.poSition='';
+					}else{
+						this.$message({
+							type: 'error',
+							message: '已经是第'+jumpnum+'题，无法进行跳转!'
+						});
+					}
+					
+						
+				}
+				sortList.sort(function(a, b) {
+					return a.qtitle - b.qtitle;
+				});
+				
+				this.list[index].qlist = sortList;
+				
 			},
 			domainSortdown(index, qindex, dindex, type) {
 				var sdomainItem = this.list[index].qlist[qindex].domains[dindex];

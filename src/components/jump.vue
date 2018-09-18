@@ -5,17 +5,20 @@
 			<p>跳题逻辑设置：</p>
 			<div class="jumpitemcontent">
 				<ul>
-					<li>选项11</li>
-					<li v-for="(domainitem,index) in domains" :key="index">{{domainitem.value}}</li>
-					<li>跳转到2</li>
-					<li v-for="(domainitem,index) in domains">
-						<el-select v-model="item.value" placeholder="请选择">
-							<el-option v-for="itemoption in qlist" :label="itemoption.qtitle+itemoption.namevalue" :value="index">
-							</el-option>
-						</el-select>
+					<li>
+						<span>选项</span>
+						<span>跳转到</span>
+					</li>
+					<li v-for="(domainitem,index) in domains" :key="index">
+						<span>{{domainitem.value}}</span>
+						<span>
+							<el-select v-model="domainitem.selectoption" placeholder="请选择">
+								<el-option v-for="(itemoption,index) in qlist" :label="itemoption.qtitle+itemoption.namevalue" :value="index" :key="index">
+								</el-option>
+							</el-select>
+						</span>
 					</li>
 				</ul>
-
 			</div>
 			<el-button @click="canclejump" size="medium">取消</el-button>
 			<el-button @click="surejump" size="medium">确定</el-button>
@@ -45,10 +48,6 @@
 				type: Array,
 				default: []
 			},
-			item: {
-				type: Object,
-				default: {}
-			},
 
 		},
 		methods: {
@@ -58,10 +57,6 @@
 			surejump() {
 
 			},
-			//			handselect(index, qindex){
-			//				debugger
-			//				this.$emit("handselect", index, qindex);
-			//			}
 		},
 		components: {
 
@@ -103,21 +98,27 @@
 				border-top: 1px solid #303133;
 				border-left: 1px solid #303133;
 				float: left;
-				ul {
+				li {
+					border-bottom: 1px solid #303133;
+					border-right: 1px solid #303133;
+					text-align: center;
+					float: left;
+					width: 100%;
+					
 					&:nth-of-type(1) {
-						width: 30%;
+						background: #409EFF;
+						padding: 0;
 					}
-					width: 70%;
-					float:left;
-					li {
-						border-bottom: 1px solid #303133;
-						border-right: 1px solid #303133;
-						text-align: center;
+					span {
+						
+						display: inline-block;
 						padding: 8px 0;
 						&:nth-of-type(1) {
-							background: #409EFF;
-							padding: 0;
+							width: 30%;
+							border-right: 1px solid #303133;
 						}
+						width: 69%;
+						float:left;
 					}
 				}
 			}
