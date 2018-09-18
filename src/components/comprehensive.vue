@@ -1,53 +1,51 @@
 <template>
 	<div class="compre">
-							<el-collapse v-model="activeNames" @change="handleChange">
-						<div class="edit_item" v-for="(item,index) in list" :key="index">
-							<el-dropdown placement="bottom">
-								<span class="el-dropdown-link">
-						        	<i class="new"></i> 新建题目
-						        </span>
-								<el-dropdown-menu slot="dropdown" class="topicdropdown">
-									<el-dropdown-item @click.native="addItem(index,'fill')">填空题</el-dropdown-item>
-									<el-dropdown-item @click.native="addItem(index,'single')">选择题</el-dropdown-item>
-									<el-dropdown-item @click.native="addItem(index,'multiple')">多选题</el-dropdown-item>
-									<el-dropdown-item @click.native="addItem(index,'loCation')">位置上传</el-dropdown-item>
-									<el-dropdown-item @click.native="addItem(index,'uploadimg')">图片上传</el-dropdown-item>
-									<el-dropdown-item @click.native="addItem(index,'multistage')">多级下拉</el-dropdown-item>
-									<el-dropdown-item @click.native="addItem(index,'fractions')">分数题</el-dropdown-item>
-									
-								</el-dropdown-menu>
-							</el-dropdown>
-							<el-input v-model="item.title" placeholder="模块名称" class="titlename"></el-input>
-							<el-collapse-item :title="item.qtitle" :name="index">
+		<el-collapse v-model="activeNames" @change="handleChange">
+			<div class="edit_item" v-for="(item,index) in list" :key="index">
+				<el-dropdown placement="bottom">
+					<span class="el-dropdown-link"><i class="new"></i>新建综合题目</span>
+					<el-dropdown-menu slot="dropdown" class="topicdropdown">
+						<el-dropdown-item @click.native="addItem(index,'fill')">填空题</el-dropdown-item>
+						<el-dropdown-item @click.native="addItem(index,'single')">选择题</el-dropdown-item>
+						<el-dropdown-item @click.native="addItem(index,'multiple')">多选题</el-dropdown-item>
+						<el-dropdown-item @click.native="addItem(index,'loCation')">位置上传</el-dropdown-item>
+						<el-dropdown-item @click.native="addItem(index,'uploadimg')">图片上传</el-dropdown-item>
+						<el-dropdown-item @click.native="addItem(index,'multistage')">多级下拉</el-dropdown-item>
+						<el-dropdown-item @click.native="addItem(index,'fractions')">分数题</el-dropdown-item>
+					</el-dropdown-menu>
+				</el-dropdown>
+				<span @click.prevent="deletecomp" class="deletecomp">删除</span>
+				<el-input v-model="item.title" placeholder="模块名称" class="titlename"></el-input>
+				<el-collapse-item :title="item.qtitle" :name="index">
 
-								<div class="topic" v-for="(qitem,qindex) in item.qlist" :key="qindex">
+					<div class="topic" v-for="(qitem,qindex) in item.qlist" :key="qindex">
 
-									<!--<topic :list="list"></topic>-->
-									<template v-if="qitem.qtype=='fill'">
-										<fill :item="qitem" @removeDomain="removeDomain" :index="index" :qindex="qindex"></fill>
-									</template>
-									<template v-if="qitem.qtype=='single'">
-										<single :item="qitem" @changeDomainRadio="changeDomainRadio" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></single>
-									</template>
-									<template v-if="qitem.qtype=='multiple'">
-										<multiple :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></multiple>
-									</template>
-									<template v-if="qitem.qtype=='multistage'">
-										<multistage :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></multistage>
-									</template>
-									<template v-if="qitem.qtype=='loCation'">
-										<loCation :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></loCation>
-									</template>
-									<template v-if="qitem.qtype=='uploadimg'">
-										<uploadimg :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></uploadimg>
-									</template>
-									<template v-if="qitem.qtype=='fractions'">
-										<fractions :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></fractions>
-									</template>								
-								</div>
-							</el-collapse-item>
-						</div>
-					</el-collapse>
+						<!--<topic :list="list"></topic>-->
+						<template v-if="qitem.qtype=='fill'">
+							<fill :item="qitem" @removeDomain="removeDomain" :index="index" :qindex="qindex"></fill>
+						</template>
+						<template v-if="qitem.qtype=='single'">
+							<single :item="qitem" @changeDomainRadio="changeDomainRadio" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></single>
+						</template>
+						<template v-if="qitem.qtype=='multiple'">
+							<multiple :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></multiple>
+						</template>
+						<template v-if="qitem.qtype=='multistage'">
+							<multistage :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></multistage>
+						</template>
+						<template v-if="qitem.qtype=='loCation'">
+							<loCation :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></loCation>
+						</template>
+						<template v-if="qitem.qtype=='uploadimg'">
+							<uploadimg :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></uploadimg>
+						</template>
+						<template v-if="qitem.qtype=='fractions'">
+							<fractions :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></fractions>
+						</template>
+					</div>
+				</el-collapse-item>
+			</div>
+		</el-collapse>
 	</div>
 </template>
 
@@ -62,7 +60,6 @@
 	import loCation from 'components/loCation.vue';
 	import fractions from 'components/fractions.vue';
 	import { Message } from "element-ui";
-	import comprehensive from 'components/comprehensive.vue';
 	export default {
 		data() {
 			return {
@@ -70,8 +67,7 @@
 				questiontitle: '',
 				activeNames: [],
 				region: "",
-				modelId: "",
-				list: []
+				modelId: ""
 			}
 		},
 		methods: {
@@ -79,7 +75,7 @@
 				console.log(val);
 			},
 			addfill(index) {
-				let ix = this.list[index].qlist.length + 1;
+				let ix = this.list[index] ? this.list[index].qlist.length + 1 : 1;
 				this.list[index].qlist.push({
 					qtitle: ix,
 					qtype: "fill",
@@ -203,7 +199,7 @@
 						imagescr: '',
 					}],
 					imageLength: 1,
-					imageUrl:''
+					imageUrl: ''
 				})
 			},
 			addloCation(index) {
@@ -235,14 +231,14 @@
 					changeButton: false,
 				})
 			},
-			addcomprehensive(index){
-								let ix = this.list[index].qlist.length + 1;
+			addcomprehensive(index) {
+				let ix = this.list[index].qlist.length + 1;
 
 				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
-					qtitle:ix,
-					qtype:"comprehensive",
-					
+					qtitle: ix,
+					qtype: "comprehensive",
+
 				});
 
 			},
@@ -283,7 +279,7 @@
 							this.addfractions(index);
 						}
 						break;
-						case "comprehensive":
+					case "comprehensive":
 						{
 							this.addcomprehensive(index);
 						}
@@ -310,6 +306,9 @@
 				//					aindex && this.list[index].qlist.splice(aindex, 1)
 				let nlist = this.list[index].qlist.deleteIndex(qindex);
 				this.list[index].qlist = nlist;
+			},
+			deletecomp() {
+				this.$emit("deleCom", this.index, this.qindex);
 			},
 			removeDomainitem(index, qindex, dindex) {
 				let dlist = this.list[index].qlist[qindex].domains.deleteIndex(dindex);
@@ -344,45 +343,26 @@
 					return a.sort - b.sort;
 				});
 				this.list[index].qlist[qindex].domains = sortList;
-
-			},
-			openModel() {
-				let self = this;
-				//				this.$prompt('请输入模块名称', '新建模块', {
-				//					confirmButtonText: '确定',
-				//					cancelButtonText: '取消',
-				//        inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-				//      inputErrorMessage: '邮箱格式不正确'
-				//				}).then(({
-				//					value
-				//				}) => {
-				var option = {};
-				//					option.title = value;
-				option.title = "模板名称";
-				option.qtitle = self.list.length + 1 + '、';
-				option.qlist = [];
-				self.list.push(option);
-
-				//				}).catch(() => {
-				//					this.$message({
-				//						type: 'info',
-				//						message: '取消输入'
-				//					});
-				//				});
 			}
-
+		},
+		props: {
+			list: {
+				type: Array,
+				default: []
+			},
+			index: {
+				type: Number,
+				default: 0
+			},
+			qindex: {
+				type: Number,
+				default: 0
+			}
 		},
 		mounted: function() {
-
 			console.log(this.activeNames);
 		},
-
-		created() {
-			this.region = this.$route.query.region;
-			this.modelId = this.$route.query.modelId;
-
-		},
-
+		created() {},
 		components: {
 			headTop,
 			topic,
@@ -392,8 +372,7 @@
 			multistage,
 			loCation,
 			uploadimg,
-			fractions,
-			comprehensive
+			fractions
 		}
 	}
 </script>
@@ -533,7 +512,7 @@
 	}
 	
 	.new {
-		background: url(../../statics/images/newquestion.png) no-repeat;
+		background: url(../statics/images/newquestion.png) no-repeat;
 		position: absolute;
 		top: 13px;
 		display: inline-block;
@@ -597,5 +576,12 @@
 		left: 50px;
 		z-index: 200;
 		width: 50%;
+	}
+	
+	.deletecomp {
+		position: absolute;
+		right: 40px;
+		color: blue;
+		top: 12px;
 	}
 </style>

@@ -30,7 +30,7 @@
 									<el-dropdown-item @click.native="addItem(index,'uploadimg')">图片上传</el-dropdown-item>
 									<el-dropdown-item @click.native="addItem(index,'multistage')">多级下拉</el-dropdown-item>
 									<el-dropdown-item @click.native="addItem(index,'fractions')">分数题</el-dropdown-item>
-									<el-dropdown-item @click.native="">综合题</el-dropdown-item>
+									<el-dropdown-item @click.native="addItem(index,'comprehensive')">综合题</el-dropdown-item>
 								</el-dropdown-menu>
 							</el-dropdown>
 							<el-input v-model="item.title" placeholder="模块名称" class="titlename"></el-input>
@@ -38,12 +38,11 @@
 
 								<div class="topic" v-for="(qitem,qindex) in item.qlist" :key="qindex">
 
-									<!--<topic :list="list"></topic>-->
 									<template v-if="qitem.qtype=='fill'">
 										<fill :item="qitem" @removeDomain="removeDomain" :index="index" :qindex="qindex"></fill>
 									</template>
 									<template v-if="qitem.qtype=='single'">
-										<single :item="qitem" @changeDomainRadio="changeDomainRadio" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></single>
+										<single :item="qitem" :qlist="item.qlist" @changeDomainRadio="changeDomainRadio" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></single>
 									</template>
 									<template v-if="qitem.qtype=='multiple'">
 										<multiple :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></multiple>
@@ -60,9 +59,9 @@
 									<template v-if="qitem.qtype=='fractions'">
 										<fractions :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></fractions>
 									</template>
-									<!--<template v-if="qitem.qtype=='comprehensive'">
-										<comprehensive :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown"></comprehensive>
-									</template>								-->
+									<template v-if="qitem.qtype=='comprehensive'">
+										<comprehensive @deleCom="delem" :index="index" :list="qitem.list" :qindex="qindex"></comprehensive>
+									</template>
 
 								</div>
 							</el-collapse-item>
@@ -86,7 +85,7 @@
 	import loCation from 'components/loCation.vue';
 	import fractions from 'components/fractions.vue';
 	import { Message } from "element-ui";
-	//	import comprehensive from 'components/comprehensive.vue';
+	import comprehensive from 'components/comprehensive.vue';
 	export default {
 		data() {
 			return {
@@ -95,7 +94,7 @@
 				activeNames: [],
 				region: "",
 				modelId: "",
-				list: []
+				list: [],
 			}
 		},
 		methods: {
@@ -110,11 +109,11 @@
 					must: false,
 					name: "",
 					namevalue: '标题',
+					value: '',
 					show: true,
 					edittextinput: true,
 					changeButton: false
 				});
-
 			},
 			addsingle(index) {
 				let ix = this.list[index].qlist.length + 1;
@@ -124,6 +123,7 @@
 					must: false,
 					namevalue: '标题',
 					show: true,
+					value: '',
 					edittextinput: true,
 					changeButton: false,
 					domack: '0',
@@ -141,6 +141,7 @@
 					must: false,
 					namevalue: '标题',
 					show: true,
+					value: '',
 					edittextinput: true,
 					changeButton: false,
 					domains: [{
@@ -224,6 +225,7 @@
 					show: true,
 					edittextinput: true,
 					changeButton: false,
+					value: '',
 					options: [{
 						imagescr: '',
 					}],
@@ -240,6 +242,7 @@
 					qtype: "loCation",
 					must: false,
 					namevalue: '标题',
+					value: '',
 					show: true,
 					edittextinput: true,
 					changeButton: false,
@@ -255,6 +258,7 @@
 					silidervalue: 100,
 					must: false,
 					namevalue: '标题',
+					value: '',
 					show: true,
 					edittextinput: true,
 					changeButton: false,
@@ -262,14 +266,18 @@
 			},
 			addcomprehensive(index) {
 				let ix = this.list[index].qlist.length + 1;
-
-				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
+				var option = {};
+				option.title = "综合题名称";
+				option.qtitle = this.list[index].qlist.length + 1 + '、';
+				option.qlist = [];
 				this.list[index].qlist.push({
 					qtitle: ix,
 					qtype: "comprehensive",
-
+					list: [option]
 				});
-
+			},
+			delem(index, pindex) {
+				this.list[index].qlist.splice(pindex, 1);
 			},
 			addItem(index, type) {
 				switch(type) {
@@ -308,11 +316,11 @@
 							this.addfractions(index);
 						}
 						break;
-						//						case "comprehensive":
-						//						{
-						//							this.addcomprehensive(index);
-						//						}
-						//						break;
+					case "comprehensive":
+						{
+							this.addcomprehensive(index);
+						}
+						break;
 					default:
 						break;
 				}
@@ -330,9 +338,6 @@
 				this.list[index].qlist[qindex].domack = v;
 			},
 			removeDomain(index, qindex) {
-
-				//				let aindex = this.list[index].qlist[qindex];
-				//					aindex && this.list[index].qlist.splice(aindex, 1)
 				let nlist = this.list[index].qlist.deleteIndex(qindex);
 				this.list[index].qlist = nlist;
 			},
@@ -398,16 +403,12 @@
 
 		},
 		mounted: function() {
-
 			console.log(this.activeNames);
 		},
-
 		created() {
 			this.region = this.$route.query.region;
 			this.modelId = this.$route.query.modelId;
-
 		},
-
 		components: {
 			headTop,
 			topic,
@@ -418,7 +419,7 @@
 			loCation,
 			uploadimg,
 			fractions,
-			//			comprehensive
+			comprehensive
 		}
 	}
 </script>

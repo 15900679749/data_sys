@@ -55,8 +55,8 @@
 
 								<div class="btngroup">
 									<el-button @click="addDomain" type="primary" plain>+新增选项</el-button>
-									<el-button @click="addDomain" type="primary" plain>+关联逻辑</el-button>
-									<el-button @click="jump()" type="primary" plain>+跳转逻辑</el-button>
+									<el-button @click="relevance" type="primary" plain>+关联逻辑</el-button>
+									<el-button @click="jump" type="primary" plain>+跳转逻辑</el-button>
 								</div>
 
 							</div>
@@ -65,37 +65,8 @@
 						</el-form-item>
 					</el-col>
 				</el-row>
-				<div v-show="jumpshow" class="jump">
-					<div class="jumpitem">
-
-						<p>跳题逻辑：</p>
-						<div class="jumpitemcontent">
-							<ul>
-								<li>选项</li>
-								<li>男</li>
-								<li>女</li>
-							</ul>
-							<ul>
-								<li>跳转到</li>
-								<li>
-									<el-select v-model="value" placeholder="请选择">
-										<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-										</el-option>
-									</el-select>
-								</li>
-								<li>
-									<el-select v-model="value" placeholder="请选择">
-										<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-										</el-option>
-									</el-select>
-								</li>
-							</ul>
-						</div>
-						<el-button @click="canclejump" size="medium">取消</el-button>
-						<el-button size="medium">确定</el-button>
-
-					</div>
-				</div>
+				<jump  :jumpshow='jumpshow' :domains="item.domains" @canclejump='canclejump' :item="item" :qlist="qlist" ></jump>
+				<relevance :relevanceshow='relevanceshow' :domains="item.domains" @canclerelevance='canclerelevance'  :item="item" :qlist="qlist"></relevance>
 			</el-form-item>
 		</el-form>
 
@@ -106,29 +77,16 @@
 <script>
 	import headTop from 'view/head/headTop.vue';
 	import bus from './eventBus';
+	import jump from './jump.vue';
+	import relevance from './relevance.vue';
 	export default {
 		data() {
 			return {
 				poSition: '',
-				jumpshow: false,
 				gdomack: '',
-				options: [{
-					value: '选项1',
-					label: '黄金糕'
-				}, {
-					value: '选项2',
-					label: '双皮奶'
-				}, {
-					value: '选项3',
-					label: '蚵仔煎'
-				}, {
-					value: '选项4',
-					label: '龙须面'
-				}, {
-					value: '选项5',
-					label: '北京烤鸭'
-				}],
-				value: ''
+				jumpshow: false,
+				relevanceshow:false,
+			
 
 			}
 		},
@@ -144,6 +102,10 @@
 			qindex: {
 				type: Number,
 				default: 0
+			},
+			qlist:{
+				type:Array,
+				default:[]
 			}
 		},
 		methods: {
@@ -193,18 +155,31 @@
 				item.changeButton = !item.changeButton;
 			},
 			jump() {
-				this.jumpshow = true
+				
+				this.jumpshow = true;
+			},
+			relevance() {
+				this.relevanceshow = true;
 			},
 			canclejump() {
 				this.jumpshow = false;
-			}
+			},
+			canclerelevance() {
+				this.relevanceshow = false;
+			},
+//			handselect(index,qindex){
+//				debugger
+//				console.log(index,qindex);
+//			}
 
 		},
 		created() {
 			this.gdomack = this.item.domack;
 		},
 		components: {
-			headTop
+			headTop,
+			jump,
+			relevance
 		}
 	}
 </script>
@@ -405,60 +380,7 @@
 		}
 	}
 	
-	.jump {
-		position: fixed;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background-color: rgba(0, 0, 0, .8);
-		top: 0;
-		z-index: 200;
-		.jumpitem {
-			position: absolute;
-			z-index: 300;
-			top: 50%;
-			left: 50%;
-			width: 30%;
-			border: 1px dashed #303133;
-			background: #fff;
-			transform: translate(-50%, -50%);
-			padding: 20px 2% 30px;
-			.el-button {
-				width: 40%;
-				display: inline-block;
-				margin-top: 30px;
-				&:nth-of-type(1) {
-					margin-right: 10%;
-					margin-left: 5%;
-				}
-			}
-			.jumpitemcontent {
-				width: 100%;
-				margin: 0 auto;
-				border-top: 1px solid #303133;
-				border-left: 1px solid #303133;
-				float: left;
-				ul {
-					&:nth-of-type(1) {
-						width: 30%;
-					}
-					width: 70%;
-					float:left;
-					li {
-						border-bottom: 1px solid #303133;
-						border-right: 1px solid #303133;
-						text-align: center;
-						padding: 8px 0;
-						&:nth-of-type(1) {
-							background: #409EFF;
-							padding: 0;
-						}
-					}
-				}
-			}
-		}
-	}
-	
+
 	.itemmust {
 		color: red;
 		font-style: normal;
