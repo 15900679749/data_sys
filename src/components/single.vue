@@ -2,7 +2,7 @@
 	<div>
 		<el-form>
 
-			<el-form-item :label="(qindex+1)+'、'+item.namevalue+':'" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
+			<el-form-item :label="(qindex+1)+taccord+item.namevalue+':'" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
 				<i v-if="item.must" v-text="'*'" class="itemmust"></i>
 
 				<el-radio-group v-model="item.domack" @change="dochange">
@@ -106,8 +106,12 @@
 				default: 0
 			},
 			qlist:{
-				type:Array,
-				default:[{'0':'标题1'}]
+				  type: Array,
+  					default: () => []
+			},
+			taccord:{
+				type:String,
+				default:""
 			}
 		},
 		methods: {

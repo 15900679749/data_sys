@@ -39,28 +39,28 @@
 								<div class="topic" v-for="(qitem,qindex) in item.qlist" :key="qindex">
 
 									<template v-if="qitem.qtype=='fill'">
-										<fill :item="qitem" @removeDomain="removeDomain" :index="index" :qindex="qindex" @itemSortdown="itemSortdown"></fill>
+										<fill :item="qitem" @removeDomain="removeDomain" :taccord="taccord" :index="index" :qindex="qindex" @itemSortdown="itemSortdown"></fill>
 									</template>
 									<template v-if="qitem.qtype=='single'">
-										<single :item="qitem" :qlist="item.qlist" @changeDomainRadio="changeDomainRadio" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></single>
+										<single :item="qitem" :qlist="item.qlist" :taccord="taccord" @changeDomainRadio="changeDomainRadio" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></single>
 									</template>
 									<template v-if="qitem.qtype=='multiple'">
-										<multiple :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></multiple>
+										<multiple :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></multiple>
 									</template>
 									<template v-if="qitem.qtype=='multistage'">
-										<multistage :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></multistage>
+										<multistage :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></multistage>
 									</template>
 									<template v-if="qitem.qtype=='loCation'">
-										<loCation :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></loCation>
+										<loCation :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></loCation>
 									</template>
 									<template v-if="qitem.qtype=='uploadimg'">
-										<uploadimg :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></uploadimg>
+										<uploadimg :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></uploadimg>
 									</template>
 									<template v-if="qitem.qtype=='fractions'">
-										<fractions :item="qitem" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></fractions>
+										<fractions :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></fractions>
 									</template>
 									<template v-if="qitem.qtype=='comprehensive'">
-										<comprehensive @deleCom="delem" :index="index" :list="qitem.list" :qindex="qindex" @itemSortdown="itemSortdown"></comprehensive>
+										<comprehensive @deleCom="delem" :taccord="taccord" :index="index" :list="qitem.list" :qindex="qindex" @itemSortdown="itemSortdown"></comprehensive>
 									</template>
 
 								</div>
@@ -95,6 +95,7 @@
 				region: "",
 				modelId: "",
 				list: [],
+				taccord:"、"
 			}
 		},
 		methods: {
@@ -273,11 +274,13 @@
 				option.title = "综合题名称";
 				option.qtitle = this.list[index].qlist.length + 1 + '、';
 				option.qlist = [];
+				option.changeButton=false;
 				this.list[index].qlist.push({
 					poSition:'',
 					qtitle: ix,
 					qtype: "comprehensive",
-					list: [option]
+					list: [option],
+					
 				});
 			},
 			delem(index, pindex) {
@@ -363,6 +366,7 @@
 						sortList.splice(iuitem, 1, uitem);
 						listItem.qtitle = usort;
 						sortList.splice(qindex, 1, listItem);
+						debugger
 					}else{
 						this.$message({
 							type: 'error',
@@ -378,6 +382,7 @@
 						sortList.splice(iuitem, 1, uitem);
 						listItem.qtitle = usort;
 						sortList.splice(qindex, 1, listItem);
+						debugger
 						
 					}else{
 						this.$message({

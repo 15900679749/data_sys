@@ -2,7 +2,7 @@
 	<div>
 		<el-form class="fillcontent">
 			<!--v-for="(item,index) in formlist" :key="index"-->
-			<el-form-item :label="(qindex+1)+'、'+item.namevalue+':'"  @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
+			<el-form-item :label="(qindex+1)+taccord+item.namevalue+':'"  @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
 				<i v-if="item.must" v-text="'*'" class="itemmust"></i>							
 				<el-input v-model="item.name"></el-input>
 				<div v-show="item.show" class="transition-box">
@@ -56,6 +56,10 @@
 			qindex: {
 				type: Number,
 				default: 0
+			},
+			taccord:{
+				type:String,
+				default:""
 			}
 		},
 		methods: {

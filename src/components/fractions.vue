@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-form>
-			<el-form-item :label="(qindex+1)+'、'+item.namevalue+':'" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="[{'bordernone':item.edittextinput,'itemborder':item.show}]">
+			<el-form-item :label="(qindex+1)+taccord+item.namevalue+':'" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="[{'bordernone':item.edittextinput,'itemborder':item.show}]">
 				<i v-if="item.must" v-text="'*'" class="itemmust"></i>
 				<el-row type="flex" justify="start" class="loCationtips">
 					<div class="block">
@@ -68,6 +68,10 @@
 			qindex: {
 				type: Number,
 				default: 0
+			},
+			taccord:{
+				type:String,
+				default:""
 			}
 		},
 		methods: {
