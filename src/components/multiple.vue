@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<el-form>
-			<el-form-item :label="(qindex+1)+taccord+item.namevalue" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
-				<i v-if="item.must" v-text="'*'" class="itemmust"></i>
+			<el-form-item :label="(qindex+1)+taccord+item.title" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
+				<i v-if="item.is_must" v-text="'*'" class="itemmust"></i>
 				<el-checkbox-group v-model="checkedGroup" @change="handleChecked">
 					<el-checkbox v-for="(checkoption,index) in item.domains" :label="checkoption" :key="index">{{checkoption.value}}</el-checkbox>
 				</el-checkbox-group>
@@ -22,8 +22,8 @@
 				<el-row v-if="item.edittextinput" class="edittextinput">
 					<el-col class="singleinputcontent">
 						<el-form-item :label="'题目文本'">
-							<el-input v-model="item.namevalue"></el-input>
-							<el-checkbox label="必答" name="type" v-model="item.must"></el-checkbox>
+							<el-input v-model="item.title"></el-input>
+							<el-checkbox label="必答" name="type" v-model="item.is_must"></el-checkbox>
 							<div class="singleedit">
 								<el-row type="flex">
 									<el-col :span="19">选项编辑:</el-col>
@@ -84,9 +84,9 @@
 				type: Number,
 				default: 0
 			},
-			taccord:{
-				type:String,
-				default:""
+			taccord: {
+				type: String,
+				default: ""
 			}
 		},
 		methods: {
@@ -124,8 +124,8 @@
 			addDomain() {
 				this.$emit("addDomain", this.index, this.qindex);
 			},
-			itemSortdown:function(index, qindex,type){
-				this.$emit("itemSortdown", index, qindex,type);
+			itemSortdown: function(index, qindex, type) {
+				this.$emit("itemSortdown", index, qindex, type);
 			},
 			changeposition(item) {
 				item.changeButton = !item.changeButton;

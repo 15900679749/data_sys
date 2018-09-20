@@ -17,7 +17,7 @@
 						<el-button type="info" plain @click="itemSortdown(index,qindex,'up')">上移一题</el-button>
 						<el-button type="info" plain @click="itemSortdown(index,qindex,'down')">下移一题</el-button>
 						<div>移至【
-							<el-input v-model="item.serial_number" class="inputposition"></el-input>】题
+							<el-input v-model="item.poSition" class="inputposition"></el-input>】题
 							<el-button type="primary" plain class="positionsure" @click.native="itemSortdown(index,qindex,'jumpitem')">确定</el-button>
 						</div>
 					</div>
@@ -117,7 +117,7 @@
 			},
 			dochange(item) {
 
-//				this.gdomack = item;
+				//				this.gdomack = item;
 			},
 			gdochange(item) {
 
@@ -131,7 +131,7 @@
 				//				}
 			},
 			submitForm(item) {
-				this.$emit("submitForm", item,this.index);
+				this.$emit("submitForm", item, this.index);
 				//				item.edittextinput = !item.edittextinput;
 				//				item.show = !item.show;
 			},
@@ -173,15 +173,13 @@
 			},
 			canclejump(item) {
 				for(let i in item.option) {
-					item.domains[i].default_choose = "";
+					item.option[i].skip_sub = "";
 				}
 				this.jumpshow = false;
 			},
 			canclerelevance(item) {
-
-				for(let i in item.domains) {
-
-					item.domains[i].default_choose = "";
+				for(let i in item.option) {
+					item.option[i].related_sub = "";
 				}
 				this.relevanceshow = false;
 			},

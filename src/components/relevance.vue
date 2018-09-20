@@ -8,10 +8,10 @@
 					<span>关联题目</span>
 				</li>
 				<li v-for="(domainitem,doindex) in domains" :key="doindex">
-					<span>{{domainitem.value}}</span>
+					<span>{{domainitem.option_name}}</span>
 					<span>
-									<el-select v-model="domainitem.relevanceoption" placeholder="请选择" :disabled="!!domainitem.jumpoption">									
-											<el-option v-for="(itemoption,itindex) in qlist" :key="itindex"  :label="itemoption.qtitle+itemoption.namevalue" :value="itemoption.qtitle+itemoption.namevalue">
+									<el-select v-model="domainitem.related_sub" placeholder="请选择" :disabled="!!domainitem.skip_sub">									
+											<el-option v-for="(itemoption,itindex) in qlist" :key="itindex"  :label="itemoption.qtitle+itemoption.title" :value="itemoption.qtitle+itemoption.title">
 										</el-option>
 									</el-select>
 								</span>
@@ -52,7 +52,7 @@
 		},
 		methods: {
 			canclerelevance(item) {
-				this.$emit("canclerelevance",item)
+				this.$emit("canclerelevance", item)
 			},
 			surerelevance() {
 				this.$emit("surerelevance")
@@ -107,13 +107,11 @@
 					text-align: center;
 					float: left;
 					width: 100%;
-					
 					&:nth-of-type(1) {
 						background: #409EFF;
 						padding: 0;
 					}
 					span {
-						
 						display: inline-block;
 						padding: 8px 0;
 						&:nth-of-type(1) {

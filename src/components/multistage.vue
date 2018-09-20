@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<el-form class="mulcontent">
-			<el-form-item :label="(qindex+1)+taccord+item.namevalue+':'" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
-				<i v-if="item.must" v-text="'*'" class="itemmust"></i>
+			<el-form-item :label="(qindex+1)+taccord+item.title+':'" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
+				<i v-if="item.is_must" v-text="'*'" class="itemmust"></i>
 				<div v-for="(oitem,oindex) in item.olist" class="selectdiv">
 					<template v-if="oitem.id<=parseInt(item.value)">
 						<!--<span>{{oitem.name}}</span>-->
@@ -27,8 +27,8 @@
 				<el-row v-if="item.edittextinput" class="edittextinput">
 					<el-col class="singleinputcontent">
 						<el-form-item :label="'题目文本'">
-							<el-input v-model="item.namevalue"></el-input>
-							<el-checkbox label="必答" name="type" v-model="item.must"></el-checkbox>
+							<el-input v-model="item.title"></el-input>
+							<el-checkbox label="必答" name="type" v-model="item.is_must"></el-checkbox>
 							<div class="singleedit">
 								<el-row type="flex">
 									<el-col :span="24" class="edittext">多级下拉编辑:</el-col>

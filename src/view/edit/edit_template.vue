@@ -109,7 +109,8 @@
 					ppid: this.questionId,
 					pid: 0,
 					id: 0,
-					serial_number: '',
+					serial_number: ix,
+					poSition: "",
 					qtitle: ix,
 					sub_cat: "fill",
 					is_must: false,
@@ -125,7 +126,8 @@
 					ppid: this.questionId,
 					pid: 0,
 					id: 0,
-					serial_number: 0,
+					serial_number: ix,
+					poSition: "",
 					qtitle: ix,
 					sub_cat: "single",
 					is_must: false,
@@ -147,11 +149,13 @@
 			addmultiple(index) {
 				let ix = this.list[index].qlist.length + 1;
 				this.list[index].qlist.push({
-					poSition: '',
 					qtitle: ix,
-					qtype: "multiple",
-					must: false,
-					namevalue: '标题',
+					sub_cat: "multiple",
+					title: '标题',
+					serial_number: ix,
+					poSition: "",
+					is_must: false,
+					title: '标题',
 					show: true,
 					edittextinput: true,
 					changeButton: false,
@@ -166,14 +170,13 @@
 			},
 			addmultistage(index) {
 				let ix = this.list[index].qlist.length + 1;
-
-				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
 					poSition: '',
 					qtitle: ix,
-					qtype: "multistage",
-					must: false,
-					namevalue: '标题',
+					sub_cat: "multistage",
+					serial_number: ix,
+					is_must: false,
+					title: '标题',
 					show: true,
 					edittextinput: true,
 					changeButton: false,
@@ -227,14 +230,13 @@
 			},
 			adduploadimg(index) {
 				let ix = this.list[index].qlist.length + 1;
-
-				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
-					poSition: '',
+					sub_cat: "uploadimg",
+					serial_number: ix,
+					poSition: "",
 					qtitle: ix,
-					qtype: "uploadimg",
-					namevalue: '标题',
-					must: false,
+					is_must: false,
+					title: '标题',
 					show: true,
 					edittextinput: true,
 					changeButton: false,
@@ -247,14 +249,14 @@
 			},
 			addloCation(index) {
 				let ix = this.list[index].qlist.length + 1;
-
-				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
-					poSition: '',
+					sub_cat: "loCation",
+					title: '标题',
+					serial_number: ix,
+					poSition: "",
 					qtitle: ix,
-					qtype: "loCation",
-					must: false,
-					namevalue: '标题',
+					sub_cat: "fill",
+					is_must: false,
 					show: true,
 					edittextinput: true,
 					changeButton: false,
@@ -263,17 +265,17 @@
 			addfractions(index) {
 				let ix = this.list[index].qlist.length + 1;
 
-				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
 					poSition: '',
 					qtitle: ix,
-					qtype: "fractions",
+					sub_cat: "fractions",
 					silidervalue: 100,
-					must: false,
-					namevalue: '标题',
+					serial_number: ix,
+					is_must: false,
+					title: '标题',
 					show: true,
 					edittextinput: true,
-					changeButton: false,
+					changeButton: false
 				})
 			},
 			addcomprehensive(index) {
@@ -286,7 +288,7 @@
 				this.list[index].qlist.push({
 					poSition: '',
 					qtitle: ix,
-					qtype: "comprehensive",
+					sub_cat: "comprehensive",
 					list: [option],
 
 				});
@@ -372,20 +374,17 @@
 				this.list[index].qlist[qindex].option = dlist;
 			},
 			itemSortdown(index, qindex, type) {
-				debugger
 				var listItem = this.list[index].qlist[qindex];
 				var sortList = this.list[index].qlist;
-				debugger
-				var sortId = listItem.order_num;
+				var sortId = listItem.serial_number;
 				if(type == 'up') {
 					if(sortId != 1) {
 						let uitem = this.list[index].qlist[qindex - 1];
-						let iuitem = this.list[index].qlist.indexOf(uitem);
-						let usort = uitem.qtitle;
-						uitem.order_num = sortId;
-						sortList.splice(iuitem, 1, uitem);
-						listItem.order_num = usort;
-						sortList.splice(qindex, 1, listItem);
+						if(uitem != undefined && uitem != null) {
+							let usort = uitem.serial_number;
+							uitem.serial_number = sortId;
+							listItem.serial_number = usort;
+						}
 					} else {
 						this.$message({
 							type: 'error',
@@ -395,33 +394,29 @@
 				} else if(type == 'down') {
 					if(sortId != sortList.length) {
 						let uitem = this.list[index].qlist[qindex + 1];
-						let iuitem = this.list[index].qlist.indexOf(uitem);
-						let usort = uitem.qtitle;
-						uitem.order_num = sortId;
-						sortList.splice(iuitem, 1, uitem);
-						listItem.qtitle = usort;
-						sortList.splice(qindex, 1, listItem);
-						debugger
-
+						if(uitem != undefined && uitem != null) {
+							let usort = uitem.serial_number;
+							uitem.serial_number = sortId;
+							listItem.serial_number = usort;
+						}
 					} else {
 						this.$message({
 							type: 'error',
 							message: '已经是最后一题，无法继续下移!'
 						});
-
 					}
 				} else {
 					let jumpnum = parseInt(this.list[index].qlist[qindex].poSition);
 					if(jumpnum != sortId) {
 						let uitem = this.list[index].qlist[jumpnum - 1];
-						let iuitem = this.list[index].qlist.indexOf(uitem);
-						let usort = jumpnum;
-						uitem.order_num = sortId;
-						sortList.splice(iuitem, 1, uitem);
-						listItem.order_num = usort;
-						sortList.splice(qindex, 1, listItem);
-						listItem.changeButton = !listItem.changeButton;
-						listItem.poSition = '';
+						if(uitem != undefined && uitem != null) {
+							let usort = uitem.serial_number;
+							uitem.serial_number = sortId;
+							uitem.poSition = '';
+							listItem.serial_number = usort;
+							listItem.changeButton = !listItem.changeButton;
+							listItem.poSition = '';
+						}
 					} else {
 						this.$message({
 							type: 'error',
@@ -431,7 +426,7 @@
 
 				}
 				sortList.sort(function(a, b) {
-					return a.order_num - b.order_num;
+					return a.serial_number - b.serial_number;
 				});
 
 				this.list[index].qlist = sortList;
@@ -519,10 +514,12 @@
 						}
 						break;
 				}
+				debugger
 				this.$post("/Home/Subject/createNewItem", subModel).then((res) => {
 					self.list[index].id = res.id;
 				});
-			}
+			},
+			//canclerelevance()
 		},
 		mounted: function() {
 			console.log(this.activeNames);

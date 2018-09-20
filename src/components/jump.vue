@@ -10,10 +10,10 @@
 						<span>跳转到</span>
 					</li>
 					<li v-for="(domainitem,index) in domains" :key="index">
-						<span>{{domainitem.value}}</span>
+						<span>{{domainitem.option_name}}</span>
 						<span>
-							<el-select v-model="domainitem.jumpoption" placeholder="请选择" :disabled="!!domainitem.relevanceoption">
-								<el-option v-for="(itemoption,index) in qlist" :label="itemoption.qtitle+itemoption.namevalue" :value="itemoption.qtitle+itemoption.namevalue" :key="index">
+							<el-select v-model="domainitem.skip_sub" placeholder="请选择" :disabled="!!domainitem.related_sub">
+								<el-option v-for="(itemoption,index) in qlist" :label="itemoption.qtitle+itemoption.title" :value="itemoption.qtitle+itemoption.title" :key="index">
 								</el-option>
 							</el-select>
 						</span>
@@ -56,10 +56,10 @@
 		},
 		methods: {
 			canclejump(item) {
-				this.$emit("canclejump",item);
+				this.$emit("canclejump", item);
 			},
 			surejump() {
-this.$emit("surejump");
+				this.$emit("surejump");
 			},
 		},
 		components: {
@@ -108,13 +108,11 @@ this.$emit("surejump");
 					text-align: center;
 					float: left;
 					width: 100%;
-					
 					&:nth-of-type(1) {
 						background: #409EFF;
 						padding: 0;
 					}
 					span {
-						
 						display: inline-block;
 						padding: 8px 0;
 						&:nth-of-type(1) {
