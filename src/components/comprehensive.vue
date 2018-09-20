@@ -86,10 +86,14 @@
 			}
 		},
 		props: {
-			//			item: {
-			//				type: Object,
-			//				default: {}
-			//			}
+			index: {
+				type: Number,
+				default: 0
+			},
+			qindex: {
+				type: Number,
+				default: 0
+			},
 		},
 		methods: {
 			handleChange(val) {
@@ -121,7 +125,7 @@
 					changeButton: false,
 					domack: '0',
 					domains: [{
-						value: '选项',
+						value: '选项1',
 						sort: 1
 					}]
 				});
@@ -314,13 +318,16 @@
 			},
 			addDomain(index, qindex) {
 				let sort = this.list[index].qlist[qindex].domains.length + 1;
+				
 				let options = {
-					"value": "选项",
+					"value": "选项"+sort,
 					"sort": sort
 				}
 				this.list[index].qlist[qindex].domains.push(options);
+			
 			},
 			changeDomainRadio(index, qindex, v) {
+				
 				this.list[index].qlist[qindex].domack = v;
 			},
 			removeDomain(index, qindex) {

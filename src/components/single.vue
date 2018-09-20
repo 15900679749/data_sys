@@ -2,11 +2,11 @@
 	<div>
 		<el-form>
 
-			<el-form-item :label="(qindex+1)+taccord+item.namevalue+':'" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
-				<i v-if="item.must" v-text="'*'" class="itemmust"></i>
+			<el-form-item :label="(qindex+1)+taccord+item.title+':'" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
+				<i v-if="item.is_must" v-text="'*'" class="itemmust"></i>
 
-				<el-radio-group v-model="item.domack" @change="dochange">
-					<el-radio :label="im.value" v-for="(im,inx) in item.domains" :key="inx">{{im.value}}</el-radio>
+				<el-radio-group v-model="item.default_choose" @change="dochange">
+					<el-radio :label="im.option_name" v-for="(im,inx) in item.option" :key="inx">{{im.option_name}}</el-radio>
 				</el-radio-group>
 
 				<div v-show="item.show" class="transition-box">
@@ -17,7 +17,7 @@
 						<el-button type="info" plain @click="itemSortdown(index,qindex,'up')">上移一题</el-button>
 						<el-button type="info" plain @click="itemSortdown(index,qindex,'down')">下移一题</el-button>
 						<div>移至【
-							<el-input v-model="item.poSition" class="inputposition"></el-input>】题
+							<el-input v-model="item.serial_number" class="inputposition"></el-input>】题
 							<el-button type="primary" plain class="positionsure" @click.native="itemSortdown(index,qindex,'jumpitem')">确定</el-button>
 						</div>
 					</div>
@@ -25,8 +25,8 @@
 				<el-row v-if="item.edittextinput" class="edittextinput">
 					<el-col class="singleinputcontent">
 						<el-form-item :label="'题目文本'">
-							<el-input v-model="item.namevalue"></el-input>
-							<el-checkbox label="必答" name="type" v-model="item.must"></el-checkbox>
+							<el-input v-model="item.title"></el-input>
+							<el-checkbox label="必答" name="type" v-model="item.is_must"></el-checkbox>
 							<div class="singleedit">
 								<el-row type="flex">
 									<el-col :span="16">项目编辑:</el-col>
@@ -35,22 +35,21 @@
 								</el-row>
 								<!--	<el-form-item v-for="(domain, index) in item.domains" :label="'域名' + index" :key="domain.key" :prop="'domains.' + index + '.value'" :rules="{required: true, message: '域名不能为空', trigger: 'blur'}">-->
 
-								<el-form-item v-for="(domain, dindex) in item.domains" :rules="{required: true, message: '域名不能为空', trigger: 'blur'}" :key="dindex">
+								<el-form-item v-for="(domain, dindex) in item.option" :rules="{required: true, message: '域名不能为空', trigger: 'blur'}" :key="dindex">
 									<el-row>
 										<el-col :span="16">
-											<el-input v-model="domain.value"></el-input>
+											<el-input v-model="domain.option_name"></el-input>
 										</el-col>
 										<el-col :span="3">
-											<el-radio-group v-model="gdomack" @change="gdochange">
-												<el-radio :label="domain.value" border></el-radio>
+											<el-radio-group v-model="item.default_choose" @change="gdochange">
+												<el-radio :label="domain.option_name" border></el-radio>
 											</el-radio-group>
 										</el-col>
 										<el-col :span="5" class="iconplus">
 											<i class="el-icon-circle-plus-outline" @click="addDomain"></i>
 											<i class="el-icon-remove-outline" @click="removeDomainitem(index,qindex,dindex)"></i>
-											<i :class="{radioDisable:(dindex+1)==item.domains.length}" class="el-icon-back" @click=""></i>
-											<!--v-show="dindex!=0"-->
-											<i :class="{radioDisable:dindex==0}" class="el-icon-back backright" @click="" disabled='true'></i>
+											<i :class="{radioDisable:(dindex+1)==item.option.length}" class="el-icon-back" @click="domainSortdown(index,qindex,dindex,'down')"></i>
+											<i :class="{radioDisable:dindex==0}" class="el-icon-back backright" @click="domainSortdown(index,qindex,dindex,'up')"></i>
 										</el-col>
 									</el-row>
 								</el-form-item>
@@ -67,8 +66,8 @@
 						</el-form-item>
 					</el-col>
 				</el-row>
-				<jump  :jumpshow='jumpshow' :domains="item.domains" @canclejump='canclejump' :qlist="qlist" ></jump>
-				<relevance :relevanceshow='relevanceshow' :domains="item.domains" @canclerelevance='canclerelevance' :qlist="qlist"></relevance>
+				<jump :jumpshow='jumpshow' :domains="item.option" :item="item" @canclejump='canclejump' :qlist="qlist" @surejump="surejump"></jump>
+				<relevance :relevanceshow='relevanceshow' :domains="item.option" :item="item" @canclerelevance='canclerelevance' :qlist="qlist" @surerelevance="surerelevance"></relevance>
 			</el-form-item>
 		</el-form>
 
@@ -85,10 +84,8 @@
 		data() {
 			return {
 				poSition: '',
-				gdomack: '',
 				jumpshow: false,
-				relevanceshow:false,
-			
+				relevanceshow: false,
 
 			}
 		},
@@ -105,13 +102,13 @@
 				type: Number,
 				default: 0
 			},
-			qlist:{
-				  type: Array,
-  					default: () => []
+			qlist: {
+				type: Array,
+				default: () => []
 			},
-			taccord:{
-				type:String,
-				default:""
+			taccord: {
+				type: String,
+				default: ""
 			}
 		},
 		methods: {
@@ -119,10 +116,13 @@
 				item.edittextinput = !item.edittextinput;
 			},
 			dochange(item) {
-				this.gdomack = item;
+
+//				this.gdomack = item;
 			},
 			gdochange(item) {
+
 				this.$emit("changeDomainRadio", this.index, this.qindex, item);
+
 			},
 			showcart(item) {
 				item.show = item.edittextinput || !item.show;
@@ -131,14 +131,15 @@
 				//				}
 			},
 			submitForm(item) {
-				item.edittextinput = !item.edittextinput;
-				item.show = !item.show;
+				this.$emit("submitForm", item,this.index);
+				//				item.edittextinput = !item.edittextinput;
+				//				item.show = !item.show;
 			},
 			removeDomain() {
 				this.$emit("removeDomain", this.index, this.qindex);
 			},
-			itemSortdown:function(index, qindex,type){
-				this.$emit("itemSortdown", index, qindex,type);
+			itemSortdown: function(index, qindex, type) {
+				this.$emit("itemSortdown", index, qindex, type);
 			},
 			domainSortdown: function(index, qindex, dindex, type) {
 				!event.target.classList.contains("radioDisable") && this.$emit("domainSortdown", index, qindex, dindex, type)
@@ -164,22 +165,33 @@
 				item.changeButton = !item.changeButton;
 			},
 			jump() {
-				
+
 				this.jumpshow = true;
 			},
 			relevance() {
 				this.relevanceshow = true;
 			},
-			canclejump() {
+			canclejump(item) {
+				for(let i in item.option) {
+					item.domains[i].default_choose = "";
+				}
 				this.jumpshow = false;
 			},
-			canclerelevance() {
+			canclerelevance(item) {
+
+				for(let i in item.domains) {
+
+					item.domains[i].default_choose = "";
+				}
 				this.relevanceshow = false;
 			},
+			surejump() {
+				this.jumpshow = false;
+			},
+			surerelevance() {
+				this.relevanceshow = false;
+			}
 
-		},
-		created() {
-			this.gdomack = this.item.domack;
 		},
 		components: {
 			headTop,
@@ -199,7 +211,7 @@
 	}
 	
 	.el-form-item .el-input.inputposition {
-		width:18%;
+		width: 18%;
 		margin-left: 0;
 	}
 	
@@ -386,7 +398,6 @@
 		}
 	}
 	
-
 	.itemmust {
 		color: red;
 		font-style: normal;
@@ -394,10 +405,11 @@
 		left: -13px;
 		top: 3px;
 	}
-	.positionsure{
-    width: 40px;
-    display: inline-block;
-    margin: 0;
-    padding: 3px 0;
-}
+	
+	.positionsure {
+		width: 40px;
+		display: inline-block;
+		margin: 0;
+		padding: 3px 0;
+	}
 </style>

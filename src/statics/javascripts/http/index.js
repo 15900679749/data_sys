@@ -24,9 +24,9 @@ axios.defaults.timeout = cfig.timeout;
 axios.interceptors.request.use(config => {
 		loading = Loading.service(loption);
 		//config.headers["token"] = storage.get("token") || "";
-		
+
 		if(!config.data.hasOwnProperty("token") && !config.url.endsWith("/Home/Login/login")) {
-	
+
 			config.data = {
 				token: storage.get("token") || "",
 				...config.data
@@ -80,11 +80,30 @@ axios.interceptors.response.use(response => {
 // 请求方式 Formdata
 axios.defaults.transformRequest = [function(data) {
 	let res = '';
-	for(let it in data) {
-		res += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
-	}
-	return res.substring(0, res.length - 1);
+	res = getObjectList(data);
+	//	for(let it in data) {
+	//		debugger
+	//		res += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+	//	}
+	return res;
 }];
+
+//请求对象有数组
+function getObjectList(data) {
+	let res = '';
+	for(let it in data) {
+		if(it !== "deleteIndex") {
+			if(typeof(data[it]) == "object") {
+				res += encodeURIComponent(it) + '=' + encodeURIComponent(JSON.stringify(data[it])) + '&';
+				//res += getObjectList(data[it]);
+			} else {
+				res += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&';
+			}
+		}
+	}
+	res = res.substring(0, res.length - 1);
+	return res;
+}
 
 export function post(url, data = {}) {
 	return new Promise((resolve, reject) => {

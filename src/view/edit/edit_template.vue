@@ -33,33 +33,33 @@
 									<el-dropdown-item @click.native="addItem(index,'comprehensive')">综合题</el-dropdown-item>
 								</el-dropdown-menu>
 							</el-dropdown>
-							<el-input v-model="item.title" placeholder="模块名称" class="titlename"></el-input>
+							<el-input v-model="item.mod_name" placeholder="模块名称" class="titlename"></el-input>
 							<el-collapse-item :title="item.qtitle" :name="index">
 
 								<div class="topic" v-for="(qitem,qindex) in item.qlist" :key="qindex">
 
-									<template v-if="qitem.qtype=='fill'">
-										<fill :item="qitem" @removeDomain="removeDomain" :taccord="taccord" :index="index" :qindex="qindex" @itemSortdown="itemSortdown"></fill>
+									<template v-if="qitem.sub_cat=='fill'">
+										<fill :item="qitem" @removeDomain="removeDomain" :taccord="taccord" :index="index" :qindex="qindex" @itemSortdown="itemSortdown" @submitForm="submitForm"></fill>
 									</template>
-									<template v-if="qitem.qtype=='single'">
-										<single :item="qitem" :qlist="item.qlist" :taccord="taccord" @changeDomainRadio="changeDomainRadio" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></single>
+									<template v-if="qitem.sub_cat=='single'">
+										<single :item="qitem" :qlist="item.qlist" :taccord="taccord" @changeDomainRadio="changeDomainRadio" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm"></single>
 									</template>
-									<template v-if="qitem.qtype=='multiple'">
-										<multiple :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></multiple>
+									<template v-if="qitem.sub_cat=='multiple'">
+										<multiple :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm"></multiple>
 									</template>
-									<template v-if="qitem.qtype=='multistage'">
-										<multistage :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></multistage>
+									<template v-if="qitem.sub_cat=='multistage'">
+										<multistage :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm"></multistage>
 									</template>
-									<template v-if="qitem.qtype=='loCation'">
-										<loCation :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></loCation>
+									<template v-if="qitem.sub_cat=='loCation'">
+										<loCation :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm"></loCation>
 									</template>
-									<template v-if="qitem.qtype=='uploadimg'">
-										<uploadimg :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></uploadimg>
+									<template v-if="qitem.sub_cat=='uploadimg'">
+										<uploadimg :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm"></uploadimg>
 									</template>
-									<template v-if="qitem.qtype=='fractions'">
-										<fractions :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></fractions>
+									<template v-if="qitem.sub_cat=='fractions'">
+										<fractions :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm"></fractions>
 									</template>
-									<template v-if="qitem.qtype=='comprehensive'">
+									<template v-if="qitem.sub_cat=='comprehensive'">
 										<comprehensive @deleCom="delem" :taccord="taccord" :index="index" :list="qitem.list" :qindex="qindex" @itemSortdown="itemSortdown"></comprehensive>
 									</template>
 
@@ -92,10 +92,11 @@
 				contentText: '',
 				questiontitle: '',
 				activeNames: [],
-				region: "",
-				modelId: "",
 				list: [],
-				taccord:"、"
+				taccord: "、",
+				questionId: "",
+				parentModle: "",
+
 			}
 		},
 		methods: {
@@ -105,12 +106,14 @@
 			addfill(index) {
 				let ix = this.list[index].qlist.length + 1;
 				this.list[index].qlist.push({
-					poSition:'',
+					ppid: this.questionId,
+					pid: 0,
+					id: 0,
+					serial_number: '',
 					qtitle: ix,
-					qtype: "fill",
-					must: false,
-					name: "",
-					namevalue: '标题',
+					sub_cat: "fill",
+					is_must: false,
+					title: '标题',
 					show: true,
 					edittextinput: true,
 					changeButton: false
@@ -119,27 +122,32 @@
 			addsingle(index) {
 				let ix = this.list[index].qlist.length + 1;
 				this.list[index].qlist.push({
-					poSition:'',
+					ppid: this.questionId,
+					pid: 0,
+					id: 0,
+					serial_number: 0,
 					qtitle: ix,
-					poSition:'',
-					qtype: "single",
-					must: false,
-					namevalue: '标题',
+					sub_cat: "single",
+					is_must: false,
+					title: '标题',
 					show: true,
 					edittextinput: true,
 					changeButton: false,
-					domack: '0',
-					domains: [{
-						value: '选项',
-						sort: 1,
-						selectoption:''
+					default_choose: '',
+					option: [{
+						id: 0,
+						order_num: 1,
+						option_name: '选项1',
+						default_choose: 0,
+						related_sub: "",
+						skip_sub: ""
 					}]
 				});
 			},
 			addmultiple(index) {
 				let ix = this.list[index].qlist.length + 1;
 				this.list[index].qlist.push({
-					poSition:'',
+					poSition: '',
 					qtitle: ix,
 					qtype: "multiple",
 					must: false,
@@ -148,7 +156,7 @@
 					edittextinput: true,
 					changeButton: false,
 					domains: [{
-						value: '选项',
+						value: '选项1',
 						sort: 1
 					}],
 					checkedGroup: ['篮球', '足球'],
@@ -161,7 +169,7 @@
 
 				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
-					poSition:'',
+					poSition: '',
 					qtitle: ix,
 					qtype: "multistage",
 					must: false,
@@ -222,7 +230,7 @@
 
 				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
-					poSition:'',
+					poSition: '',
 					qtitle: ix,
 					qtype: "uploadimg",
 					namevalue: '标题',
@@ -242,7 +250,7 @@
 
 				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
-					poSition:'',
+					poSition: '',
 					qtitle: ix,
 					qtype: "loCation",
 					must: false,
@@ -254,10 +262,10 @@
 			},
 			addfractions(index) {
 				let ix = this.list[index].qlist.length + 1;
-				
+
 				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
-					poSition:'',
+					poSition: '',
 					qtitle: ix,
 					qtype: "fractions",
 					silidervalue: 100,
@@ -274,19 +282,20 @@
 				option.title = "综合题名称";
 				option.qtitle = this.list[index].qlist.length + 1 + '、';
 				option.qlist = [];
-				option.changeButton=false;
+				option.changeButton = false;
 				this.list[index].qlist.push({
-					poSition:'',
+					poSition: '',
 					qtitle: ix,
 					qtype: "comprehensive",
 					list: [option],
-					
+
 				});
 			},
 			delem(index, pindex) {
 				this.list[index].qlist.splice(pindex, 1);
 			},
 			addItem(index, type) {
+
 				switch(type) {
 					case "fill":
 						{
@@ -334,120 +343,123 @@
 				this.activeNames.indexOf(index) == -1 && this.activeNames.push(index)
 			},
 			addDomain(index, qindex) {
-				let sort = this.list[index].qlist[qindex].domains.length + 1;
+				let sort = this.list[index].qlist[qindex].option.length + 1;
 				let options = {
-					"value": "选项",
-					"sort": sort
+					id: 0,
+					order_num: sort,
+					option_name: "选项" + sort,
+					default_choose: 0,
+					related_sub: '',
+					skip_sub: ''
 				}
-				this.list[index].qlist[qindex].domains.push(options);
+				this.list[index].qlist[qindex].option.push(options);
 			},
 			changeDomainRadio(index, qindex, v) {
-				this.list[index].qlist[qindex].domack = v;
+				this.list[index].qlist[qindex].default_choose = v;
+				let domainlist = this.list[index].qlist[qindex].option;
+				for(let i in domainlist) {
+					if(domainlist[i].option_name == v) {
+						domainlist[i].default_choose = 1;
+					}
+				}
 			},
 			removeDomain(index, qindex) {
 				let nlist = this.list[index].qlist.deleteIndex(qindex);
 				this.list[index].qlist = nlist;
 			},
 			removeDomainitem(index, qindex, dindex) {
-				let dlist = this.list[index].qlist[qindex].domains.deleteIndex(dindex);
-				this.list[index].qlist[qindex].domains = dlist;
+				let dlist = this.list[index].qlist[qindex].option.deleteIndex(dindex);
+				this.list[index].qlist[qindex].option = dlist;
 			},
-			itemSortdown(index, qindex,type){
-				
-				var listItem=this.list[index].qlist[qindex];
-				var sortList=this.list[index].qlist;
-				var sortId=listItem.qtitle;
-				if(type=='up'){
-					if(sortId!=1){
-						let uitem=this.list[index].qlist[qindex-1];
+			itemSortdown(index, qindex, type) {
+				debugger
+				var listItem = this.list[index].qlist[qindex];
+				var sortList = this.list[index].qlist;
+				debugger
+				var sortId = listItem.order_num;
+				if(type == 'up') {
+					if(sortId != 1) {
+						let uitem = this.list[index].qlist[qindex - 1];
 						let iuitem = this.list[index].qlist.indexOf(uitem);
 						let usort = uitem.qtitle;
-						uitem.qtitle = sortId;
+						uitem.order_num = sortId;
 						sortList.splice(iuitem, 1, uitem);
-						listItem.qtitle = usort;
+						listItem.order_num = usort;
 						sortList.splice(qindex, 1, listItem);
-						debugger
-					}else{
+					} else {
 						this.$message({
 							type: 'error',
 							message: '已经是第一题，无法继续上移!'
 						});
 					}
-				}else if(type=='down'){
+				} else if(type == 'down') {
 					if(sortId != sortList.length) {
-						let uitem = this.list[index].qlist[qindex+1];
+						let uitem = this.list[index].qlist[qindex + 1];
 						let iuitem = this.list[index].qlist.indexOf(uitem);
 						let usort = uitem.qtitle;
-						uitem.qtitle = sortId;
+						uitem.order_num = sortId;
 						sortList.splice(iuitem, 1, uitem);
 						listItem.qtitle = usort;
 						sortList.splice(qindex, 1, listItem);
 						debugger
-						
-					}else{
+
+					} else {
 						this.$message({
 							type: 'error',
 							message: '已经是最后一题，无法继续下移!'
 						});
-						
-					}
-				}else{
-					let jumpnum=parseInt(this.list[index].qlist[qindex].poSition);
-					if(jumpnum!=sortId){
-						let uitem = this.list[index].qlist[jumpnum-1];					
-						let iuitem = this.list[index].qlist.indexOf(uitem);						
-						let usort = jumpnum;
-						uitem.qtitle = sortId;
-						sortList.splice(iuitem, 1, uitem);
-						listItem.qtitle = usort;
-						sortList.splice(qindex, 1, listItem);
-						listItem.changeButton=!listItem.changeButton;
-						listItem.poSition='';
-					}else{
-						this.$message({
-							type: 'error',
-							message: '已经是第'+jumpnum+'题，无法进行跳转!'
-						});
-					}
-					
-						
-				}
-				sortList.sort(function(a, b) {
-					return a.qtitle - b.qtitle;
-				});
-				
-				this.list[index].qlist = sortList;
-				
-			},
-			domainSortdown(index, qindex, dindex, type) {
-				var sdomainItem = this.list[index].qlist[qindex].domains[dindex];
-				var sortList = this.list[index].qlist[qindex].domains;
-				var sortId = sdomainItem.sort; //排序
-				if(type == "up") {
-					if(sortId != 1) {
-						let uitem = this.list[index].qlist[qindex].domains[dindex - 1];
-						let iuitem = this.list[index].qlist[qindex].domains.indexOf(uitem);
-						let usort = uitem.sort;
-						uitem.sort = sortId;
-						sortList.splice(iuitem, 1, uitem);
-						sdomainItem.sort = usort;
-						sortList.splice(dindex, 1, sdomainItem);
+
 					}
 				} else {
-					if(sortId != sortList.length) {
-						let uitem = this.list[index].qlist[qindex].domains[dindex + 1];
-						let iuitem = this.list[index].qlist[qindex].domains.indexOf(uitem);
-						let usort = uitem.sort;
-						uitem.sort = sortId;
+					let jumpnum = parseInt(this.list[index].qlist[qindex].poSition);
+					if(jumpnum != sortId) {
+						let uitem = this.list[index].qlist[jumpnum - 1];
+						let iuitem = this.list[index].qlist.indexOf(uitem);
+						let usort = jumpnum;
+						uitem.order_num = sortId;
 						sortList.splice(iuitem, 1, uitem);
-						sdomainItem.sort = usort;
-						sortList.splice(dindex, 1, sdomainItem);
+						listItem.order_num = usort;
+						sortList.splice(qindex, 1, listItem);
+						listItem.changeButton = !listItem.changeButton;
+						listItem.poSition = '';
+					} else {
+						this.$message({
+							type: 'error',
+							message: '已经是第' + jumpnum + '题，无法进行跳转!'
+						});
+					}
+
+				}
+				sortList.sort(function(a, b) {
+					return a.order_num - b.order_num;
+				});
+
+				this.list[index].qlist = sortList;
+
+			},
+			domainSortdown(index, qindex, dindex, type) {
+				var sdomainItem = this.list[index].qlist[qindex].option[dindex];
+				var sortList = this.list[index].qlist[qindex].option;
+				var sortId = sdomainItem.order_num; //排序
+				if(type == "up") {
+					let uitem = this.list[index].qlist[qindex].option[dindex - 1];
+					if(uitem != undefined && uitem != null) {
+						let usort = uitem.order_num;
+						uitem.order_num = sortId;
+						sdomainItem.order_num = usort;
+					}
+				} else {
+					let uitem = this.list[index].qlist[qindex].option[dindex + 1];
+					if(uitem != undefined && uitem != null) {
+						let usort = uitem.order_num;
+						uitem.order_num = sortId;
+						sdomainItem.order_num = usort;
 					}
 				}
 				sortList.sort(function(a, b) {
-					return a.sort - b.sort;
+					return a.order_num - b.order_num;
 				});
-				this.list[index].qlist[qindex].domains = sortList;
+				this.list[index].qlist[qindex].option = sortList;
 
 			},
 			openModel() {
@@ -461,11 +473,13 @@
 				//					value
 				//				}) => {
 				var option = {};
-				//					option.title = value;
-				option.title = "模板名称";
+				option.mod_name = "模板名称";
 				option.qtitle = self.list.length + 1 + '、';
+				option.id = 0;
+				option.pid = 0;
+				option.chief = 0;
+				option.sortId = 0;
 				option.qlist = [];
-				self.list.push(option);
 
 				//				}).catch(() => {
 				//					this.$message({
@@ -473,15 +487,48 @@
 				//						message: '取消输入'
 				//					});
 				//				});
+				self.list.push(option);
+				//				this.$post("/Home/Subject/createNewMod", {
+				//					pid: this.questionId,
+				//					chief: this.parentModle || 0,
+				//					mod_name: option.mod_name
+				//				}).then((res) => {
+				//					option.id = res.id;
+				//					self.list.push(option);
+				//				})
+			},
+			submitForm(item, index) {
+				let subModel = item;
+				delete subModel.changeButton;
+				delete subModel.edittextinput;
+				delete subModel.show;
+				delete subModel.id;
+				let self = this;
+				switch(item.sub_cat) {
+					case "fill":
+						{
+							subModel.option = {};
+						}
+						break;
+					case "single":
+						{
+							delete subModel.default_choose;
+							subModel.option.forEach(item => {
+								delete item.id;
+							});
+						}
+						break;
+				}
+				this.$post("/Home/Subject/createNewItem", subModel).then((res) => {
+					self.list[index].id = res.id;
+				});
 			}
-
 		},
 		mounted: function() {
 			console.log(this.activeNames);
 		},
 		created() {
-			this.region = this.$route.query.region;
-			this.modelId = this.$route.query.modelId;
+			this.questionId = this.$route.query.questionId;
 		},
 		components: {
 			headTop,

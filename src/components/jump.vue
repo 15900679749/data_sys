@@ -12,15 +12,15 @@
 					<li v-for="(domainitem,index) in domains" :key="index">
 						<span>{{domainitem.value}}</span>
 						<span>
-							<el-select v-model="domainitem.selectoption" placeholder="请选择">
-								<el-option v-for="(itemoption,index) in qlist" :label="itemoption.qtitle+itemoption.namevalue" :value="index" :key="index">
+							<el-select v-model="domainitem.jumpoption" placeholder="请选择" :disabled="!!domainitem.relevanceoption">
+								<el-option v-for="(itemoption,index) in qlist" :label="itemoption.qtitle+itemoption.namevalue" :value="itemoption.qtitle+itemoption.namevalue" :key="index">
 								</el-option>
 							</el-select>
 						</span>
 					</li>
 				</ul>
 			</div>
-			<el-button @click="canclejump" size="medium">取消</el-button>
+			<el-button @click="canclejump(item)" size="medium">取消</el-button>
 			<el-button @click="surejump" size="medium">确定</el-button>
 
 		</div>
@@ -36,6 +36,10 @@
 			}
 		},
 		props: {
+			item: {
+				type: Object,
+				default: {}
+			},
 			jumpshow: {
 				type: Boolean,
 				default: false
@@ -51,11 +55,11 @@
 
 		},
 		methods: {
-			canclejump() {
-				this.$emit("canclejump");
+			canclejump(item) {
+				this.$emit("canclejump",item);
 			},
 			surejump() {
-
+this.$emit("surejump");
 			},
 		},
 		components: {

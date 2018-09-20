@@ -141,13 +141,25 @@
 						return false;
 					}
 				}
-				this.$router.push({
-					path: 'edit/edit_template',
-					query: {
-						modelId: this.modelId,
-						region: this.region
-					}
-				});
+				
+				this.$post("/Home/Subject/createNewSubject",{
+					template:this.modeId||0,
+					area_belong:this.region
+				}).then((res)=>{
+					console.log(res);
+				}).catch(()=>{
+					console.log("222");
+				})
+				
+				
+				
+//				this.$router.push({
+//					path: 'edit/edit_template',
+//					query: {
+//						modelId: this.modelId,
+//						region: this.region
+//					}
+//				});
 			}
 		},
 		mounted() {

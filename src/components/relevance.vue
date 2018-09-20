@@ -10,14 +10,14 @@
 				<li v-for="(domainitem,doindex) in domains" :key="doindex">
 					<span>{{domainitem.value}}</span>
 					<span>
-									<el-select v-model="domainitem.selectoption" placeholder="请选择">									
-											<el-option v-for="(itemoption,itindex) in qlist" :key="itindex"  :label="itemoption.qtitle+itemoption.namevalue" :value="itindex">
+									<el-select v-model="domainitem.relevanceoption" placeholder="请选择" :disabled="!!domainitem.jumpoption">									
+											<el-option v-for="(itemoption,itindex) in qlist" :key="itindex"  :label="itemoption.qtitle+itemoption.namevalue" :value="itemoption.qtitle+itemoption.namevalue">
 										</el-option>
 									</el-select>
 								</span>
 				</li>
 			</ul>
-			<el-button @click="canclerelevance" size="medium">取消</el-button>
+			<el-button @click="canclerelevance(item)" size="medium">取消</el-button>
 			<el-button size="medium" @click="surerelevance">确定</el-button>
 		</div>
 	</div>
@@ -33,6 +33,10 @@
 			}
 		},
 		props: {
+			item: {
+				type: Object,
+				default: {}
+			},
 			relevanceshow: {
 				type: Boolean,
 				default: false
@@ -47,11 +51,11 @@
 			},
 		},
 		methods: {
-			canclerelevance() {
-				this.$emit("canclerelevance")
+			canclerelevance(item) {
+				this.$emit("canclerelevance",item)
 			},
 			surerelevance() {
-
+				this.$emit("surerelevance")
 			},
 		},
 		created() {

@@ -6,7 +6,7 @@
 			<el-row type="flex" justify="space-between" class="ontemplateTopL">
 				<el-col :span="6">
 					<span class="vote">投票&nbsp;&nbsp;ID:{{item.idNum}}</span>
-				<!--	<span @click="edting" class="edting"><i class="el-icon-edit-outline"></i>编辑</span>-->
+					<!--	<span @click="edting" class="edting"><i class="el-icon-edit-outline"></i>编辑</span>-->
 				</el-col>
 				<el-col :span="6" class="ontemplateTopR">
 
@@ -32,40 +32,40 @@
 					<el-button><i class="el-icon-delete"></i>删除</el-button>
 				</el-col>
 			</el-row>
-			
+
 		</el-row>
 		<div v-show="jumpshow" class="jump">
-				<div class="jumpitem">
+			<div class="jumpitem">
 
-					<p>创建问卷</p>
-					<template>
-						<el-radio v-model="ckRadio" label="1" class="establish">从模板创建</el-radio>
-						<el-radio v-model="ckRadio" label="2" class="establish">从空白创建</el-radio>
-					</template>
-					<div class="jumpitemcontent">
-						<ul>
-							<li>选择模板：</li>
-							<li>所属区：</li>
-						</ul>
-						<ul>
-							<li>
-								<el-select v-model="modelId" placeholder="请选择" :disabled="ckRadio=='2'">
-									<el-option v-for="item in moptions" :key="item.value" :label="item.label" :value="item.value">
-									</el-option>
-								</el-select>
-							</li>
-							<li>
-								<el-select v-model="region" placeholder="请选择">
-									<el-option v-for="item in qoptions" :key="item.value" :label="item.label" :value="item.value">
-									</el-option>
-								</el-select>
-							</li>
-						</ul>
-					</div>
-					<el-button @click="canclejump" size="medium">取消</el-button>
-					<el-button size="medium" @click="submit">确定</el-button>
+				<p>创建问卷</p>
+				<template>
+					<el-radio v-model="ckRadio" label="1" class="establish">从模板创建</el-radio>
+					<el-radio v-model="ckRadio" label="2" class="establish">从空白创建</el-radio>
+				</template>
+				<div class="jumpitemcontent">
+					<ul>
+						<li>选择模板：</li>
+						<li>所属区：</li>
+					</ul>
+					<ul>
+						<li>
+							<el-select v-model="modelId" placeholder="请选择" :disabled="ckRadio=='2'">
+								<el-option v-for="item in moptions" :key="item.value" :label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+						</li>
+						<li>
+							<el-select v-model="region" placeholder="请选择">
+								<el-option v-for="item in qoptions" :key="item.value" :label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+						</li>
+					</ul>
 				</div>
+				<el-button @click="canclejump" size="medium">取消</el-button>
+				<el-button size="medium" @click="submit">确定</el-button>
 			</div>
+		</div>
 	</div>
 </template>
 
@@ -108,7 +108,7 @@
 
 			},
 			sendAn() {
-return this.$router.push({
+				return this.$router.push({
 					path: '/sendpage'
 				});
 			},
@@ -154,12 +154,17 @@ return this.$router.push({
 						return false;
 					}
 				}
-				this.$router.push({
-					path: 'edit/edit_template',
-					query: {
-						modelId: this.modelId,
-						region: this.region
-					}
+				this.$post("/Home/Subject/createNewSubject", {
+					template: this.modelId || 0,
+					area_belong: this.region
+				}).then((res) => {
+					console.log(res);
+					this.$router.push({
+						path: 'edit/edit_template',
+						query: {
+							questionId: res.id,
+						}
+					});
 				});
 			}
 		},

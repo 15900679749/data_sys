@@ -2,9 +2,9 @@
 	<div>
 		<el-form class="fillcontent">
 			<!--v-for="(item,index) in formlist" :key="index"-->
-			<el-form-item :label="(qindex+1)+taccord+item.namevalue+':'"  @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
-				<i v-if="item.must" v-text="'*'" class="itemmust"></i>							
-				<el-input v-model="item.name"></el-input>
+			<el-form-item :label="(qindex+1)+taccord+item.title+':'" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
+				<i v-if="item.is_must" v-text="'*'" class="itemmust"></i>
+				<el-input></el-input>
 				<div v-show="item.show" class="transition-box">
 					<span @click="showedit(item)">编辑</span>
 					<span @click.prevent="removeDomain(index,qindex)">删除</span>
@@ -13,7 +13,7 @@
 						<el-button type="info" plain @click="itemSortdown(index,qindex,'up')">上移一题</el-button>
 						<el-button type="info" plain @click="itemSortdown(index,qindex,'down')">下移一题</el-button>
 						<div>移至【
-							<el-input v-model="item.poSition" class="inputposition"></el-input>】题
+							<el-input v-model="item.serial_number" class="inputposition"></el-input>】题
 							<el-button type="primary" plain class="positionsure" @click.native="itemSortdown(index,qindex,'jumpitem')">确定</el-button>
 						</div>
 					</div>
@@ -21,8 +21,8 @@
 				<el-row v-if="item.edittextinput">
 					<el-col>
 						<el-form-item :label="'题目文本'">
-							<el-input v-model="item.namevalue"></el-input>
-							<el-checkbox label="必答" name="type" v-model="item.must"></el-checkbox>
+							<el-input v-model="item.title"></el-input>
+							<el-checkbox label="必答" name="type" v-model="item.is_must"></el-checkbox>
 							<el-button type="primary" @click="submitForm(item)">保存</el-button>
 						</el-form-item>
 					</el-col>
@@ -41,10 +41,10 @@
 		data() {
 			return {
 				poSition: '',
-//				cformlistSix:[]
+				//				cformlistSix:[]
 			}
 		},
-		props: {			
+		props: {
 			item: {
 				type: Object,
 				default: {}
@@ -57,9 +57,9 @@
 				type: Number,
 				default: 0
 			},
-			taccord:{
-				type:String,
-				default:""
+			taccord: {
+				type: String,
+				default: ""
 			}
 		},
 		methods: {
@@ -73,18 +73,19 @@
 				//				}
 			},
 			submitForm(item) {
-				item.edittextinput = !item.edittextinput;
-				item.show = !item.show;
+				this.$emit("submitForm", item, this.index);
+				//				item.edittextinput = !item.edittextinput;
+				//				item.show = !item.show;
 			},
-			itemSortdown:function(index, qindex,type){
-				this.$emit("itemSortdown", index, qindex,type);
+			itemSortdown: function(index, qindex, type) {
+				this.$emit("itemSortdown", index, qindex, type);
 			},
 			removeDomain(item) {
-//				var index = this.formlist.indexOf(item);
-//				if(index !== -1) {
-//					this.formlist.splice(index, 1)
-//				}
-this.$emit("removeDomain", this.index, this.qindex);
+				//				var index = this.formlist.indexOf(item);
+				//				if(index !== -1) {
+				//					this.formlist.splice(index, 1)
+				//				}
+				this.$emit("removeDomain", this.index, this.qindex);
 			},
 			command(callback, vc) {
 				console.log("回调参数" + callback);
@@ -119,22 +120,24 @@ this.$emit("removeDomain", this.index, this.qindex);
 	.el-form-item .el-input.inputposition {
 		margin-left: 0;
 	}
-		.itemmust{
-		color:red;
+	
+	.itemmust {
+		color: red;
 		font-style: normal;
-		    position: absolute;
-    left: -13px;
-    top: 3px;
+		position: absolute;
+		left: -13px;
+		top: 3px;
 	}
-	.topic .fillcontent .el-form-item__label{
-	width: auto;
-}
-.topic .fillcontent .el-form-item__content .el-input{
-	margin-left:10px;
-}
+	
+	.topic .fillcontent .el-form-item__label {
+		width: auto;
+	}
+	
+	.topic .fillcontent .el-form-item__content .el-input {
+		margin-left: 10px;
+	}
 </style>
 <style scoped="scoped" lang="scss">
-
 	.el-input {
 		width: 30%;
 		margin-left: 76px;
@@ -235,8 +238,8 @@ this.$emit("removeDomain", this.index, this.qindex);
 	.el-button+.el-button {
 		margin-left: 0;
 	}
-	.el-form-item__content{
+	
+	.el-form-item__content {
 		position: relative;
 	}
-
 </style>
