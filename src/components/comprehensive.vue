@@ -1,17 +1,17 @@
 <template>
 	<div class="compre">
 		<el-form v-model="activeNames" @change="handleChange">
-			<el-form-item class="edit_item" v-for="(item,index) in list" :key="index" :label="item.qtitle">
+			<el-form-item class="edit_item" v-for="(item,lindex) in list" :key="index" :label="(qindex+1)+''">
 				<el-input v-model="item.title" placeholder="模块名称" class="titlename"></el-input>
 				<div class="compretopright">
 					<span @click.prevent="deletecomp" class="deletecomp">删除</span>
 					<span @click.prevent="changeposition(item)" class="oposition">位置变更</span>
-					<div class="changeposition" v-show="list.changeButton">
-						<el-button type="info" plain @click="itemSortdown(index,qindex,'up')">上移一题</el-button>
-						<el-button type="info" plain @click="itemSortdown(index,qindex,'down')">下移一题</el-button>
+					<div class="changeposition" v-show="item.changeButton">
+						<el-button type="info" plain @click="itemSortdown(index,qindex,'up','temp')">上移一题</el-button>
+						<el-button type="info" plain @click="itemSortdown(index,qindex,'down','temp')">下移一题</el-button>
 						<div>移至【
 							<el-input v-model="item.poSition" class="inputposition"></el-input>】题
-							<el-button type="primary" plain class="positionsure" @click.native="itemSortdown(index,qindex,'jumpitem')">确定</el-button>
+							<el-button type="primary" plain class="positionsure" @click.native="itemSortdown(index,qindex,'jumpitem','temp')">确定</el-button>
 						</div>
 					</div>
 
@@ -94,6 +94,15 @@
 				type: Number,
 				default: 0
 			},
+			list: {
+				type: Array,
+				default: () => []
+			}
+		},
+		created() {
+			//						debugger
+			//						let aa = this.list;
+			//						debugger
 		},
 		methods: {
 			handleChange(val) {
@@ -417,8 +426,8 @@
 				let dlist = this.list[index].qlist[qindex].domains.deleteIndex(dindex);
 				this.list[index].qlist[qindex].domains = dlist;
 			},
-			itemSortdown: function(index, qindex, type) {
-				this.$emit("itemSortdown", this.index, this.qindex, type, this.list.poSition);
+			itemSortdown: function(index, qindex, type, sitem) {
+				this.$emit("itemSortdown", this.index, this.qindex, type, sitem);
 			},
 			domainSortdown(index, qindex, dindex, type) {
 				var sdomainItem = this.list[index].qlist[qindex].option[dindex];
@@ -462,7 +471,6 @@
 		mounted: function() {
 			console.log(this.activeNames);
 		},
-		created() {},
 		components: {
 			headTop,
 			topic,

@@ -379,11 +379,11 @@
 				let dlist = this.list[index].qlist[qindex].option.deleteIndex(dindex);
 				this.list[index].qlist[qindex].option = dlist;
 			},
-			itemSortdown(index, qindex, type, scom) {
+			itemSortdown(index, qindex, type, sitem) {
 				var listItem = this.list[index].qlist[qindex];
 				var sortList = this.list[index].qlist;
 				var serial_number = listItem.serial_number;
-				listItem.changeButton = false;
+				sitem ? listItem.list[0].changeButton = false : listItem.changeButton = false;
 				if(type == 'up') {
 					let uitem = this.list[index].qlist[qindex - 1];
 					if(uitem != undefined && uitem != null) {
@@ -409,7 +409,14 @@
 						});
 					}
 				} else if(type == 'jumpitem') {
-					let num = scom || this.list[index].qlist[qindex].poSition;
+					let num = "";
+					if(sitem) {
+						num = this.list[index].qlist[qindex].list[0].poSition;
+						this.list[index].qlist[qindex].list[0].changeButton = false;
+						this.list[index].qlist[qindex].list[0].poSition = "";
+					} else {
+						num = this.list[index].qlist[qindex].poSition;
+					}
 					if(window.isNaN(num)) {
 						this.$message({
 							type: 'error',
