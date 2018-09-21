@@ -289,12 +289,14 @@
 				option.qtitle = this.list[index].qlist.length + 1 + '、';
 				option.qlist = [];
 				option.changeButton = false;
+				option.serial_number = ix;
+				option.sub_cat = "comprehensive";
 				this.list[index].qlist.push({
-					poSition: '',
 					qtitle: ix,
+					poSition: "",
+					serial_number: ix,
 					sub_cat: "comprehensive",
 					list: [option],
-
 				});
 			},
 			delem(index, pindex) {
@@ -377,7 +379,7 @@
 				let dlist = this.list[index].qlist[qindex].option.deleteIndex(dindex);
 				this.list[index].qlist[qindex].option = dlist;
 			},
-			itemSortdown(index, qindex, type) {
+			itemSortdown(index, qindex, type, scom) {
 				var listItem = this.list[index].qlist[qindex];
 				var sortList = this.list[index].qlist;
 				var serial_number = listItem.serial_number;
@@ -407,14 +409,15 @@
 						});
 					}
 				} else if(type == 'jumpitem') {
-					if(window.isNaN(this.list[index].qlist[qindex].poSition)) {
+					let num = scom || this.list[index].qlist[qindex].poSition;
+					if(window.isNaN(num)) {
 						this.$message({
 							type: 'error',
 							message: '输入有误，无法进行跳转!'
 						});
 						return;
 					}
-					let jumpnum = parseInt(this.list[index].qlist[qindex].poSition);
+					let jumpnum = parseInt(num);
 					if(jumpnum != serial_number) {
 						let uitem = this.list[index].qlist[jumpnum - 1];
 						if(uitem != undefined && uitem != null) {
