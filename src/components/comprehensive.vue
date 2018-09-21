@@ -35,26 +35,26 @@
 				<div class="topic" v-for="(qitem,qindex) in item.qlist" :key="qindex">
 
 					<!--<topic :list="list"></topic>-->
-					<template v-if="qitem.qtype=='fill'">
+					<template v-if="qitem.sub_cat=='fill'">
 						<fill :item="qitem" @removeDomain="removeDomain" :taccord="taccord" :index="index" :qindex="qindex" @itemSortdown="itemSortdown"></fill>
 					</template>
-					<template v-if="qitem.qtype=='single'">
+					<template v-if="qitem.sub_cat=='single'">
 						<single :item="qitem" @changeDomainRadio="changeDomainRadio" :taccord="taccord" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></single>
 					</template>
-					<template v-if="qitem.qtype=='multiple'">
+					<template v-if="qitem.sub_cat=='multiple'">
 						<multiple :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></multiple>
 					</template>
-					<template v-if="qitem.qtype=='multistage'">
-						<multistage :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></multistage>
+					<template v-if="qitem.sub_cat=='multistage'">
+						<multistage :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" kdsssss @itemSortdown="itemSortdown"></multistage>
 					</template>
-					<template v-if="qitem.qtype=='loCation'">
-						<loCation :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></loCation>
+					<template v-if="qitem.sub_cat=='loCation'">
+						<loCation :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown"></loCation>
 					</template>
-					<template v-if="qitem.qtype=='uploadimg'">
-						<uploadimg :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></uploadimg>
+					<template v-if="qitem.sub_cat=='uploadimg'">
+						<uploadimg :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown"></uploadimg>
 					</template>
 					<template v-if="qitem.qtype=='fractions'">
-						<fractions :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown"></fractions>
+						<fractions :item="sub_cat" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown"></fractions>
 					</template>
 				</div>
 				<!--</el-collapse-item>-->
@@ -100,33 +100,45 @@
 				console.log(val);
 			},
 			addfill(index) {
-				let ix = this.list[index] ? this.list[index].qlist.length + 1 : 1;
+				let ix = this.list[index].qlist.length + 1;
 				this.list[index].qlist.push({
+					ppid: this.questionId,
+					pid: 0,
+					id: 0,
+					serial_number: ix,
+					poSition: "",
 					qtitle: ix,
-					qtype: "fill",
-					must: false,
-					name: "",
-					namevalue: '标题',
+					sub_cat: "fill",
+					is_must: false,
+					title: '标题',
 					show: true,
 					edittextinput: true,
 					changeButton: false
 				});
-
 			},
 			addsingle(index) {
 				let ix = this.list[index].qlist.length + 1;
 				this.list[index].qlist.push({
+					ppid: this.questionId,
+					pid: 0,
+					id: 0,
+					serial_number: ix,
+					poSition: "",
 					qtitle: ix,
-					qtype: "single",
-					must: false,
-					namevalue: '标题',
+					sub_cat: "single",
+					is_must: false,
+					title: '标题',
 					show: true,
 					edittextinput: true,
 					changeButton: false,
-					domack: '0',
-					domains: [{
-						value: '选项1',
-						sort: 1
+					default_choose: '',
+					option: [{
+						id: 0,
+						order_num: 1,
+						option_name: '选项1',
+						default_choose: 0,
+						related_sub: "",
+						skip_sub: ""
 					}]
 				});
 			},
@@ -134,20 +146,26 @@
 				let ix = this.list[index].qlist.length + 1;
 				this.list[index].qlist.push({
 					qtitle: ix,
-					qtype: "multiple",
-					must: false,
-					namevalue: '标题',
+					sub_cat: "multiple",
+					title: '标题',
+					serial_number: ix,
+					poSition: "",
+					is_must: false,
+					title: '标题',
 					show: true,
 					edittextinput: true,
 					changeButton: false,
-					domains: [{
-						value: '选项',
-						sort: 1
+					option: [{
+						id: 0,
+						order_num: 1,
+						option_name: '选项1',
+						default_choose: 0,
+						related_sub: "",
+						skip_sub: ""
 					}],
 					checkedGroup: ['篮球', '足球'],
 					GroupList: ''
 				});
-
 			},
 			addmultistage(index) {
 				let ix = this.list[index].qlist.length + 1;
@@ -208,15 +226,75 @@
 
 				})
 			},
+			addmultistage(index) {
+				let ix = this.list[index].qlist.length + 1;
+				this.list[index].qlist.push({
+					poSition: '',
+					qtitle: ix,
+					sub_cat: "multistage",
+					serial_number: ix,
+					is_must: false,
+					title: '标题',
+					show: true,
+					edittextinput: true,
+					changeButton: false,
+					doptions: [{
+							value: '2',
+							label: '2级',
+							disabled: true
+						},
+						{
+							value: '3',
+							label: '3级',
+							disabled: true
+						},
+						{
+							value: '4',
+							label: '4级',
+							disabled: true
+						}
+					],
+					value: "2",
+					olist: [{
+						"name": "",
+						"value": "",
+						"id": 1,
+						"svalue": "",
+						"options": [],
+						"childList": []
+					}, {
+						"name": "",
+						"id": 2,
+						"svalue": "",
+						"value": "",
+						"options": [],
+						"childList": []
+					}, {
+						"name": "",
+						"svalue": "",
+						"value": "",
+						"id": 3,
+						"options": [],
+						"childList": []
+					}, {
+						"name": "",
+						"svalue": "",
+						"value": "",
+						"id": 4,
+						"options": [],
+						"childList": []
+					}]
+				})
+			},
 			adduploadimg(index) {
 				let ix = this.list[index].qlist.length + 1;
-
-				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
+					sub_cat: "uploadimg",
+					serial_number: ix,
+					poSition: "",
 					qtitle: ix,
-					qtype: "uploadimg",
-					namevalue: '标题',
-					must: false,
+					is_must: false,
+					title: '标题',
 					show: true,
 					edittextinput: true,
 					changeButton: false,
@@ -229,13 +307,14 @@
 			},
 			addloCation(index) {
 				let ix = this.list[index].qlist.length + 1;
-
-				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
+					sub_cat: "loCation",
+					title: '标题',
+					serial_number: ix,
+					poSition: "",
 					qtitle: ix,
-					qtype: "loCation",
-					must: false,
-					namevalue: '标题',
+					sub_cat: "fill",
+					is_must: false,
 					show: true,
 					edittextinput: true,
 					changeButton: false,
@@ -243,31 +322,18 @@
 			},
 			addfractions(index) {
 				let ix = this.list[index].qlist.length + 1;
-
-				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
 				this.list[index].qlist.push({
+					poSition: '',
 					qtitle: ix,
-					qtype: "fractions",
+					sub_cat: "fractions",
 					silidervalue: 100,
-					must: false,
-					namevalue: '标题',
+					serial_number: ix,
+					is_must: false,
+					title: '标题',
 					show: true,
 					edittextinput: true,
-					changeButton: false,
+					changeButton: false
 				})
-			},
-			addcomprehensive(index) {
-				let ix = this.list[index].qlist.length + 1;
-
-				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
-				this.list[index].qlist.push({
-					qtitle: ix,
-					qtype: "comprehensive",
-					show: true,
-					edittextinput: true,
-					changeButton: true
-				});
-
 			},
 			addItem(index, type) {
 				switch(type) {
@@ -317,17 +383,18 @@
 				this.activeNames.indexOf(index) == -1 && this.activeNames.push(index)
 			},
 			addDomain(index, qindex) {
-				let sort = this.list[index].qlist[qindex].domains.length + 1;
-				
+				let sort = this.list[index].qlist[qindex].option.length + 1;
 				let options = {
-					"value": "选项"+sort,
-					"sort": sort
+					id: 0,
+					order_num: sort,
+					option_name: "选项" + sort,
+					default_choose: 0,
+					related_sub: '',
+					skip_sub: ''
 				}
-				this.list[index].qlist[qindex].domains.push(options);
-			
+				this.list[index].qlist[qindex].option.push(options);
 			},
 			changeDomainRadio(index, qindex, v) {
-				
 				this.list[index].qlist[qindex].domack = v;
 			},
 			removeDomain(index, qindex) {

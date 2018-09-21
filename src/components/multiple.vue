@@ -4,7 +4,7 @@
 			<el-form-item :label="(qindex+1)+taccord+item.title" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
 				<i v-if="item.is_must" v-text="'*'" class="itemmust"></i>
 				<el-checkbox-group v-model="checkedGroup" @change="handleChecked">
-					<el-checkbox v-for="(checkoption,index) in item.domains" :label="checkoption" :key="index">{{checkoption.value}}</el-checkbox>
+					<el-checkbox v-for="(checkoption,index) in item.option" :label="checkoption" :key="index">{{checkoption.option_name}}</el-checkbox>
 				</el-checkbox-group>
 				<div v-show="item.show" class="transition-box">
 					<span @click="showedit(item)">编辑</span>
@@ -30,15 +30,15 @@
 									<el-col :span="5" style="text-align: center;">操作</el-col>
 								</el-row>
 								<!--	<el-form-item v-for="(domain, index) in item.domains" :label="'域名' + index" :key="domain.key" :prop="'domains.' + index + '.value'" :rules="{required: true, message: '域名不能为空', trigger: 'blur'}">-->
-								<el-form-item v-for="(domain, dindex) in item.domains" :rules="{required: true, message: '域名不能为空', trigger: 'blur'}" :key="dindex">
+								<el-form-item v-for="(domain, dindex) in item.option" :rules="{required: true, message: '域名不能为空', trigger: 'blur'}" :key="dindex">
 									<el-row>
 										<el-col :span="19">
-											<el-input v-model="domain.value"></el-input>
+											<el-input v-model="domain.option_name"></el-input>
 										</el-col>
 										<el-col :span="5" class="iconplus">
 											<i class="el-icon-circle-plus-outline" @click="addDomain"></i>
 											<i class="el-icon-remove-outline" @click="removeDomainitem(index,qindex,dindex)"></i>
-											<i :class="{radioDisable:(dindex+1)==item.domains.length}" class="el-icon-back" @click="domainSortdown(index,qindex,dindex,'down')"></i>
+											<i :class="{radioDisable:(dindex+1)==item.option.length}" class="el-icon-back" @click="domainSortdown(index,qindex,dindex,'down')"></i>
 											<i :class="{radioDisable:dindex==0}" class="el-icon-back backright" @click="domainSortdown(index,qindex,dindex,'up')" disabled='true'></i>
 
 										</el-col>
@@ -46,7 +46,7 @@
 								</el-form-item>
 								<div class="btngroup">
 									<el-button @click="addDomain" type="primary" plain>+新增选项</el-button>
-									<el-button @click="addDomain" type="primary" plain>+关联逻辑</el-button>
+									<el-button @click="jump()" type="primary" plain>+关联逻辑</el-button>
 									<el-button @click="jump()" type="primary" plain>+跳转逻辑</el-button>
 								</div>
 							</div>
@@ -106,6 +106,9 @@
 			removeDomainitem(index, qindex, dindex) {
 				this.$emit("removeDomainitem", index, qindex, dindex);
 			},
+			removeDomain() {
+				this.$emit("removeDomain", this.index, this.qindex);
+			},
 			domainSortdown: function(index, qindex, dindex, type) {
 				!event.target.classList.contains("radioDisable") && this.$emit("domainSortdown", index, qindex, dindex, type)
 			},
@@ -132,6 +135,8 @@
 			},
 			handleChecked(value) {
 				let checkedCount = value.length;
+			},
+			jump() {
 
 			}
 		},

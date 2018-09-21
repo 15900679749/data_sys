@@ -13,7 +13,7 @@
 						<el-button type="info" plain @click="itemSortdown(index,qindex,'up')">上移一题</el-button>
 						<el-button type="info" plain @click="itemSortdown(index,qindex,'down')">下移一题</el-button>
 						<div>移至【
-							<el-input v-model="item.serial_number" class="inputposition"></el-input>】题
+							<el-input v-model="item.poSition" class="inputposition"></el-input>】题
 							<el-button type="primary" plain class="positionsure" @click.native="itemSortdown(index,qindex,'jumpitem')">确定</el-button>
 						</div>
 					</div>

@@ -48,16 +48,16 @@
 										<multiple :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm"></multiple>
 									</template>
 									<template v-if="qitem.sub_cat=='multistage'">
-										<multistage :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm"></multistage>
+										<multistage :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></multistage>
 									</template>
 									<template v-if="qitem.sub_cat=='loCation'">
-										<loCation :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm"></loCation>
+										<loCation :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></loCation>
 									</template>
 									<template v-if="qitem.sub_cat=='uploadimg'">
-										<uploadimg :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm"></uploadimg>
+										<uploadimg :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></uploadimg>
 									</template>
 									<template v-if="qitem.sub_cat=='fractions'">
-										<fractions :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm"></fractions>
+										<fractions :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></fractions>
 									</template>
 									<template v-if="qitem.sub_cat=='comprehensive'">
 										<comprehensive @deleCom="delem" :taccord="taccord" :index="index" :list="qitem.list" :qindex="qindex" @itemSortdown="itemSortdown"></comprehensive>
@@ -159,9 +159,13 @@
 					show: true,
 					edittextinput: true,
 					changeButton: false,
-					domains: [{
-						value: '选项1',
-						sort: 1
+					option: [{
+						id: 0,
+						order_num: 1,
+						option_name: '选项1',
+						default_choose: 0,
+						related_sub: "",
+						skip_sub: ""
 					}],
 					checkedGroup: ['篮球', '足球'],
 					GroupList: ''
@@ -376,15 +380,14 @@
 			itemSortdown(index, qindex, type) {
 				var listItem = this.list[index].qlist[qindex];
 				var sortList = this.list[index].qlist;
-				var sortId = listItem.serial_number;
+				var serial_number = listItem.serial_number;
+				listItem.changeButton = false;
 				if(type == 'up') {
-					if(sortId != 1) {
-						let uitem = this.list[index].qlist[qindex - 1];
-						if(uitem != undefined && uitem != null) {
-							let usort = uitem.serial_number;
-							uitem.serial_number = sortId;
-							listItem.serial_number = usort;
-						}
+					let uitem = this.list[index].qlist[qindex - 1];
+					if(uitem != undefined && uitem != null) {
+						let usort = uitem.serial_number;
+						uitem.serial_number = serial_number;
+						listItem.serial_number = usort;
 					} else {
 						this.$message({
 							type: 'error',
@@ -392,30 +395,40 @@
 						});
 					}
 				} else if(type == 'down') {
-					if(sortId != sortList.length) {
-						let uitem = this.list[index].qlist[qindex + 1];
-						if(uitem != undefined && uitem != null) {
-							let usort = uitem.serial_number;
-							uitem.serial_number = sortId;
-							listItem.serial_number = usort;
-						}
+					let uitem = this.list[index].qlist[qindex + 1];
+					if(uitem != undefined && uitem != null) {
+						let usort = uitem.serial_number;
+						uitem.serial_number = serial_number;
+						listItem.serial_number = usort;
 					} else {
 						this.$message({
 							type: 'error',
 							message: '已经是最后一题，无法继续下移!'
 						});
 					}
-				} else {
+				} else if(type == 'jumpitem') {
+					if(window.isNaN(this.list[index].qlist[qindex].poSition)) {
+						this.$message({
+							type: 'error',
+							message: '输入有误，无法进行跳转!'
+						});
+						return;
+					}
 					let jumpnum = parseInt(this.list[index].qlist[qindex].poSition);
-					if(jumpnum != sortId) {
+					if(jumpnum != serial_number) {
 						let uitem = this.list[index].qlist[jumpnum - 1];
 						if(uitem != undefined && uitem != null) {
 							let usort = uitem.serial_number;
-							uitem.serial_number = sortId;
+							uitem.serial_number = serial_number;
 							uitem.poSition = '';
 							listItem.serial_number = usort;
-							listItem.changeButton = !listItem.changeButton;
+							//							listItem.changeButton = !listItem.changeButton;
 							listItem.poSition = '';
+						} else {
+							this.$message({
+								type: 'error',
+								message: '找不到第' + jumpnum + '题，无法进行跳转!'
+							});
 						}
 					} else {
 						this.$message({
@@ -423,7 +436,6 @@
 							message: '已经是第' + jumpnum + '题，无法进行跳转!'
 						});
 					}
-
 				}
 				sortList.sort(function(a, b) {
 					return a.serial_number - b.serial_number;
