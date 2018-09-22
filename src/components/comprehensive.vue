@@ -1,17 +1,17 @@
 <template>
 	<div class="compre">
 		<el-form v-model="activeNames" @change="handleChange">
-			<el-form-item class="edit_item" v-for="(item,index) in list" :key="index" :label="item.qtitle">
+			<el-form-item class="edit_item" v-for="(item,lindex) in list" :key="index" :label="(qindex+1)+''">
 				<el-input v-model="item.title" placeholder="模块名称" class="titlename"></el-input>
 				<div class="compretopright">
 					<span @click.prevent="deletecomp" class="deletecomp">删除</span>
 					<span @click.prevent="changeposition(item)" class="oposition">位置变更</span>
 					<div class="changeposition" v-show="item.changeButton">
-						<el-button type="info" plain @click="itemSortdown(index,qindex,'up')">上移一题</el-button>
-						<el-button type="info" plain @click="itemSortdown(index,qindex,'down')">下移一题</el-button>
+						<el-button type="info" plain @click="itemSortdown(index,qindex,'up','temp')">上移一题</el-button>
+						<el-button type="info" plain @click="itemSortdown(index,qindex,'down','temp')">下移一题</el-button>
 						<div>移至【
 							<el-input v-model="item.poSition" class="inputposition"></el-input>】题
-							<el-button type="primary" plain class="positionsure" @click.native="itemSortdown(index,qindex,'jumpitem')">确定</el-button>
+							<el-button type="primary" plain class="positionsure" @click.native="itemSortdown(index,qindex,'jumpitem','temp')">确定</el-button>
 						</div>
 					</div>
 
@@ -94,6 +94,15 @@
 				type: Number,
 				default: 0
 			},
+			list: {
+				type: Array,
+				default: () => []
+			}
+		},
+		created() {
+			//						debugger
+			//						let aa = this.list;
+			//						debugger
 		},
 		methods: {
 			handleChange(val) {
@@ -395,12 +404,15 @@
 				this.list[index].qlist[qindex].option.push(options);
 			},
 			changeDomainRadio(index, qindex, v) {
-				this.list[index].qlist[qindex].domack = v;
+				this.list[index].qlist[qindex].default_choose = v;
+				let domainlist = this.list[index].qlist[qindex].option;
+				for(let i in domainlist) {
+					if(domainlist[i].option_name == v) {
+						domainlist[i].default_choose = 1;
+					}
+				}
 			},
 			removeDomain(index, qindex) {
-
-				//				let aindex = this.list[index].qlist[qindex];
-				//					aindex && this.list[index].qlist.splice(aindex, 1)
 				let nlist = this.list[index].qlist.deleteIndex(qindex);
 				this.list[index].qlist = nlist;
 			},
@@ -408,107 +420,38 @@
 				this.$emit("deleCom", this.index, this.qindex);
 			},
 			changeposition(item) {
-
 				item.changeButton = !item.changeButton;
 			},
 			removeDomainitem(index, qindex, dindex) {
 				let dlist = this.list[index].qlist[qindex].domains.deleteIndex(dindex);
 				this.list[index].qlist[qindex].domains = dlist;
 			},
-			itemSortdown: function(index, qindex, type) {
-
-				var listItem = this.list[index].qlist[qindex];
-				if(listItem.qtype == "comprehensive") {
-					this.$emit("itemSortdown", index, qindex, type);
-				} else {
-					var sortList = this.list[index].qlist;
-					var sortId = listItem.qtitle;
-					if(type == 'up') {
-						if(sortId != 1) {
-							let uitem = this.list[index].qlist[qindex - 1];
-							let iuitem = this.list[index].qlist.indexOf(uitem);
-							let usort = uitem.qtitle;
-							uitem.qtitle = sortId;
-							sortList.splice(iuitem, 1, uitem);
-							listItem.qtitle = usort;
-							sortList.splice(qindex, 1, listItem);
-
-						} else {
-							this.$message({
-								type: 'error',
-								message: '已经是第一题，无法继续上移!'
-							});
-						}
-					} else if(type == 'down') {
-						if(sortId != sortList.length) {
-							let uitem = this.list[index].qlist[qindex + 1];
-							let iuitem = this.list[index].qlist.indexOf(uitem);
-							let usort = uitem.qtitle;
-							uitem.qtitle = sortId;
-							sortList.splice(iuitem, 1, uitem);
-							listItem.qtitle = usort;
-							sortList.splice(qindex, 1, listItem);
-						} else {
-							this.$message({
-								type: 'error',
-								message: '已经是最后一题，无法继续下移!'
-							});
-						}
-					} else {
-						let jumpnum = parseInt(this.list[index].qlist[qindex].poSition);
-						if(jumpnum != sortId) {
-							let uitem = this.list[index].qlist[jumpnum - 1];
-							let iuitem = this.list[index].qlist.indexOf(uitem);
-							let usort = jumpnum;
-							uitem.qtitle = sortId;
-							sortList.splice(iuitem, 1, uitem);
-							listItem.qtitle = usort;
-							sortList.splice(qindex, 1, listItem);
-							listItem.changeButton = !listItem.changeButton;
-							listItem.poSition = '';
-						} else {
-							this.$message({
-								type: 'error',
-								message: '已经是第' + jumpnum + '题，无法进行跳转!'
-							});
-						}
-					}
-					sortList.sort(function(a, b) {
-						return a.qtitle - b.qtitle;
-					});
-					this.list[index].qlist = sortList;
-				}
+			itemSortdown: function(index, qindex, type, sitem) {
+				this.$emit("itemSortdown", this.index, this.qindex, type, sitem);
 			},
-
 			domainSortdown(index, qindex, dindex, type) {
-				var sdomainItem = this.list[index].qlist[qindex].domains[dindex];
-				var sortList = this.list[index].qlist[qindex].domains;
-				var sortId = sdomainItem.sort; //排序
+				var sdomainItem = this.list[index].qlist[qindex].option[dindex];
+				var sortList = this.list[index].qlist[qindex].option;
+				var sortId = sdomainItem.order_num; //排序
 				if(type == "up") {
-					if(sortId != 1) {
-						let uitem = this.list[index].qlist[qindex].domains[dindex - 1];
-						let iuitem = this.list[index].qlist[qindex].domains.indexOf(uitem);
-						let usort = uitem.sort;
-						uitem.sort = sortId;
-						sortList.splice(iuitem, 1, uitem);
-						sdomainItem.sort = usort;
-						sortList.splice(dindex, 1, sdomainItem);
+					let uitem = this.list[index].qlist[qindex].option[dindex - 1];
+					if(uitem != undefined && uitem != null) {
+						let usort = uitem.order_num;
+						uitem.order_num = sortId;
+						sdomainItem.order_num = usort;
 					}
 				} else {
-					if(sortId != sortList.length) {
-						let uitem = this.list[index].qlist[qindex].domains[dindex + 1];
-						let iuitem = this.list[index].qlist[qindex].domains.indexOf(uitem);
-						let usort = uitem.sort;
-						uitem.sort = sortId;
-						sortList.splice(iuitem, 1, uitem);
-						sdomainItem.sort = usort;
-						sortList.splice(dindex, 1, sdomainItem);
+					let uitem = this.list[index].qlist[qindex].option[dindex + 1];
+					if(uitem != undefined && uitem != null) {
+						let usort = uitem.order_num;
+						uitem.order_num = sortId;
+						sdomainItem.order_num = usort;
 					}
 				}
 				sortList.sort(function(a, b) {
-					return a.sort - b.sort;
+					return a.order_num - b.order_num;
 				});
-				this.list[index].qlist[qindex].domains = sortList;
+				this.list[index].qlist[qindex].option = sortList;
 			}
 		},
 		props: {
@@ -528,7 +471,6 @@
 		mounted: function() {
 			console.log(this.activeNames);
 		},
-		created() {},
 		components: {
 			headTop,
 			topic,
