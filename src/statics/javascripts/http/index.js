@@ -95,7 +95,8 @@ function getObjectList(data) {
 		if(it !== "deleteIndex") {
 			if(typeof(data[it]) == "object") {
 				res += encodeURIComponent(it) + '=' + encodeURIComponent(JSON.stringify(data[it])) + '&';
-				//res += getObjectList(data[it]);
+			
+//				res += getObjectList(data[it]);
 			} else {
 				res += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&';
 			}

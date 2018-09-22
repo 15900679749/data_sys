@@ -3,7 +3,7 @@
 		<el-row :gutter="20" class="top">
 			<el-col :span="3" :offset="9">
 				<i class="el-icon-search"></i>预览</el-col>
-			<el-col :span="3"><i class="el-icon-check"></i>完成</el-col>
+			<el-col :span="3" @click.native="finishSub()"><i class="el-icon-check"></i>完成</el-col>
 		</el-row>
 		<div class="editTemContain">
 			<div>
@@ -107,7 +107,7 @@
 				let ix = this.list[index].qlist.length + 1;
 				this.list[index].qlist.push({
 					ppid: this.questionId,
-					pid: 0,
+					pid: this.list[index].pid,
 					id: 0,
 					serial_number: ix,
 					poSition: "",
@@ -122,9 +122,10 @@
 			},
 			addsingle(index) {
 				let ix = this.list[index].qlist.length + 1;
+			debugger
 				this.list[index].qlist.push({
 					ppid: this.questionId,
-					pid: 0,
+					pid: this.list[index].pid,
 					id: 0,
 					serial_number: ix,
 					poSition: "",
@@ -480,7 +481,7 @@
 				//					value
 				//				}) => {
 				var option = {};
-				option.mod_name = "模板名称";
+				option.mod_name = "模块名称";
 				option.qtitle = self.list.length + 1 + '、';
 				option.id = 0;
 				option.pid = 0;
@@ -494,22 +495,25 @@
 				//						message: '取消输入'
 				//					});
 				//				});
-				self.list.push(option);
-				//				this.$post("/Home/Subject/createNewMod", {
-				//					pid: this.questionId,
-				//					chief: this.parentModle || 0,
-				//					mod_name: option.mod_name
-				//				}).then((res) => {
-				//					option.id = res.id;
-				//					self.list.push(option);
-				//				})
+//				self.list.push(option);
+								this.$post("/Home/Subject/createNewMod", {
+									pid: this.questionId,
+									chief: this.parentModle || 0,
+									mod_name: option.mod_name
+								}).then((res) => {
+									
+									option.pid = res.id;
+//									debugger
+									self.list.push(option);
+								})
 			},
 			submitForm(item, index) {
 				let subModel = item;
 				delete subModel.changeButton;
 				delete subModel.edittextinput;
 				delete subModel.show;
-				delete subModel.id;
+				delete subModel.poSition;
+//				delete subModel.id;
 				let self = this;
 				switch(item.sub_cat) {
 					case "fill":
@@ -521,17 +525,54 @@
 						{
 							delete subModel.default_choose;
 							subModel.option.forEach(item => {
-								delete item.id;
+//								delete item.id;
 							});
 						}
 						break;
 				}
-				debugger
+//				debugger
+console.log(subModel);
 				this.$post("/Home/Subject/createNewItem", subModel).then((res) => {
-					self.list[index].id = res.id;
+//					self.list[index].id = res.id;
+					subModel.id = res.id;
 				});
 			},
-			//canclerelevance()
+			finishSub(){
+				
+				let SubInfo={
+					id:this.questionId,
+					name:this.questiontitle,
+					description:this.contentText,
+					mod:[]
+					
+				}
+				
+				let modoption={};
+				for(var i=0;i<this.list.length;i++){
+					
+					modoption.id=this.list[i].pid;
+				modoption.mod_name=this.list[i].mod_name;
+				modoption.item={};
+				SubInfo.mod.push(modoption);
+				for(var j=0;j<this.list[i].qlist.length;j++)
+				for(let v in modoption.item){
+					modoption.item[v]={}
+					debugger
+modoption.item[v].id=this.list[i].qlist[j].id;
+
+				}
+				
+				
+				}
+				
+				
+				
+				
+				
+				this.$post("/Home/Subject/finishSub", SubInfo).then((res) => {
+					console.log(res);
+				});
+			}
 		},
 		mounted: function() {
 			console.log(this.activeNames);
