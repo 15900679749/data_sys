@@ -540,12 +540,19 @@
 			},
 			finishSub() {
 
+				this.$confirm('您确定要完成问卷吗?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+
+				}).catch(() => {});
+
 				let SubInfo = {
 					id: this.questionId,
 					name: this.questiontitle,
 					description: this.contentText,
 					mod: []
-
 				}
 
 				let modoption = {};
@@ -565,8 +572,11 @@
 
 				}
 
+				return;
 				this.$post("/Home/Subject/finishSub", SubInfo).then((res) => {
-					console.log(res);
+					this.$router.push({
+						path: '/questionNaire'
+					})
 				});
 			}
 		},
