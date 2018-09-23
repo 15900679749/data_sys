@@ -5,31 +5,23 @@
 		<el-row class="oneTcontain" v-for="(item,index) in list" :key="index">
 			<el-row type="flex" justify="space-between" class="ontemplateTopL">
 				<el-col :span="6">
-					<span class="vote">投票&nbsp;&nbsp;ID:{{item.idNum}}</span>
-					<!--	<span @click="edting" class="edting"><i class="el-icon-edit-outline"></i>编辑</span>-->
+					<span class="vote">投票&nbsp;&nbsp;ID:{{item.uid}}</span>
 				</el-col>
 				<el-col :span="6" class="ontemplateTopR">
-
 					<span>状态:{{item.status}}</span>
-					<span>答卷:<b>{{item.answerNum}}</b></span>
-
-					<span v-text="item.timeNum"></span>
-
+					<span>答卷:<b>{{item.answer}}</b></span>
+					<span v-text="item.sub_name"></span>
 				</el-col>
 			</el-row>
 			<el-row type="flex" justify="space-between">
 				<el-col :span="8" class="ontemplateBotL">
-
-					<span @click="designAn"><i class="designAnicon"></i>设计问卷</span>
-					<span @click="sendAn"><i class="sendAn"></i>发送问卷</span>
-					<span @click="analyzeDown"><i class="analyzeDown"></i>分析&下载</span>
-
+					<span @click="designAn(item)"><i class="designAnicon"></i>设计问卷</span>
+					<span @click="sendAn(item)"><i class="sendAn"></i>发送问卷</span>
+					<span @click="analyzeDown(item)"><i class="analyzeDown"></i>分析&下载</span>
 				</el-col>
 				<el-col :span="6" class="ontemplateBotR">
-
 					<el-button class="active"><i class="el-icon-edit"></i>发布</el-button>
-
-					<el-button><i class="el-icon-delete"></i>删除</el-button>
+					<el-button @click="deleItem(item)"><i class="el-icon-delete"></i>删除</el-button>
 				</el-col>
 			</el-row>
 
@@ -98,11 +90,32 @@
 		},
 		props: ["list"],
 		methods: {
-			edting() {
-
-			},
 			edtingTemplate() {
 
+			},
+			deleItem(item) {
+				debugger
+				this.$confirm('您确定要删除改记录, 是否继续?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					this.$post("/Home/Subject/delSub", {
+						"id": item.id
+					}).then((res) => {
+						this.$alert('删除成功！', '提示', {
+							confirmButtonText: '确定',
+							callback: action => {
+								this.$emit("getList");
+							}
+						});
+					});
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消删除'
+					});
+				});
 			},
 			designAn() {
 

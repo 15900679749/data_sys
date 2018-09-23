@@ -5,11 +5,11 @@
 				<i v-if="item.is_must" v-text="'*'" class="itemmust"></i>
 				<el-row type="flex" justify="start" class="loCationtips">
 					<div class="block">
-						<span class="demonstration">{{item.silidervalue}}</span>
+						<span class="demonstration">{{item.option[0].silidervalue}}</span>
 						<!--<el-slider v-model="item.silidervalue" show-input :max="parseInt(item.silidervalue)"></el-slider>-->
 						<!--<el-slider v-model="item.silidervalue" show-input></el-slider>-->
-					<el-progress :percentage="100" :show-text="false" style="width:85%;left:5%;top:18px;"></el-progress>
-					
+						<el-progress :percentage="100" :show-text="false" style="width:85%;left:5%;top:18px;"></el-progress>
+
 					</div>
 
 				</el-row>
@@ -34,7 +34,7 @@
 
 						</el-form-item>
 						<el-form-item :label="'总分'">
-						<el-input v-model="item.silidervalue"></el-input>
+							<el-input v-model="item.option[0].silidervalue"></el-input>
 						</el-form-item>
 						<el-button type="primary" @click="submitForm(item)">保存</el-button>
 					</el-col>
@@ -69,9 +69,9 @@
 				type: Number,
 				default: 0
 			},
-			taccord:{
-				type:String,
-				default:""
+			taccord: {
+				type: String,
+				default: ""
 			}
 		},
 		methods: {
@@ -85,8 +85,7 @@
 				//				}
 			},
 			submitForm(item) {
-				item.edittextinput = !item.edittextinput;
-				item.show = !item.show;
+				this.$emit("submitForm", item, this.index);
 			},
 			removeDomain() {
 				this.$emit("removeDomain", this.index, this.qindex);
@@ -112,12 +111,12 @@
 				//					value: ''
 				//				});
 			},
-			moveupDomain(){
+			moveupDomain() {
 				var index = this.formlistSix.indexOf(item);
-				var netitem=this.formlistSix[index-1]
+				var netitem = this.formlistSix[index - 1]
 			},
-			itemSortdown:function(index, qindex,type){
-				this.$emit("itemSortdown", index, qindex,type);
+			itemSortdown: function(index, qindex, type) {
+				this.$emit("itemSortdown", index, qindex, type);
 			},
 			changeposition(item) {
 				item.changeButton = !item.changeButton;
@@ -138,11 +137,11 @@
 		created() {
 			this.cformlistSix = this.formlistSix;
 		},
-		watch:{
-//			this.cformlistSix[0].silidervalue:function(val){
-//				this.txtSilider=val;
-//				
-//			}
+		watch: {
+			//			this.cformlistSix[0].silidervalue:function(val){
+			//				this.txtSilider=val;
+			//				
+			//			}
 		},
 		components: {
 			headTop
@@ -207,19 +206,17 @@
 		width: 100%;
 		text-align: left;
 	}
-		.el-slider__input{
+	
+	.el-slider__input {
 		position: absolute;
 		bottom: -175px;
-    left: 92px;
-    z-index: 222;
-		
+		left: 92px;
+		z-index: 222;
 	}
-	.el-slider__input .el-input__inner{
-		
-	}
+	
+	.el-slider__input .el-input__inner {}
 </style>
 <style scoped="scoped" lang="scss">
-	
 	.el-input {
 		width: 30%;
 		margin-left: 76px;
@@ -417,8 +414,8 @@
 	
 	.loCationtips {
 		width: 100%;
-		    height: 70px;
-    padding-top: 15px;
+		height: 70px;
+		padding-top: 15px;
 		.block {
 			width: 100%;
 			span.demonstration {
@@ -431,5 +428,4 @@
 			}
 		}
 	}
-
 </style>

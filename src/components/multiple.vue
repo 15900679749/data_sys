@@ -3,7 +3,7 @@
 		<el-form>
 			<el-form-item :label="(qindex+1)+taccord+item.title" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
 				<i v-if="item.is_must" v-text="'*'" class="itemmust"></i>
-				<el-checkbox-group v-model="checkedGroup" @change="handleChecked">
+				<el-checkbox-group v-model="item.checkedGroup">
 					<el-checkbox v-for="(checkoption,index) in item.option" :label="checkoption" :key="index">{{checkoption.option_name}}</el-checkbox>
 				</el-checkbox-group>
 				<div v-show="item.show" class="transition-box">
@@ -46,8 +46,8 @@
 								</el-form-item>
 								<div class="btngroup">
 									<el-button @click="addDomain" type="primary" plain>+新增选项</el-button>
-									<el-button @click="jump()" type="primary" plain>+关联逻辑</el-button>
-									<el-button @click="jump()" type="primary" plain>+跳转逻辑</el-button>
+									<!--<el-button @click="jump()" type="primary" plain>+关联逻辑</el-button>
+									<el-button @click="jump()" type="primary" plain>+跳转逻辑</el-button>-->
 								</div>
 							</div>
 							<p class="tips">注：关联逻辑与跳转逻辑只能设置其中一项</p>
@@ -66,10 +66,7 @@
 	import headTop from 'view/head/headTop.vue';
 	export default {
 		data() {
-			return {
-				checkedGroup: ['篮球', '足球'],
-				GroupList: ['篮球', '足球', '羽毛球', '乒乓球']
-			}
+			return {}
 		},
 		props: {
 			item: {
@@ -100,8 +97,7 @@
 				//				}
 			},
 			submitForm(item) {
-				item.edittextinput = !item.edittextinput;
-				item.show = !item.show;
+				this.$emit("submitForm", item, this.index);
 			},
 			removeDomainitem(index, qindex, dindex) {
 				this.$emit("removeDomainitem", index, qindex, dindex);
@@ -132,12 +128,6 @@
 			},
 			changeposition(item) {
 				item.changeButton = !item.changeButton;
-			},
-			handleChecked(value) {
-				let checkedCount = value.length;
-			},
-			jump() {
-
 			}
 		},
 		created() {},

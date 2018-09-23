@@ -10,6 +10,7 @@
 
 			}
 		},
+		
 		methods: {
 			establish() {
 				if(location.hash.endsWith("#/questionNaire")) {

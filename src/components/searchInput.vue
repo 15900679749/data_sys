@@ -1,64 +1,87 @@
 <template>
-			<el-autocomplete v-model="state4" :fetch-suggestions="querySearchAsync" placeholder="请输入问卷名进行搜查..." @select="handleSelect">
-		
-	<i class="el-input__icon el-icon-search" slot="suffix" @click="handleIconClick"></i>
-	<!--<el-button slot="append" icon="el-icon-search"></el-button>-->
+	<el-autocomplete v-model="sName" :debounce=0 :fetch-suggestions="querySearchAsync" placeholder="请输入问卷名进行搜查..." @select="handleSelect">
+
+		<i class="el-input__icon el-icon-search" slot="suffix" @click="handleIconClick"></i>
+		<!--<el-button slot="append" icon="el-icon-search"></el-button>-->
 	</el-autocomplete>
 	</el-col>
 
 </template>
 
 <script>
-	export default{
-		data(){
-			return{
-				restaurants:[],
-				state4:'',
-				timeout:null
+	export default {
+		data() {
+			return {
+				list: [],
+				sName: '',
+				searchInfo: {
+					name: "",
+					status: "",
+					pageIndex: 1,
+					pageSize: 10
+				},
+				ajaxb: true
 			};
 		},
-		methods:{
-			loadAll(){
-				return[
-					{"value":"问卷调查1","type":"心理测试"},
-					{"value":"问卷调查2","type":"兴趣测试"}
-				];
-			},
-			querySearchAsync(queryString,cb){
-				var restaurants=this.restaurants;
-				var results=queryString?restaurants.filter(this.createStateFilter(queryString)):restaurants;
-				
-				clearTimeout(this.timeout);
-				this.timeout=setTimeout(()=>{
-					cb(results);
-				},3000*Math.random());
-			},
-			createStateFilter(queryString){
-				return (state)=>{
-					return (state.value.toLowerCase().indexOf(queryString.toLowerCase())===0);
-				};
-			},
-			handleSelect(item){
-				console.log(item);
-			},
-			 handleIconClick(ev) {
-		        console.log(this.state4);
-		      }
+		props: {
+			search: {
+				type: String,
+				default: ""
+			}
 		},
-		mounted(){
-			this.restaurants=this.loadAll();
+		methods: {
+			loadAll() {
+				return [];
+			},
+			querySearchAsync(queryString, callback) {
+				if(queryString.length < 2) return;
+				if(!this.ajaxb) return;
+				let slist = [];
+				if(this.search == "ques") {
+					let sendModel = this.searchInfo;
+					delete sendModel.pageTotal;
+					this.ajaxb = false;
+					this.$post("/Home/Subject/subList", sendModel).then((res) => {
+						let resdata = res;
+						let dataList = resdata.list;
+						for(var k = 0; k < dataList.length; k++) {
+							slist.push({
+								"value": dataList[k].sub_name,
+								"lable": dataList[k].sub_name
+							});
+						}
+						this.ajaxb = true;
+					});
+				}
+				callback(slist);
+			},
+			handleSelect(item) {
+				if(item.value == "") return;
+				if(this.search == "ques") {
+					this.$emit("sgetList", "name", item.value);
+				}
+			},
+			handleIconClick(ev) {
+				if(this.sName == "") return;
+				if(this.search == "ques") {
+					this.$emit("sgetList", "name", this.sName);
+				}
+			}
+		},
+		mounted() {
+			//this.restaurants = this.loadAll();
 		}
 	}
 </script>
 
 <style>
-	.el-autocomplete{
+	.el-autocomplete {
 		width: 50%;
-		margin-bottom:45px;
+		margin-bottom: 45px;
 	}
-	.el-autocomplete .el-input__inner{
+	
+	.el-autocomplete .el-input__inner {
 		width: 100%;
 		border-radius: 14px;
-		
 	}
 </style>

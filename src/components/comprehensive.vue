@@ -1,22 +1,20 @@
 <template>
 	<div class="compre">
-		<el-form v-model="activeNames" @change="handleChange">
-			<el-form-item class="edit_item" v-for="(item,lindex) in list" :key="index" :label="(qindex+1)+''">
-				<el-input v-model="item.title" placeholder="模块名称" class="titlename"></el-input>
-				<div class="compretopright">
-					<span @click.prevent="deletecomp" class="deletecomp">删除</span>
-					<span @click.prevent="changeposition(item)" class="oposition">位置变更</span>
-					<div class="changeposition" v-show="item.changeButton">
-						<el-button type="info" plain @click="itemSortdown(index,qindex,'up','temp')">上移一题</el-button>
-						<el-button type="info" plain @click="itemSortdown(index,qindex,'down','temp')">下移一题</el-button>
-						<div>移至【
-							<el-input v-model="item.poSition" class="inputposition"></el-input>】题
-							<el-button type="primary" plain class="positionsure" @click.native="itemSortdown(index,qindex,'jumpitem','temp')">确定</el-button>
-						</div>
+		<el-form v-model="activeNames" @change="handleChange" :label="(qindex+1)+taccord+comitem.title+':'">
+			<el-input v-model="comitem.title" placeholder="模块名称" class="titlename"></el-input>
+			<div class="compretopright">
+				<span @click.prevent="deletecomp" class="deletecomp">删除</span>
+				<span @click.prevent="changeposition(comitem)" class="oposition">位置变更</span>
+				<div class="changeposition" v-show="comitem.changeButton">
+					<el-button type="info" plain @click="itemSortdown(index,qindex,'up')">上移一题</el-button>
+					<el-button type="info" plain @click="itemSortdown(index,qindex,'down')">下移一题</el-button>
+					<div>移至【
+						<el-input v-model="comitem.poSition" class="inputposition"></el-input>】题
+						<el-button type="primary" plain class="positionsure" @click.native="itemSortdown(index,qindex,'jumpitem')">确定</el-button>
 					</div>
-
 				</div>
-
+			</div>
+			<el-form-item class="edit_item">
 				<el-dropdown placement="bottom">
 					<span class="el-dropdown-link">创建小题</span>
 					<el-dropdown-menu slot="dropdown" class="topicdropdown">
@@ -30,11 +28,7 @@
 					</el-dropdown-menu>
 				</el-dropdown>
 
-				<!--<el-collapse-item :title="item.qtitle" :name="index">-->
-
-				<div class="topic" v-for="(qitem,qindex) in item.qlist" :key="qindex">
-
-					<!--<topic :list="list"></topic>-->
+				<div class="topic" v-for="(qitem,qindex) in comitem.qlist" :key="qindex">
 					<template v-if="qitem.sub_cat=='fill'">
 						<fill :item="qitem" @removeDomain="removeDomain" :taccord="taccord" :index="index" :qindex="qindex" @itemSortdown="itemSortdown"></fill>
 					</template>
@@ -57,7 +51,6 @@
 						<fractions :item="sub_cat" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown"></fractions>
 					</template>
 				</div>
-				<!--</el-collapse-item>-->
 			</el-form-item>
 		</el-form>
 	</div>
@@ -94,23 +87,23 @@
 				type: Number,
 				default: 0
 			},
-			list: {
-				type: Array,
-				default: () => []
+			comitem: {
+				type: Object,
+				default: {}
 			}
 		},
 		created() {
-			//						debugger
-			//						let aa = this.list;
-			//						debugger
+			debugger
+			let aa = this.comitem;
+			debugger
 		},
 		methods: {
 			handleChange(val) {
 				console.log(val);
 			},
 			addfill(index) {
-				let ix = this.list[index].qlist.length + 1;
-				this.list[index].qlist.push({
+				let ix = this.comitem.qlist.length + 1;
+				this.comitem.qlist.push({
 					ppid: this.questionId,
 					pid: 0,
 					id: 0,
@@ -126,8 +119,8 @@
 				});
 			},
 			addsingle(index) {
-				let ix = this.list[index].qlist.length + 1;
-				this.list[index].qlist.push({
+				let ix = this.comitem.qlist.length + 1;
+				this.comitem.qlist({
 					ppid: this.questionId,
 					pid: 0,
 					id: 0,
@@ -152,8 +145,8 @@
 				});
 			},
 			addmultiple(index) {
-				let ix = this.list[index].qlist.length + 1;
-				this.list[index].qlist.push({
+				let ix = this.comitem.qlist.length + 1;
+				this.comitem.qlist({
 					qtitle: ix,
 					sub_cat: "multiple",
 					title: '标题',
@@ -177,10 +170,10 @@
 				});
 			},
 			addmultistage(index) {
-				let ix = this.list[index].qlist.length + 1;
+				let ix = this.comitem.qlist.length + 1;
 
-				let dindex = !!this.list[index].qlist.domains ? this.list[index].qlist.domains.length : 1;
-				this.list[index].qlist.push({
+				let dindex = !!this.comitem.qlist.domains ? this.comitem.qlist.domains.length : 1;
+				this.comitem.qlist({
 					qtitle: ix,
 					qtype: "multistage",
 					must: false,
@@ -236,8 +229,8 @@
 				})
 			},
 			addmultistage(index) {
-				let ix = this.list[index].qlist.length + 1;
-				this.list[index].qlist.push({
+				let ix = this.comitem.qlist.length + 1;
+				this.comitem.qlist({
 					poSition: '',
 					qtitle: ix,
 					sub_cat: "multistage",
@@ -296,8 +289,8 @@
 				})
 			},
 			adduploadimg(index) {
-				let ix = this.list[index].qlist.length + 1;
-				this.list[index].qlist.push({
+				let ix = this.comitem.qlist.length + 1;
+				this.comitem.qlist({
 					sub_cat: "uploadimg",
 					serial_number: ix,
 					poSition: "",
@@ -315,8 +308,8 @@
 				})
 			},
 			addloCation(index) {
-				let ix = this.list[index].qlist.length + 1;
-				this.list[index].qlist.push({
+				let ix = this.comitem.qlist.length + 1;
+				this.comitem.qlist({
 					sub_cat: "loCation",
 					title: '标题',
 					serial_number: ix,
@@ -330,8 +323,8 @@
 				})
 			},
 			addfractions(index) {
-				let ix = this.list[index].qlist.length + 1;
-				this.list[index].qlist.push({
+				let ix = this.comitem.qlist.length + 1;
+				this.comitem.qlist({
 					poSition: '',
 					qtitle: ix,
 					sub_cat: "fractions",
@@ -392,7 +385,7 @@
 				this.activeNames.indexOf(index) == -1 && this.activeNames.push(index)
 			},
 			addDomain(index, qindex) {
-				let sort = this.list[index].qlist[qindex].option.length + 1;
+				let sort = this.comitem.qlist[qindex].option.length + 1;
 				let options = {
 					id: 0,
 					order_num: sort,
@@ -401,11 +394,11 @@
 					related_sub: '',
 					skip_sub: ''
 				}
-				this.list[index].qlist[qindex].option.push(options);
+				this.comitem.qlist[qindex].option.push(options);
 			},
 			changeDomainRadio(index, qindex, v) {
-				this.list[index].qlist[qindex].default_choose = v;
-				let domainlist = this.list[index].qlist[qindex].option;
+				this.comitem.qlist[qindex].default_choose = v;
+				let domainlist = this.comitem.qlist[qindex].option;
 				for(let i in domainlist) {
 					if(domainlist[i].option_name == v) {
 						domainlist[i].default_choose = 1;
@@ -413,8 +406,8 @@
 				}
 			},
 			removeDomain(index, qindex) {
-				let nlist = this.list[index].qlist.deleteIndex(qindex);
-				this.list[index].qlist = nlist;
+				let nlist = this.comitem.qlist.deleteIndex(qindex);
+				this.comitem.qlist = nlist;
 			},
 			deletecomp() {
 				this.$emit("deleCom", this.index, this.qindex);
@@ -423,25 +416,25 @@
 				item.changeButton = !item.changeButton;
 			},
 			removeDomainitem(index, qindex, dindex) {
-				let dlist = this.list[index].qlist[qindex].domains.deleteIndex(dindex);
-				this.list[index].qlist[qindex].domains = dlist;
+				let dlist = this.comitem.qlist[qindex].domains.deleteIndex(dindex);
+				this.comitem.qlist[qindex].domains = dlist;
 			},
 			itemSortdown: function(index, qindex, type, sitem) {
 				this.$emit("itemSortdown", this.index, this.qindex, type, sitem);
 			},
 			domainSortdown(index, qindex, dindex, type) {
-				var sdomainItem = this.list[index].qlist[qindex].option[dindex];
-				var sortList = this.list[index].qlist[qindex].option;
+				var sdomainItem = this.comitem.qlist[qindex].option[dindex];
+				var sortList = this.comitem.qlist[qindex].option;
 				var sortId = sdomainItem.order_num; //排序
 				if(type == "up") {
-					let uitem = this.list[index].qlist[qindex].option[dindex - 1];
+					let uitem = this.comitem.qlist[qindex].option[dindex - 1];
 					if(uitem != undefined && uitem != null) {
 						let usort = uitem.order_num;
 						uitem.order_num = sortId;
 						sdomainItem.order_num = usort;
 					}
 				} else {
-					let uitem = this.list[index].qlist[qindex].option[dindex + 1];
+					let uitem = this.comitem.qlist[qindex].option[dindex + 1];
 					if(uitem != undefined && uitem != null) {
 						let usort = uitem.order_num;
 						uitem.order_num = sortId;
@@ -451,21 +444,7 @@
 				sortList.sort(function(a, b) {
 					return a.order_num - b.order_num;
 				});
-				this.list[index].qlist[qindex].option = sortList;
-			}
-		},
-		props: {
-			list: {
-				type: Array,
-				default: []
-			},
-			index: {
-				type: Number,
-				default: 0
-			},
-			qindex: {
-				type: Number,
-				default: 0
+				this.comitem.qlist[qindex].option = sortList;
 			}
 		},
 		mounted: function() {

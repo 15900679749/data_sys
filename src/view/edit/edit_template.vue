@@ -60,9 +60,8 @@
 										<fractions :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></fractions>
 									</template>
 									<template v-if="qitem.sub_cat=='comprehensive'">
-										<comprehensive @deleCom="delem" :taccord="taccord" :index="index" :list="qitem.list" :qindex="qindex" @itemSortdown="itemSortdown"></comprehensive>
+										<comprehensive @deleCom="delem" :taccord="taccord" :index="index" :comitem="qitem" :qindex="qindex" @itemSortdown="itemSortdown"></comprehensive>
 									</template>
-
 								</div>
 							</el-collapse-item>
 						</div>
@@ -94,9 +93,8 @@
 				activeNames: [],
 				list: [],
 				taccord: "、",
-				questionId: "",
-				parentModle: "",
-
+				subId: "",
+				parentModle: 0
 			}
 		},
 		methods: {
@@ -106,12 +104,13 @@
 			addfill(index) {
 				let ix = this.list[index].qlist.length + 1;
 				this.list[index].qlist.push({
-					ppid: this.questionId,
-					pid: this.list[index].pid,
+					ppid: this.subId,
+					pid: this.list[index].id,
 					id: 0,
 					serial_number: ix,
 					poSition: "",
 					qtitle: ix,
+					option: [],
 					sub_cat: "fill",
 					is_must: false,
 					title: '标题',
@@ -122,10 +121,9 @@
 			},
 			addsingle(index) {
 				let ix = this.list[index].qlist.length + 1;
-			debugger
 				this.list[index].qlist.push({
-					ppid: this.questionId,
-					pid: this.list[index].pid,
+					ppid: this.subId,
+					pid: this.list[index].id,
 					id: 0,
 					serial_number: ix,
 					poSition: "",
@@ -150,9 +148,11 @@
 			addmultiple(index) {
 				let ix = this.list[index].qlist.length + 1;
 				this.list[index].qlist.push({
+					id: 0,
+					ppid: this.subId,
+					pid: this.list[index].id,
 					qtitle: ix,
 					sub_cat: "multiple",
-					title: '标题',
 					serial_number: ix,
 					poSition: "",
 					is_must: false,
@@ -168,14 +168,16 @@
 						related_sub: "",
 						skip_sub: ""
 					}],
-					checkedGroup: ['篮球', '足球'],
-					GroupList: ''
+					checkedGroup: []
 				});
 
 			},
 			addmultistage(index) {
 				let ix = this.list[index].qlist.length + 1;
 				this.list[index].qlist.push({
+					id: 0,
+					ppid: this.subId,
+					pid: this.list[index].id,
 					poSition: '',
 					qtitle: ix,
 					sub_cat: "multistage",
@@ -206,26 +208,22 @@
 						"name": "",
 						"value": "",
 						"id": 1,
-						"svalue": "",
 						"options": [],
 						"childList": []
 					}, {
 						"name": "",
 						"id": 2,
-						"svalue": "",
 						"value": "",
 						"options": [],
 						"childList": []
 					}, {
 						"name": "",
-						"svalue": "",
 						"value": "",
 						"id": 3,
 						"options": [],
 						"childList": []
 					}, {
 						"name": "",
-						"svalue": "",
 						"value": "",
 						"id": 4,
 						"options": [],
@@ -236,6 +234,9 @@
 			adduploadimg(index) {
 				let ix = this.list[index].qlist.length + 1;
 				this.list[index].qlist.push({
+					id: 0,
+					ppid: this.subId,
+					pid: this.list[index].id,
 					sub_cat: "uploadimg",
 					serial_number: ix,
 					poSition: "",
@@ -245,22 +246,23 @@
 					show: true,
 					edittextinput: true,
 					changeButton: false,
-					options: [{
-						imagescr: '',
-					}],
-					imageLength: 1,
-					imageUrl: ''
+					option: [{
+						"number": '1'
+					}]
 				})
 			},
 			addloCation(index) {
 				let ix = this.list[index].qlist.length + 1;
 				this.list[index].qlist.push({
+					id: 0,
+					ppid: this.subId,
+					pid: this.list[index].id,
 					sub_cat: "loCation",
 					title: '标题',
 					serial_number: ix,
 					poSition: "",
 					qtitle: ix,
-					sub_cat: "fill",
+					option: [],
 					is_must: false,
 					show: true,
 					edittextinput: true,
@@ -269,12 +271,16 @@
 			},
 			addfractions(index) {
 				let ix = this.list[index].qlist.length + 1;
-
 				this.list[index].qlist.push({
+					id: 0,
+					ppid: this.subId,
+					pid: this.list[index].id,
 					poSition: '',
 					qtitle: ix,
 					sub_cat: "fractions",
-					silidervalue: 100,
+					option: [{
+						"silidervalue": "100"
+					}],
 					serial_number: ix,
 					is_must: false,
 					title: '标题',
@@ -287,18 +293,16 @@
 				let ix = this.list[index].qlist.length + 1;
 				var option = {};
 				option.title = "综合题名称";
-				option.qtitle = this.list[index].qlist.length + 1 + '、';
+				option.qtitle = this.list[index].qlist.length + 1;
 				option.qlist = [];
 				option.changeButton = false;
 				option.serial_number = ix;
+				option.id = 0;
+				option.ppid = this.subId;
+				option.pid = this.list[index].id;
 				option.sub_cat = "comprehensive";
-				this.list[index].qlist.push({
-					qtitle: ix,
-					poSition: "",
-					serial_number: ix,
-					sub_cat: "comprehensive",
-					list: [option],
-				});
+				option.poSition = "";
+				this.list[index].qlist.push(option);
 			},
 			delem(index, pindex) {
 				this.list[index].qlist.splice(pindex, 1);
@@ -384,7 +388,7 @@
 				var listItem = this.list[index].qlist[qindex];
 				var sortList = this.list[index].qlist;
 				var serial_number = listItem.serial_number;
-				sitem ? listItem.list[0].changeButton = false : listItem.changeButton = false;
+				listItem.changeButton = false;
 				if(type == 'up') {
 					let uitem = this.list[index].qlist[qindex - 1];
 					if(uitem != undefined && uitem != null) {
@@ -482,103 +486,85 @@
 			},
 			openModel() {
 				let self = this;
-				//				this.$prompt('请输入模块名称', '新建模块', {
-				//					confirmButtonText: '确定',
-				//					cancelButtonText: '取消',
-				//        inputPattern: /[\w!#$%&'*+/=?^_`{|}~-]+(?:\.[\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\w](?:[\w-]*[\w])?\.)+[\w](?:[\w-]*[\w])?/,
-				//      inputErrorMessage: '邮箱格式不正确'
-				//				}).then(({
-				//					value
-				//				}) => {
 				var option = {};
 				option.mod_name = "模块名称";
 				option.qtitle = self.list.length + 1 + '、';
 				option.id = 0;
-				option.pid = 0;
-				option.chief = 0;
 				option.sortId = 0;
 				option.qlist = [];
-
-				//				}).catch(() => {
-				//					this.$message({
-				//						type: 'info',
-				//						message: '取消输入'
-				//					});
-				//				});
-//				self.list.push(option);
-								this.$post("/Home/Subject/createNewMod", {
-									pid: this.questionId,
-									chief: this.parentModle || 0,
-									mod_name: option.mod_name
-								}).then((res) => {
-									
-									option.pid = res.id;
-//									debugger
-									self.list.push(option);
-								})
+				this.$post("/Home/Subject/createNewMod", {
+					pid: this.subId,
+					chief: this.parentModle || 0,
+					mod_name: option.mod_name
+				}).then((res) => {
+					option.id = res.id;
+					self.list.push(option);
+				});
 			},
 			submitForm(item, index) {
-				let subModel = item;
+				let subModel = JSON.parse(JSON.stringify(item));
 				delete subModel.changeButton;
 				delete subModel.edittextinput;
 				delete subModel.show;
 				delete subModel.poSition;
-//				delete subModel.id;
-				let self = this;
+				//delete subModel.id; //如果 id=0,表示新加，有值表示修改
+				let self = this; //fill single  multiple uploadimg loCation fractions 不需要特殊处理
 				switch(item.sub_cat) {
-					case "fill":
+					case "multistage":
 						{
-							subModel.option = {};
+							let olist = subModel.olist; //多级下拉转换
+							let svalue = parseInt(subModel.value); //选择显示几个
+							delete subModel.olist;
+							delete subModel.doptions;
+							delete subModel.value;
+							subModel.option = [{
+								"svalue": svalue,
+								"value": olist
+							}];
 						}
 						break;
-					case "single":
+					case "comprehensive":
+						{}
+						break;
+					case "multiple":
 						{
-							delete subModel.default_choose;
-							subModel.option.forEach(item => {
-//								delete item.id;
-							});
+							delete subModel.checkedGroup;
 						}
 						break;
 				}
-//				debugger
-console.log(subModel);
+				debugger
+				console.log(subModel);
 				this.$post("/Home/Subject/createNewItem", subModel).then((res) => {
-//					self.list[index].id = res.id;
-					subModel.id = res.id;
+					item.id = res.id;
 				});
 			},
-			finishSub(){
-				
-				let SubInfo={
-					id:this.questionId,
-					name:this.questiontitle,
-					description:this.contentText,
-					mod:[]
-					
-				}
-				
-				let modoption={};
-				for(var i=0;i<this.list.length;i++){
-					
-					modoption.id=this.list[i].pid;
-				modoption.mod_name=this.list[i].mod_name;
-				modoption.item={};
-				SubInfo.mod.push(modoption);
-				for(var j=0;j<this.list[i].qlist.length;j++)
-				for(let v in modoption.item){
-					modoption.item[v]={}
-					debugger
-modoption.item[v].id=this.list[i].qlist[j].id;
+			finishSub() {
+
+				let SubInfo = {
+					id: this.questionId,
+					name: this.questiontitle,
+					description: this.contentText,
+					mod: []
 
 				}
-				
-				
+
+				let modoption = {};
+				for(var i = 0; i < this.list.length; i++) {
+
+					modoption.id = this.list[i].pid;
+					modoption.mod_name = this.list[i].mod_name;
+					modoption.item = {};
+					SubInfo.mod.push(modoption);
+					for(var j = 0; j < this.list[i].qlist.length; j++)
+						for(let v in modoption.item) {
+							modoption.item[v] = {}
+							debugger
+							modoption.item[v].id = this.list[i].qlist[j].id;
+
+						}
+
 				}
-				
-				
-				
-				
-				
+
 				this.$post("/Home/Subject/finishSub", SubInfo).then((res) => {
 					console.log(res);
 				});
@@ -588,7 +574,7 @@ modoption.item[v].id=this.list[i].qlist[j].id;
 			console.log(this.activeNames);
 		},
 		created() {
-			this.questionId = this.$route.query.questionId;
+			this.subId = this.$route.query.questionId;
 		},
 		components: {
 			headTop,

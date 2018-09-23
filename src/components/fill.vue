@@ -68,23 +68,14 @@
 			},
 			showcart(item) {
 				item.show = item.edittextinput || !item.show;
-				//				item.style={
-				//					"border":"1px solid #eee",
-				//				}
 			},
 			submitForm(item) {
 				this.$emit("submitForm", item, this.index);
-				//				item.edittextinput = !item.edittextinput;
-				//				item.show = !item.show;
 			},
 			itemSortdown: function(index, qindex, type) {
 				this.$emit("itemSortdown", index, qindex, type);
 			},
 			removeDomain(item) {
-				//				var index = this.formlist.indexOf(item);
-				//				if(index !== -1) {
-				//					this.formlist.splice(index, 1)
-				//				}
 				this.$emit("removeDomain", this.index, this.qindex);
 			},
 			command(callback, vc) {

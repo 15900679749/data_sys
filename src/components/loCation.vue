@@ -77,8 +77,7 @@
 				//				}
 			},
 			submitForm(item) {
-				item.edittextinput = !item.edittextinput;
-				item.show = !item.show;
+				this.$emit("submitForm", item, this.index);
 			},
 			removeDomain() {
 				this.$emit("removeDomain", this.index, this.qindex);
