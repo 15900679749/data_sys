@@ -60,7 +60,7 @@
 										<fractions :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></fractions>
 									</template>
 									<template v-if="qitem.sub_cat=='comprehensive'">
-										<comprehensive @deleCom="delem" :taccord="taccord" :index="index" :comitem="qitem" :qindex="qindex" @itemSortdown="itemSortdown"></comprehensive>
+										<comprehensive @deleCom="delem" :comtaccord="comtaccord" :index="index" :comitem="qitem" :qindex="qindex" @itemSortdown="itemSortdown"></comprehensive>
 									</template>
 								</div>
 							</el-collapse-item>
@@ -95,6 +95,7 @@
 				activeNames: [],
 				list: [],
 				taccord: "、",
+				comtaccord: "、",
 				subId: "",
 				parentModle: 0
 			}
@@ -180,7 +181,16 @@
 				option.pid = this.list[index].id;
 				option.sub_cat = "comprehensive";
 				option.poSition = "";
-				this.list[index].qlist.push(option);
+				debugger
+				this.$post("/Home/Subject/createNewMod", {
+					pid: this.subId,
+					chief: option.pid,
+					mod_name: option.title
+				}).then((res) => {
+					option.id = res.id;
+					this.list[index].qlist.push(option);
+				});
+
 			},
 			delem(index, pindex) {
 				this.list[index].qlist.splice(pindex, 1);
@@ -275,7 +285,7 @@
 				let dlist = this.list[index].qlist[qindex].option.deleteIndex(dindex);
 				this.list[index].qlist[qindex].option = dlist;
 			},
-			itemSortdown(index, qindex, type, sitem) {
+			itemSortdown(index, qindex, type) {
 				var listItem = this.list[index].qlist[qindex];
 				var sortList = this.list[index].qlist;
 				var serial_number = listItem.serial_number;
@@ -306,13 +316,7 @@
 					}
 				} else if(type == 'jumpitem') {
 					let num = "";
-					if(sitem) {
-						num = this.list[index].qlist[qindex].list[0].poSition;
-						this.list[index].qlist[qindex].list[0].changeButton = false;
-						this.list[index].qlist[qindex].list[0].poSition = "";
-					} else {
-						num = this.list[index].qlist[qindex].poSition;
-					}
+					num = this.list[index].qlist[qindex].poSition;
 					if(window.isNaN(num)) {
 						this.$message({
 							type: 'error',
@@ -411,13 +415,20 @@
 							delete subModel.doptions;
 							delete subModel.value;
 							subModel.option = [{
-								"svalue": svalue,
-								"value": olist
+								"default_choose": svalue,
+								"option_name": olist
 							}];
 						}
 						break;
+					case "single":
+						{
+							delete subModel.default_choose;
+						}
+						break;
 					case "comprehensive":
-						{}
+						{
+
+						}
 						break;
 					case "multiple":
 						{
@@ -425,14 +436,12 @@
 						}
 						break;
 				}
-				debugger
 				console.log(subModel);
 				this.$post("/Home/Subject/createNewItem", subModel).then((res) => {
 					item.id = res.id;
 				});
 			},
 			finishSub() {
-
 				this.$confirm('您确定要完成问卷吗?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
@@ -477,6 +486,7 @@
 		},
 		created() {
 			this.subId = this.$route.query.questionId;
+			return;
 			this.$post("/Home/Subject/getSingleSub", {
 				id: this.subId
 			}).then((res) => {
@@ -485,7 +495,7 @@
 				//let modlist = res.mod;
 				let aa = res.mod;
 				let modlist = [];
-				//				modlist.push(aa[188]);
+				//modlist.push(aa[203]);
 				//				modlist.push(aa[177]);
 				debugger
 				for(var k = 0; k < modlist.length; k++) {

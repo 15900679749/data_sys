@@ -5,7 +5,7 @@
 				<i v-if="item.is_must" v-text="'*'" class="itemmust"></i>
 				<el-row justify="start">
 
-					<el-col :span="6" v-for="(inx,index) in item.option[0].number" :key="index">
+					<el-col :span="6" v-for="(inx,index) in item.option[0].option_name" :key="index">
 						<el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list='false' :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" :limit="item.imageLength">
 							<img :src="imageUrl[index]" alt="" v-if="imageUrl[index]" class="avatar" />
 							<i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -33,7 +33,7 @@
 							<div class="singleedit">
 								<el-row type="flex">
 									<el-col :span="3">最大上传数量:</el-col>
-									<el-select v-model="item.option[0].number" placeholder="请选择">
+									<el-select v-model="item.option[0].option_name" placeholder="请选择">
 										<el-option v-for="(option,index) in 5" :value="option" :key="index">{{option}}
 										</el-option>
 									</el-select>

@@ -5,7 +5,7 @@
 				<i v-if="item.is_must" v-text="'*'" class="itemmust"></i>
 				<el-row type="flex" justify="start" class="loCationtips">
 					<div class="block">
-						<span class="demonstration">{{item.option[0].silidervalue}}</span>
+						<span class="demonstration">{{item.option[0].option_name}}</span>
 						<!--<el-slider v-model="item.silidervalue" show-input :max="parseInt(item.silidervalue)"></el-slider>-->
 						<!--<el-slider v-model="item.silidervalue" show-input></el-slider>-->
 						<el-progress :percentage="100" :show-text="false" style="width:85%;left:5%;top:18px;"></el-progress>
@@ -34,7 +34,7 @@
 
 						</el-form-item>
 						<el-form-item :label="'总分'">
-							<el-input v-model="item.option[0].silidervalue"></el-input>
+							<el-input v-model="item.option[0].option_name"></el-input>
 						</el-form-item>
 						<el-button type="primary" @click="submitForm(item)">保存</el-button>
 					</el-col>
