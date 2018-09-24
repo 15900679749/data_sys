@@ -94,7 +94,6 @@
 
 			},
 			deleItem(item) {
-				debugger
 				this.$confirm('您确定要删除改记录, 是否继续?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
@@ -117,17 +116,28 @@
 					});
 				});
 			},
-			designAn() {
-
-			},
-			sendAn() {
+			designAn(item) {
 				return this.$router.push({
-					path: '/sendpage'
+					path: '/edit/edit_template',
+					query: {
+						questionId: item.id,
+					}
 				});
 			},
-			analyzeDown() {
+			sendAn(item) {
 				return this.$router.push({
-					path: '/analysis'
+					path: '/sendpage',
+					query: {
+						questionId: item.id,
+					}
+				});
+			},
+			analyzeDown(item) {
+				return this.$router.push({
+					path: '/analysis',
+					query: {
+						questionId: item.id,
+					}
 				});
 			},
 			jump() {

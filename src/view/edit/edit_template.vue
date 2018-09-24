@@ -85,6 +85,8 @@
 	import fractions from 'components/fractions.vue';
 	import { Message } from "element-ui";
 	import comprehensive from 'components/comprehensive.vue';
+	import { ofill, osingle, omultiple, omultistage, ouploadimg, oloCation, ofractions } from "components/itemType";
+
 	export default {
 		data() {
 			return {
@@ -103,191 +105,67 @@
 			},
 			addfill(index) {
 				let ix = this.list[index].qlist.length + 1;
-				this.list[index].qlist.push({
-					ppid: this.subId,
-					pid: this.list[index].id,
-					id: 0,
-					serial_number: ix,
-					poSition: "",
-					qtitle: ix,
-					option: [],
-					sub_cat: "fill",
-					is_must: false,
-					title: '标题',
-					show: true,
-					edittextinput: true,
-					changeButton: false
-				});
+				let ifill = JSON.parse(JSON.stringify(ofill));
+				ifill.ppid = this.subId;
+				ifill.pid = this.list[index].id;
+				ifill.serial_number = ix;
+				ifill.qtitle = ix;
+				this.list[index].qlist.push(ifill);
 			},
 			addsingle(index) {
 				let ix = this.list[index].qlist.length + 1;
-				this.list[index].qlist.push({
-					ppid: this.subId,
-					pid: this.list[index].id,
-					id: 0,
-					serial_number: ix,
-					poSition: "",
-					qtitle: ix,
-					sub_cat: "single",
-					is_must: false,
-					title: '标题',
-					show: true,
-					edittextinput: true,
-					changeButton: false,
-					default_choose: '',
-					option: [{
-						id: 0,
-						order_num: 1,
-						option_name: '选项1',
-						default_choose: 0,
-						related_sub: "",
-						skip_sub: ""
-					}]
-				});
+				let isingle = JSON.parse(JSON.stringify(osingle));
+				isingle.ppid = this.subId;
+				isingle.pid = this.list[index].id;
+				isingle.serial_number = ix;
+				isingle.qtitle = ix;
+				this.list[index].qlist.push(isingle);
 			},
 			addmultiple(index) {
 				let ix = this.list[index].qlist.length + 1;
-				this.list[index].qlist.push({
-					id: 0,
-					ppid: this.subId,
-					pid: this.list[index].id,
-					qtitle: ix,
-					sub_cat: "multiple",
-					serial_number: ix,
-					poSition: "",
-					is_must: false,
-					title: '标题',
-					show: true,
-					edittextinput: true,
-					changeButton: false,
-					option: [{
-						id: 0,
-						order_num: 1,
-						option_name: '选项1',
-						default_choose: 0,
-						related_sub: "",
-						skip_sub: ""
-					}],
-					checkedGroup: []
-				});
+				let imultiple = JSON.parse(JSON.stringify(omultiple));
+				imultiple.ppid = this.subId;
+				imultiple.pid = this.list[index].id;
+				imultiple.serial_number = ix;
+				imultiple.qtitle = ix;
+				this.list[index].qlist.push(imultiple);
 
 			},
 			addmultistage(index) {
 				let ix = this.list[index].qlist.length + 1;
-				this.list[index].qlist.push({
-					id: 0,
-					ppid: this.subId,
-					pid: this.list[index].id,
-					poSition: '',
-					qtitle: ix,
-					sub_cat: "multistage",
-					serial_number: ix,
-					is_must: false,
-					title: '标题',
-					show: true,
-					edittextinput: true,
-					changeButton: false,
-					doptions: [{
-							value: '2',
-							label: '2级',
-							disabled: true
-						},
-						{
-							value: '3',
-							label: '3级',
-							disabled: true
-						},
-						{
-							value: '4',
-							label: '4级',
-							disabled: true
-						}
-					],
-					value: "2",
-					olist: [{
-						"name": "",
-						"value": "",
-						"id": 1,
-						"options": [],
-						"childList": []
-					}, {
-						"name": "",
-						"id": 2,
-						"value": "",
-						"options": [],
-						"childList": []
-					}, {
-						"name": "",
-						"value": "",
-						"id": 3,
-						"options": [],
-						"childList": []
-					}, {
-						"name": "",
-						"value": "",
-						"id": 4,
-						"options": [],
-						"childList": []
-					}]
-				})
+				let imultistage = JSON.parse(JSON.stringify(omultistage));
+				imultistage.ppid = this.subId;
+				imultistage.pid = this.list[index].id;
+				imultistage.serial_number = ix;
+				imultistage.qtitle = ix;
+				this.list[index].qlist.push(imultistage);
 			},
 			adduploadimg(index) {
 				let ix = this.list[index].qlist.length + 1;
-				this.list[index].qlist.push({
-					id: 0,
-					ppid: this.subId,
-					pid: this.list[index].id,
-					sub_cat: "uploadimg",
-					serial_number: ix,
-					poSition: "",
-					qtitle: ix,
-					is_must: false,
-					title: '标题',
-					show: true,
-					edittextinput: true,
-					changeButton: false,
-					option: [{
-						"number": '1'
-					}]
-				})
+				let iuploadimg = JSON.parse(JSON.stringify(ouploadimg));
+				iuploadimg.ppid = this.subId;
+				iuploadimg.pid = this.list[index].id;
+				iuploadimg.serial_number = ix;
+				iuploadimg.qtitle = ix;
+				this.list[index].qlist.push(iuploadimg);
 			},
 			addloCation(index) {
 				let ix = this.list[index].qlist.length + 1;
-				this.list[index].qlist.push({
-					id: 0,
-					ppid: this.subId,
-					pid: this.list[index].id,
-					sub_cat: "loCation",
-					title: '标题',
-					serial_number: ix,
-					poSition: "",
-					qtitle: ix,
-					option: [],
-					is_must: false,
-					show: true,
-					edittextinput: true,
-					changeButton: false,
-				})
+				let iloCation = JSON.parse(JSON.stringify(oloCation));
+				iloCation.ppid = this.subId;
+				iloCation.pid = this.list[index].id;
+				iloCation.serial_number = ix;
+				iloCation.qtitle = ix;
+				this.list[index].qlist.push(iloCation);
 			},
 			addfractions(index) {
 				let ix = this.list[index].qlist.length + 1;
-				this.list[index].qlist.push({
-					id: 0,
-					ppid: this.subId,
-					pid: this.list[index].id,
-					poSition: '',
-					qtitle: ix,
-					sub_cat: "fractions",
-					option: [{
-						"silidervalue": "100"
-					}],
-					serial_number: ix,
-					is_must: false,
-					title: '标题',
-					show: true,
-					edittextinput: true,
-					changeButton: false
-				})
+				let ifractions = JSON.parse(JSON.stringify(ofractions));
+				ifractions.ppid = this.subId;
+				ifractions.pid = this.list[index].id;
+				ifractions.serial_number = ix;
+				ifractions.qtitle = ix;
+				this.list[index].qlist.push(ifractions);
 			},
 			addcomprehensive(index) {
 				let ix = this.list[index].qlist.length + 1;
@@ -377,8 +255,21 @@
 				}
 			},
 			removeDomain(index, qindex) {
-				let nlist = this.list[index].qlist.deleteIndex(qindex);
-				this.list[index].qlist = nlist;
+				this.$confirm('您确定要删除吗?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let dmodel = this.list[index].qlist[qindex];
+					debugger
+					if(dmodel.id != 0) {
+						this.$post("/Home/Subject/deleteItem", {
+							id: dmodel.id
+						}).then((res) => {});
+					}
+					let nlist = this.list[index].qlist.deleteIndex(qindex);
+					this.list[index].qlist = nlist;
+				}).catch(() => {});
 			},
 			removeDomainitem(index, qindex, dindex) {
 				let dlist = this.list[index].qlist[qindex].option.deleteIndex(dindex);
@@ -491,6 +382,8 @@
 				option.qtitle = self.list.length + 1 + '、';
 				option.id = 0;
 				option.sortId = 0;
+				option.pid = this.subId;
+				option.sortId = 0;
 				option.qlist = [];
 				this.$post("/Home/Subject/createNewMod", {
 					pid: this.subId,
@@ -545,39 +438,38 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-
+					let SubInfo = {
+						id: this.subId,
+						name: this.questiontitle,
+						description: this.contentText,
+						mod: []
+					}
+					for(var i = 0; i < this.list.length; i++) {
+						let modoption = {};
+						modoption.id = this.list[i].id;
+						modoption.mod_name = this.list[i].mod_name;
+						modoption.item = [];
+						for(var j = 0; j < this.list[i].qlist.length; j++) {
+							let jitem = {
+								id: this.list[i].qlist[j].id,
+								order: this.list[i].qlist[j].serial_number
+							}
+							modoption.item.push(jitem);
+						}
+						SubInfo.mod.push(modoption);
+					}
+					this.$post("/Home/Subject/finishSub", SubInfo).then((res) => {
+						this.$alert('操作成功！', '提示', {
+							confirmButtonText: '确定',
+							callback: action => {
+								this.$router.push({
+									path: '/questionNaire'
+								})
+							}
+						});
+					});
 				}).catch(() => {});
 
-				let SubInfo = {
-					id: this.questionId,
-					name: this.questiontitle,
-					description: this.contentText,
-					mod: []
-				}
-
-				let modoption = {};
-				for(var i = 0; i < this.list.length; i++) {
-
-					modoption.id = this.list[i].pid;
-					modoption.mod_name = this.list[i].mod_name;
-					modoption.item = {};
-					SubInfo.mod.push(modoption);
-					for(var j = 0; j < this.list[i].qlist.length; j++)
-						for(let v in modoption.item) {
-							modoption.item[v] = {}
-							debugger
-							modoption.item[v].id = this.list[i].qlist[j].id;
-
-						}
-
-				}
-
-				return;
-				this.$post("/Home/Subject/finishSub", SubInfo).then((res) => {
-					this.$router.push({
-						path: '/questionNaire'
-					})
-				});
 			}
 		},
 		mounted: function() {
@@ -585,6 +477,104 @@
 		},
 		created() {
 			this.subId = this.$route.query.questionId;
+			this.$post("/Home/Subject/getSingleSub", {
+				id: this.subId
+			}).then((res) => {
+				this.contentText = res.description || "";
+				this.questiontitle = res.sub_name || "";
+				//let modlist = res.mod;
+				let aa = res.mod;
+				let modlist = [];
+				//				modlist.push(aa[188]);
+				//				modlist.push(aa[177]);
+				debugger
+				for(var k = 0; k < modlist.length; k++) {
+					var option = {};
+					debugger
+					option.mod_name = modlist[k].mod_name;
+					option.qtitle = this.list.length + 1 + '、';
+					option.id = modlist[k].id;
+					option.sortId = modlist[k].order_num;
+					option.qlist = [];
+					option.pid = modlist[k].pid;
+					for(var n = 0; n < modlist[k].item.length; n++) {
+						var sub_cat = modlist[k].item[n].sub_cat;
+						switch(sub_cat) {
+							case "fill":
+								{
+									let ifill = JSON.parse(JSON.stringify(ofill));
+									for(var km in ifill) {
+										modlist[k].item[n].hasOwnProperty(km) && (ifill[km] = modlist[k].item[n][km])
+									}
+									option.qlist.push(ifill);
+								}
+								break;
+							case "single":
+								{
+									let isingle = JSON.parse(JSON.stringify(osingle));
+									for(var km in isingle) {
+										modlist[k].item[n].hasOwnProperty(km) && (isingle[km] = modlist[k].item[n][km])
+									}
+									option.qlist.push(isingle);
+								}
+								break;
+							case "multiple":
+								{
+									let imultiple = JSON.parse(JSON.stringify(omultiple));
+									for(var km in imultiple) {
+										modlist[k].item[n].hasOwnProperty(km) && (imultiple[km] = modlist[k].item[n][km])
+									}
+									option.qlist.push(imultiple);
+								}
+								break;
+							case "multistage":
+								{
+									let imultistage = JSON.parse(JSON.stringify(omultistage));
+									for(var km in imultistage) {
+										modlist[k].item[n].hasOwnProperty(km) && (imultistage[km] = modlist[k].item[n][km])
+									}
+									option.qlist.push(imultistage);
+								}
+								break;
+							case "uploadimg":
+								{
+									let iuploadimg = JSON.parse(JSON.stringify(ouploadimg));
+									for(var km in iuploadimg) {
+										modlist[k].item[n].hasOwnProperty(km) && (iuploadimg[km] = modlist[k].item[n][km])
+									}
+									option.qlist.push(iuploadimg);
+								}
+								break;
+							case "loCation":
+								{
+									let iloCation = JSON.parse(JSON.stringify(oloCation));
+									for(var km in iloCation) {
+										modlist[k].item[n].hasOwnProperty(km) && (iloCation[km] = modlist[k].item[n][km])
+									}
+									option.qlist.push(iloCation);
+								}
+								break;
+							case "fractions":
+								{
+									let ifractions = JSON.parse(JSON.stringify(ofractions));
+									for(var km in ifractions) {
+										modlist[k].item[n].hasOwnProperty(km) && (ifractions[km] = modlist[k].item[n][km])
+									}
+									option.qlist.push(ifractions);
+								}
+								break;
+							case "comprehensive":
+								{
+
+								}
+								break;
+							default:
+								break;
+						}
+					}
+					this.list.push(option);
+				}
+			});
 		},
 		components: {
 			headTop,

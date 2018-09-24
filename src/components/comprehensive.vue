@@ -94,8 +94,7 @@
 		},
 		created() {
 			debugger
-			let aa = this.comitem;
-			debugger
+			//let aa = this.comitem;
 		},
 		methods: {
 			handleChange(val) {
@@ -103,6 +102,7 @@
 			},
 			addfill(index) {
 				let ix = this.comitem.qlist.length + 1;
+				debugger
 				this.comitem.qlist.push({
 					ppid: this.questionId,
 					pid: 0,
