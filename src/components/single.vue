@@ -396,13 +396,7 @@
 		}
 	}
 	
-	.itemmust {
-		color: red;
-		font-style: normal;
-		position: absolute;
-		left: -13px;
-		top: 3px;
-	}
+
 	
 	.positionsure {
 		width: 40px;

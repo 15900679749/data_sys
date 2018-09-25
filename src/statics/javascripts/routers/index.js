@@ -69,7 +69,7 @@ export default [{
 		}
 	},
 	{
-		path: '/edit_questionnaire',
+		path: '/edit/edit_questionnaire',
 		name: '/edit_questionnaire',
 		component: require('view/edit/edit_questionnaire'),
 		meta: {

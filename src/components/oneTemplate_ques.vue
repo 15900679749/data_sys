@@ -118,7 +118,7 @@
 			},
 			designAn(item) {
 				return this.$router.push({
-					path: '/edit/edit_template',
+					path: '/edit/edit_questionnaire',
 					query: {
 						questionId: item.id,
 					}
@@ -183,7 +183,7 @@
 				}).then((res) => {
 					console.log(res);
 					this.$router.push({
-						path: 'edit/edit_template',
+						path: 'edit/edit_questionnaire',
 						query: {
 							questionId: res.id,
 						}

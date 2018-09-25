@@ -74,7 +74,7 @@
 </template>
 
 <script>
-	import headTop from 'view/head/headTop.vue';
+	
 	import topic from 'components/topic.vue';
 	import fill from 'components/fill.vue';
 	import single from 'components/single.vue';
@@ -486,7 +486,7 @@
 		},
 		created() {
 			this.subId = this.$route.query.questionId;
-			return;
+			
 			this.$post("/Home/Subject/getSingleSub", {
 				id: this.subId
 			}).then((res) => {
@@ -497,10 +497,10 @@
 				let modlist = [];
 				//modlist.push(aa[203]);
 				//				modlist.push(aa[177]);
-				debugger
+//				debugger
 				for(var k = 0; k < modlist.length; k++) {
 					var option = {};
-					debugger
+//					debugger
 					option.mod_name = modlist[k].mod_name;
 					option.qtitle = this.list.length + 1 + '、';
 					option.id = modlist[k].id;
@@ -587,7 +587,7 @@
 			});
 		},
 		components: {
-			headTop,
+			
 			topic,
 			fill,
 			single,
