@@ -74,7 +74,6 @@
 </template>
 
 <script>
-	
 	import topic from 'components/topic.vue';
 	import fill from 'components/fill.vue';
 	import single from 'components/single.vue';
@@ -85,7 +84,7 @@
 	import fractions from 'components/fractions.vue';
 	import { Message } from "element-ui";
 	import comprehensive from 'components/comprehensive.vue';
-	import { ofill, osingle, omultiple, omultistage, ouploadimg, oloCation, ofractions } from "components/itemType";
+	import { ofill, osingle, omultiple, omultistage, ouploadimg, oloCation, ofractions, ocomprehensive } from "components/itemType";
 
 	export default {
 		data() {
@@ -97,7 +96,7 @@
 				taccord: "、",
 				comtaccord: "、",
 				subId: "",
-				parentModle: 0
+				parentModle: 0,
 			}
 		},
 		methods: {
@@ -181,7 +180,6 @@
 				option.pid = this.list[index].id;
 				option.sub_cat = "comprehensive";
 				option.poSition = "";
-				debugger
 				this.$post("/Home/Subject/createNewMod", {
 					pid: this.subId,
 					chief: option.pid,
@@ -427,7 +425,7 @@
 						break;
 					case "comprehensive":
 						{
-
+							delete subModel.default_choose;
 						}
 						break;
 					case "multiple":
@@ -459,9 +457,10 @@
 						modoption.mod_name = this.list[i].mod_name;
 						modoption.item = [];
 						for(var j = 0; j < this.list[i].qlist.length; j++) {
+							//							debugger
 							let jitem = {
 								id: this.list[i].qlist[j].id,
-								order: this.list[i].qlist[j].serial_number
+								order: j + 1
 							}
 							modoption.item.push(jitem);
 						}
@@ -479,6 +478,160 @@
 					});
 				}).catch(() => {});
 
+			},
+			casbreakoptions(sub_cat, fatheritem, ly) {
+
+				switch(sub_cat) {
+					case "fill":
+						{
+							let ifill = JSON.parse(JSON.stringify(ofill));
+							for(var km in ifill) {
+								fatheritem.hasOwnProperty(km) && (ifill[km] = fatheritem[km])
+							}
+							ly.qlist.push(ifill);
+						}
+						break;
+					case "single":
+						{
+							let isingle = JSON.parse(JSON.stringify(osingle));
+							for(var km in isingle) {
+								fatheritem.hasOwnProperty(km) && (isingle[km] = fatheritem[km])
+							}
+							let ly1 = fatheritem.option.filter(o => o.default_choose == 1);
+							(isingle.default_choose == "" && ly1.length > 0) && (isingle.default_choose = ly1[0].option_name);
+							ly.qlist.push(isingle);
+						}
+						break;
+					case "multiple":
+						{
+							let imultiple = JSON.parse(JSON.stringify(omultiple));
+							for(var km in imultiple) {
+								fatheritem.hasOwnProperty(km) && (imultiple[km] = fatheritem[km])
+							}
+							ly.qlist.push(imultiple);
+						}
+						break;
+					case "multistage":
+						{
+							let imultistage = JSON.parse(JSON.stringify(omultistage));
+							for(var km in imultistage) {
+								fatheritem.hasOwnProperty(km) && (imultistage[km] = fatheritem[km])
+							}
+							ly.qlist.push(imultistage);
+						}
+						break;
+					case "uploadimg":
+						{
+							let iuploadimg = JSON.parse(JSON.stringify(ouploadimg));
+							for(var km in iuploadimg) {
+								fatheritem.hasOwnProperty(km) && (iuploadimg[km] = fatheritem[km])
+							}
+							ly.qlist.push(iuploadimg);
+						}
+						break;
+					case "loCation":
+						{
+							let iloCation = JSON.parse(JSON.stringify(oloCation));
+							for(var km in iloCation) {
+								fatheritem.hasOwnProperty(km) && (iloCation[km] = fatheritem[km])
+							}
+							ly.qlist.push(iloCation);
+						}
+						break;
+					case "fractions":
+						{
+							let ifractions = JSON.parse(JSON.stringify(ofractions));
+							for(var km in ifractions) {
+								fatheritem.hasOwnProperty(km) && (ifractions[km] = fatheritem[km])
+							}
+
+							ly.qlist.push(ifractions);
+						}
+						break;
+					case "comprehensive":
+						{
+
+						}
+						break;
+					default:
+						break;
+				}
+
+			},
+			getItemOptions(itemList) {
+				let resList = [];
+				Array.from(itemList).forEach((obj, index) => {
+					let sub_cat = obj.sub_cat;
+					let fatheritem = obj;
+					switch(sub_cat) {
+						case "fill":
+							{
+								let ifill = JSON.parse(JSON.stringify(ofill));
+								for(var km in ifill) {
+									fatheritem.hasOwnProperty(km) && (ifill[km] = fatheritem[km])
+								}
+								resList.push(ifill);
+							}
+							break;
+						case "single":
+							{
+								let isingle = JSON.parse(JSON.stringify(osingle));
+								for(var km in isingle) {
+									fatheritem.hasOwnProperty(km) && (isingle[km] = fatheritem[km])
+								}
+								let ly1 = fatheritem.option.filter(o => o.default_choose == 1);
+								(isingle.default_choose == "" && ly1.length > 0) && (isingle.default_choose = ly1[0].option_name);
+								resList.push(isingle);
+							}
+							break;
+						case "multiple":
+							{
+								let imultiple = JSON.parse(JSON.stringify(omultiple));
+								for(var km in imultiple) {
+									fatheritem.hasOwnProperty(km) && (imultiple[km] = fatheritem[km])
+								}
+								resList.push(imultiple);
+							}
+							break;
+						case "multistage":
+							{
+								let imultistage = JSON.parse(JSON.stringify(omultistage));
+								for(var km in imultistage) {
+									fatheritem.hasOwnProperty(km) && (imultistage[km] = fatheritem[km])
+								}
+								resList.push(imultistage);
+							}
+							break;
+						case "uploadimg":
+							{
+								let iuploadimg = JSON.parse(JSON.stringify(ouploadimg));
+								for(var km in iuploadimg) {
+									fatheritem.hasOwnProperty(km) && (iuploadimg[km] = fatheritem[km])
+								}
+								resList.push(iuploadimg);
+							}
+							break;
+						case "loCation":
+							{
+								let iloCation = JSON.parse(JSON.stringify(oloCation));
+								for(var km in iloCation) {
+									fatheritem.hasOwnProperty(km) && (iloCation[km] = fatheritem[km])
+								}
+								resList.push(iloCation);
+							}
+							break;
+						case "fractions":
+							{
+								let ifractions = JSON.parse(JSON.stringify(ofractions));
+								for(var km in ifractions) {
+									fatheritem.hasOwnProperty(km) && (ifractions[km] = fatheritem[km])
+								}
+								resList.push(ifractions);
+							}
+							break;
+					}
+				});
+				return resList;
 			}
 		},
 		mounted: function() {
@@ -486,110 +639,45 @@
 		},
 		created() {
 			this.subId = this.$route.query.questionId;
-			
+
 			this.$post("/Home/Subject/getSingleSub", {
 				id: this.subId
 			}).then((res) => {
-			
+
 				this.contentText = res.description || "";
 				this.questiontitle = res.sub_name || "";
 				let modlist = res.mod;
-//				let aa = res.mod;
-//				let modlist = [];
-				//modlist.push(aa[203]);
-				//				modlist.push(aa[177]);
-//				debugger
 				for(var k = 0; k < modlist.length; k++) {
 					var option = {};
-					
 					option.mod_name = modlist[k].mod_name;
 					option.qtitle = this.list.length + 1 + '、';
 					option.id = modlist[k].id;
 					option.sortId = modlist[k].order_num;
 					option.qlist = [];
 					option.pid = modlist[k].pid;
-					for(var n = 0; n < modlist[k].item.length; n++) {
-						var sub_cat = modlist[k].item[n].sub_cat;
-						switch(sub_cat) {
-							case "fill":
-								{
-									let ifill = JSON.parse(JSON.stringify(ofill));
-									for(var km in ifill) {
-										modlist[k].item[n].hasOwnProperty(km) && (ifill[km] = modlist[k].item[n][km])
-									}
-									option.qlist.push(ifill);
-								}
-								break;
-							case "single":
-								{
-									let isingle = JSON.parse(JSON.stringify(osingle));
-									for(var km in isingle) {
-										modlist[k].item[n].hasOwnProperty(km) && (isingle[km] = modlist[k].item[n][km])
-									}
-									option.qlist.push(isingle);
-								}
-								break;
-							case "multiple":
-								{
-									let imultiple = JSON.parse(JSON.stringify(omultiple));
-									for(var km in imultiple) {
-										modlist[k].item[n].hasOwnProperty(km) && (imultiple[km] = modlist[k].item[n][km])
-									}
-									option.qlist.push(imultiple);
-								}
-								break;
-							case "multistage":
-								{
-									let imultistage = JSON.parse(JSON.stringify(omultistage));
-									for(var km in imultistage) {
-										modlist[k].item[n].hasOwnProperty(km) && (imultistage[km] = modlist[k].item[n][km])
-									}
-									option.qlist.push(imultistage);
-								}
-								break;
-							case "uploadimg":
-								{
-									let iuploadimg = JSON.parse(JSON.stringify(ouploadimg));
-									for(var km in iuploadimg) {
-										modlist[k].item[n].hasOwnProperty(km) && (iuploadimg[km] = modlist[k].item[n][km])
-									}
-									option.qlist.push(iuploadimg);
-								}
-								break;
-							case "loCation":
-								{
-									let iloCation = JSON.parse(JSON.stringify(oloCation));
-									for(var km in iloCation) {
-										modlist[k].item[n].hasOwnProperty(km) && (iloCation[km] = modlist[k].item[n][km])
-									}
-									option.qlist.push(iloCation);
-								}
-								break;
-							case "fractions":
-								{
-									let ifractions = JSON.parse(JSON.stringify(ofractions));
-									for(var km in ifractions) {
-										modlist[k].item[n].hasOwnProperty(km) && (ifractions[km] = modlist[k].item[n][km])
-									}
-									
-									option.qlist.push(ifractions);
-								}
-								break;
-							case "comprehensive":
-								{
 
-								}
-								break;
-							default:
-								break;
+					if(modlist[k].item.length != 0) {
+						let opList = this.getItemOptions(modlist[k].item);
+						option.qlist = opList;
+					}
+					if(modlist[k].mod && modlist[k].mod.length != 0) {
+						for(var j = 0; j < modlist[k].mod.length; j++) {
+							let icomprehensive = JSON.parse(JSON.stringify(ocomprehensive));
+							for(var km in icomprehensive) {
+								modlist[k].mod[j].hasOwnProperty(km) && (icomprehensive[km] = modlist[k].mod[j][km])
+							}
+							let copList = this.getItemOptions(modlist[k].mod[j].item);
+							icomprehensive.qlist = copList;
+							option.qlist.push(icomprehensive);
 						}
 					}
 					this.list.push(option);
+
 				}
 			});
 		},
 		components: {
-		
+
 			topic,
 			fill,
 			single,

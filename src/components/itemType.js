@@ -171,6 +171,22 @@ let ofractions = {
 	changeButton: false
 };
 
+let ocomprehensive = {
+	id: 0,
+	ppid: 0,
+	pid: 0,
+	poSition: '',
+	qtitle: 0,
+	sub_cat: "comprehensive",
+	qlist: [],
+	serial_number: 0,
+	is_must: false,
+	title: "综合题名称",
+	show: true,
+	edittextinput: true,
+	changeButton: false
+};
+
 export {
 	ofill,
 	osingle,
@@ -178,5 +194,6 @@ export {
 	omultistage,
 	ouploadimg,
 	oloCation,
-	ofractions
+	ofractions,
+	ocomprehensive
 }
