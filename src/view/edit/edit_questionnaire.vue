@@ -97,6 +97,7 @@
 				comtaccord: "、",
 				subId: "",
 				parentModle: 0,
+				serial_number:0
 			}
 		},
 		methods: {
@@ -104,6 +105,7 @@
 				console.log(val);
 			},
 			addfill(index) {
+
 				let ix = this.list[index].qlist.length + 1;
 				let ifill = JSON.parse(JSON.stringify(ofill));
 				ifill.ppid = this.subId;
@@ -166,6 +168,7 @@
 				ifractions.serial_number = ix;
 				ifractions.qtitle = ix;
 				this.list[index].qlist.push(ifractions);
+
 			},
 			addcomprehensive(index) {
 				let ix = this.list[index].qlist.length + 1;
@@ -180,6 +183,7 @@
 				option.pid = this.list[index].id;
 				option.sub_cat = "comprehensive";
 				option.poSition = "";
+
 				this.$post("/Home/Subject/createNewMod", {
 					pid: this.subId,
 					chief: option.pid,
@@ -198,6 +202,7 @@
 				switch(type) {
 					case "fill":
 						{
+
 							this.addfill(index);
 						}
 						break;
@@ -228,6 +233,7 @@
 						break;
 					case "fractions":
 						{
+							debugger
 							this.addfractions(index);
 						}
 						break;
@@ -269,7 +275,7 @@
 					type: 'warning'
 				}).then(() => {
 					let dmodel = this.list[index].qlist[qindex];
-					debugger
+
 					if(dmodel.id != 0) {
 						this.$post("/Home/Subject/deleteItem", {
 							id: dmodel.id
@@ -289,6 +295,7 @@
 				var serial_number = listItem.serial_number;
 				listItem.changeButton = false;
 				if(type == 'up') {
+					debugger
 					let uitem = this.list[index].qlist[qindex - 1];
 					if(uitem != undefined && uitem != null) {
 						let usort = uitem.serial_number;
@@ -382,14 +389,13 @@
 				var option = {};
 				option.mod_name = "模块名称";
 				option.qtitle = self.list.length + 1 + '、';
-				option.id = 0;
+				option.id =0;
 				option.sortId = 0;
 				option.pid = this.subId;
-				option.sortId = 0;
 				option.qlist = [];
 				this.$post("/Home/Subject/createNewMod", {
 					pid: this.subId,
-					chief: this.parentModle || 0,
+					chief: 0,
 					mod_name: option.mod_name
 				}).then((res) => {
 					option.id = res.id;
@@ -456,15 +462,38 @@
 						modoption.id = this.list[i].id;
 						modoption.mod_name = this.list[i].mod_name;
 						modoption.item = [];
+						
+						
 						for(var j = 0; j < this.list[i].qlist.length; j++) {
-							//							debugger
+
 							let jitem = {
 								id: this.list[i].qlist[j].id,
 								order: j + 1
 							}
 							modoption.item.push(jitem);
+							if(this.list[i].qlist[j].sub_cat == "comprehensive") {
+								//modoption.serial_number=j + 1;
+								let bmodoption={};
+								
+								bmodoption.id=this.list[i].qlist[j].id;
+								bmodoption.mod_name=this.list[i].qlist[j].title;	
+								bmodoption.serial_number = j+1;
+								bmodoption.item=[];
+								
+								for(var b=0;b<this.list[i].qlist[j].qlist.length;b++){
+									let bitem={
+										id:this.list[i].qlist[j].qlist[b].id,
+										order:b+1
+									}
+									bmodoption.item.push(bitem);
+								}
+								SubInfo.mod.push(bmodoption);
+							}
+
 						}
+						
 						SubInfo.mod.push(modoption);
+
 					}
 					this.$post("/Home/Subject/finishSub", SubInfo).then((res) => {
 						this.$alert('操作成功！', '提示', {
@@ -665,6 +694,9 @@
 							let icomprehensive = JSON.parse(JSON.stringify(ocomprehensive));
 							for(var km in icomprehensive) {
 								modlist[k].mod[j].hasOwnProperty(km) && (icomprehensive[km] = modlist[k].mod[j][km])
+								if(km=="serial_number"){
+									modlist[k].mod[j][km]
+								}
 							}
 							let copList = this.getItemOptions(modlist[k].mod[j].item);
 							icomprehensive.qlist = copList;
@@ -672,8 +704,14 @@
 						}
 					}
 					this.list.push(option);
+					option.qlist.sort(function(a, b) {
+				
+					return a.serial_number - b.serial_number;
+				});
 
 				}
+			
+				
 			});
 		},
 		components: {

@@ -47,8 +47,8 @@
 					<template v-if="qitem.sub_cat=='uploadimg'">
 						<uploadimg :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></uploadimg>
 					</template>
-					<template v-if="qitem.qtype=='fractions'">
-						<fractions :item="sub_cat" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></fractions>
+					<template v-if="qitem.sub_cat=='fractions'">
+						<fractions :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></fractions>
 					</template>
 				</div>
 			</el-form-item>
@@ -109,7 +109,7 @@
 			addfill(index) {
 				let ix = this.comitem.qlist.length + 1;
 				let ifill = JSON.parse(JSON.stringify(ofill));
-				ifill.ppid = this.comitem.ppid;
+				ifill.ppid = this.comitem.pid;
 				ifill.pid = this.comitem.id;
 				ifill.serial_number = ix;
 				ifill.qtitle = ix;
@@ -117,8 +117,9 @@
 			},
 			addsingle(index) {
 				let ix = this.comitem.qlist.length + 1;
-				let isingle = JSON.parse(JSON.stringify(osingle));
-				isingle.ppid = this.comitem.ppid;
+				let isingle = JSON.parse(JSON.stringify(osingle));				
+				isingle.ppid = this.comitem.pid;
+			
 				isingle.pid = this.comitem.id;
 				isingle.serial_number = ix;
 				isingle.qtitle = ix;
@@ -127,7 +128,7 @@
 			addmultiple(index) {
 				let ix = this.comitem.qlist.length + 1;
 				let imultiple = JSON.parse(JSON.stringify(omultiple));
-				imultiple.ppid = this.comitem.ppid;
+				imultiple.ppid = this.comitem.pid;
 				imultiple.pid = this.comitem.id;
 				imultiple.serial_number = ix;
 				imultiple.qtitle = ix;
@@ -136,7 +137,7 @@
 			addmultistage(index) {
 				let ix = this.comitem.qlist.length + 1;
 				let imultistage = JSON.parse(JSON.stringify(omultistage));
-				imultistage.ppid = this.comitem.ppid;
+				imultistage.ppid = this.comitem.pid;
 				imultistage.pid = this.comitem.id;
 				imultistage.serial_number = ix;
 				imultistage.qtitle = ix;
@@ -145,7 +146,7 @@
 			adduploadimg(index) {
 				let ix = this.comitem.qlist.length + 1;
 				let iuploadimg = JSON.parse(JSON.stringify(ouploadimg));
-				iuploadimg.ppid = this.comitem.ppid;
+				iuploadimg.ppid = this.comitem.pid;
 				iuploadimg.pid = this.comitem.id;
 				iuploadimg.serial_number = ix;
 				iuploadimg.qtitle = ix;
@@ -154,7 +155,7 @@
 			addloCation(index) {
 				let ix = this.comitem.qlist.length + 1;
 				let iloCation = JSON.parse(JSON.stringify(oloCation));
-				iloCation.ppid = this.comitem.ppid;
+				iloCation.ppid = this.comitem.pid;
 				iloCation.pid = this.comitem.id;
 				iloCation.serial_number = ix;
 				iloCation.qtitle = ix;
@@ -163,7 +164,7 @@
 			addfractions(index) {
 				let ix = this.comitem.qlist.length + 1;
 				let ifractions = JSON.parse(JSON.stringify(ofractions));
-				ifractions.ppid = this.comitem.ppid;
+				ifractions.ppid = this.comitem.pid;
 				ifractions.pid = this.comitem.id;
 				ifractions.serial_number = ix;
 				ifractions.qtitle = ix;
@@ -272,6 +273,7 @@
 				var serial_number = listItem.serial_number;
 				listItem.changeButton = false;
 				if(type == 'up') {
+					
 					let uitem = this.comitem.qlist[qindex - 1];
 					if(uitem != undefined && uitem != null) {
 						let usort = uitem.serial_number;
