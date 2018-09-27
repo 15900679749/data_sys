@@ -533,6 +533,7 @@
 						break;
 					case "multiple":
 						{
+							debugger
 							let imultiple = JSON.parse(JSON.stringify(omultiple));
 							for(var km in imultiple) {
 								fatheritem.hasOwnProperty(km) && (imultiple[km] = fatheritem[km])

@@ -97,7 +97,7 @@
 				comtaccord: "、",
 				subId: "",
 				parentModle: 0,
-				serial_number:0
+				serial_number: 0
 			}
 		},
 		methods: {
@@ -389,7 +389,7 @@
 				var option = {};
 				option.mod_name = "模块名称";
 				option.qtitle = self.list.length + 1 + '、';
-				option.id =0;
+				option.id = 0;
 				option.sortId = 0;
 				option.pid = this.subId;
 				option.qlist = [];
@@ -462,8 +462,7 @@
 						modoption.id = this.list[i].id;
 						modoption.mod_name = this.list[i].mod_name;
 						modoption.item = [];
-						
-						
+
 						for(var j = 0; j < this.list[i].qlist.length; j++) {
 
 							let jitem = {
@@ -473,17 +472,17 @@
 							modoption.item.push(jitem);
 							if(this.list[i].qlist[j].sub_cat == "comprehensive") {
 								//modoption.serial_number=j + 1;
-								let bmodoption={};
-								
-								bmodoption.id=this.list[i].qlist[j].id;
-								bmodoption.mod_name=this.list[i].qlist[j].title;	
-								bmodoption.serial_number = j+1;
-								bmodoption.item=[];
-								
-								for(var b=0;b<this.list[i].qlist[j].qlist.length;b++){
-									let bitem={
-										id:this.list[i].qlist[j].qlist[b].id,
-										order:b+1
+								let bmodoption = {};
+
+								bmodoption.id = this.list[i].qlist[j].id;
+								bmodoption.mod_name = this.list[i].qlist[j].title;
+								bmodoption.serial_number = j + 1;
+								bmodoption.item = [];
+
+								for(var b = 0; b < this.list[i].qlist[j].qlist.length; b++) {
+									let bitem = {
+										id: this.list[i].qlist[j].qlist[b].id,
+										order: b + 1
 									}
 									bmodoption.item.push(bitem);
 								}
@@ -491,7 +490,7 @@
 							}
 
 						}
-						
+
 						SubInfo.mod.push(modoption);
 
 					}
@@ -628,6 +627,11 @@
 								for(var km in imultistage) {
 									fatheritem.hasOwnProperty(km) && (imultistage[km] = fatheritem[km])
 								}
+								//还原初始化
+								let iobj = fatheritem.option[0] || {};
+								iobj.hasOwnProperty("default_choose") && (imultistage.value = iobj.default_choose);
+								iobj.hasOwnProperty("option_name") && (imultistage.olist = iobj.option_name);
+								debugger
 								resList.push(imultistage);
 							}
 							break;
@@ -694,7 +698,7 @@
 							let icomprehensive = JSON.parse(JSON.stringify(ocomprehensive));
 							for(var km in icomprehensive) {
 								modlist[k].mod[j].hasOwnProperty(km) && (icomprehensive[km] = modlist[k].mod[j][km])
-								if(km=="serial_number"){
+								if(km == "serial_number") {
 									modlist[k].mod[j][km]
 								}
 							}
@@ -705,13 +709,12 @@
 					}
 					this.list.push(option);
 					option.qlist.sort(function(a, b) {
-				
-					return a.serial_number - b.serial_number;
-				});
+
+						return a.serial_number - b.serial_number;
+					});
 
 				}
-			
-				
+
 			});
 		},
 		components: {

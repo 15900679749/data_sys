@@ -31,9 +31,9 @@
 		</el-row>
 				<div v-show="jumpshow" class="jump">
 				<div class="jumpitem">
-					<p>创建问卷</p>
+					<p>创建模板</p>
 					<template>
-						<el-radio v-model="ckRadio" label="1" class="establish">从模板创建</el-radio>
+						<el-radio v-model="ckRadio" label="1" class="establish" disabled>从模板创建</el-radio>
 						<el-radio v-model="ckRadio" label="2" class="establish">从空白创建</el-radio>
 					</template>
 					<div class="jumpitemcontent">
@@ -49,7 +49,7 @@
 								</el-select>
 							</li>
 							<li>
-								<el-select v-model="region" placeholder="请选择">
+								<el-select v-model="region" placeholder="请选择" disabled>
 									<el-option v-for="item in qoptions" :key="item.value" :label="item.label" :value="item.value">
 									</el-option>
 								</el-select>
@@ -92,9 +92,6 @@
 		},
 		props: ["list"],
 		methods: {
-			edting() {
-
-			},
 			edtingTemplate() {
 
 			},
@@ -142,9 +139,9 @@
 					}
 				}
 				
-				this.$post("/Home/Subject/createNewSubject",{
-					template:this.modeId||0,
-					area_belong:this.region
+				this.$post("/Home/Subject/createNewTpl",{
+//					template:this.modeId||0,
+//					area_belong:this.region
 				}).then((res)=>{
 					console.log(res);
 				}).catch(()=>{
