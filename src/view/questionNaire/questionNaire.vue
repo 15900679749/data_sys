@@ -32,7 +32,7 @@
 					name: "",
 					status: "",
 					pageIndex: 1,
-					pageSize: 2,
+					pageSize: 10,
 					pageTotal: 0
 				},
 				list: [],
