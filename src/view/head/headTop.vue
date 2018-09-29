@@ -3,7 +3,7 @@
 		<el-row type="flex" justify="space-around">
 			<el-col :span="9">
 				<el-menu :default-active="defaultActive" class="el-menu-demo" @select="handleSelect" mode="horizontal" background-color="#303033" text-color="#fff" active-text-color="#fff" router>
-					<el-menu-item index="uSer" class="is-active">用户管理</el-menu-item>
+					<el-menu-item index="uSer">用户管理</el-menu-item>
 					<el-menu-item index="temPlate">模板管理</el-menu-item>
 					<el-menu-item index="questionNaire">问卷管理</el-menu-item>
 					<el-menu-item index="analysis">我的问卷</el-menu-item>
@@ -41,7 +41,8 @@
 				d: "abc",
 				baseImgPath: "../../src/statics/images/photoicon.png",
 				name: '',
-				key: ''
+				key: '',
+				
 			}
 		},
 		methods: {
@@ -71,12 +72,21 @@
 				})
 			}
 		},
-		mounted() {},
+		mounted() {
+		
+		},
 		computed: {
 			defaultActive: function() {
-				return sessionStorage.getItem("MenuActive") || "uSer"
+//				debugger
+				if(this.$route.path.split('/').length>1){
+					return this.$route.path.split('/')[1];
+				}else{
+					return sessionStorage.getItem("MenuActive") || "uSer"
+				}
+//				return sessionStorage.getItem("MenuActive") || "uSer"
 				//return this.$store.getters.guserInfo;
 				//return this.$store.state.menuActive;
+				
 			}
 		},
 		created() {

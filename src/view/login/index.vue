@@ -26,7 +26,7 @@
 			return {
 				loginForm: {
 					username: '',
-					password: ''
+					password: '',
 				},
 				rules: {
 					username: [{
@@ -50,8 +50,16 @@
 		methods: {
 			loginin: function() {
 				this.$post('/Home/Login/login', this.loginForm).then((res) => {
+						if(Number(res.level) >2) {
+						this.$message({
+							type: 'error',
+							message: '对不起，您没有此权限'
+						});
+						return
+					}
 					storage.set("token", res.token);
 					storage.set("user", JSON.stringify(res));
+				
 					this.$router.push({
 						path: '/uSer'
 					});

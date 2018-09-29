@@ -664,6 +664,7 @@
 							break;
 					}
 				});
+			
 				return resList;
 			}
 		},
@@ -680,6 +681,7 @@
 				this.contentText = res.description || "";
 				this.questiontitle = res.sub_name || "";
 				let modlist = res.mod;
+				
 				for(var k = 0; k < modlist.length; k++) {
 					var option = {};
 					option.mod_name = modlist[k].mod_name;
@@ -690,7 +692,10 @@
 					option.pid = modlist[k].pid;
 
 					if(modlist[k].item.length != 0) {
-						let opList = this.getItemOptions(modlist[k].item);
+				
+							let opList = this.getItemOptions(modlist[k].item);
+					
+						
 						option.qlist = opList;
 					}
 					if(modlist[k].mod && modlist[k].mod.length != 0) {

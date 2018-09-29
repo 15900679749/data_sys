@@ -8,6 +8,7 @@ import store from 'javascripts/store';
 import 'scss/common.scss';
 import 'element-ui/lib/theme-chalk/index.css';
 import { utils } from 'javascripts/utils';
+import { Message } from "element-ui";
 
 const router = new VueRouter({
 	routes
@@ -22,5 +23,7 @@ new Vue({
 	el: '#app',
 	render: h => h(App),
 	store,
-	router
+	router,
+	
+	
 });

@@ -5,10 +5,10 @@
 		<el-row class="oneTcontain" v-for="(item,index) in list" :key="index">
 			<el-row type="flex" justify="space-between" class="ontemplateTopL">
 				<el-col :span="6">
-					<span class="vote">投票&nbsp;&nbsp;ID:{{item.uid}}</span>
+					<span class="vote">{{item.sub_name}}&nbsp;&nbsp;ID:{{item.uid}}</span>
 				</el-col>
 				<el-col :span="6" class="ontemplateTopR">
-					<span>状态:{{item.status}}</span>
+					<span>状态:{{item.statusName}}</span>
 					<span>答卷:<b>{{item.answer}}</b></span>
 					<span v-text="item.sub_name"></span>
 				</el-col>
@@ -20,7 +20,7 @@
 					<span @click="analyzeDown(item)"><i class="analyzeDown"></i>分析&下载</span>
 				</el-col>
 				<el-col :span="6" class="ontemplateBotR">
-					<el-button class="active"><i class="el-icon-edit"></i>发布</el-button>
+					<el-button class="active" @click="publishAn(item)"><i class="el-icon-edit" v-if="item.status!=2"></i>{{item.status!=2?"发布":"暂停"}}</el-button>
 					<el-button @click="deleItem(item)"><i class="el-icon-delete"></i>删除</el-button>
 				</el-col>
 			</el-row>
@@ -64,6 +64,8 @@
 <script>
 	import bus from './eventBus';
 	import { Message } from "element-ui";
+	import storage from 'javascripts/utils/storage';
+
 	export default {
 		data() {
 			return {
@@ -78,23 +80,26 @@
 					value: '虹口区',
 					label: '虹口区'
 				}],
-				moptions: [{
-					value: '模板1',
-					label: '模板1'
-				}, {
-					value: '模板2',
-					label: '模板2'
-				}],
+				moptions: [],
 				value: ''
 			}
 		},
-		props: ["list"],
+		props: {
+			list: {
+				type: Array,
+				default: () => []
+			},
+			templist: {
+				type: Array,
+				default: () => []
+			}
+		},
 		methods: {
 			edtingTemplate() {
 
 			},
 			deleItem(item) {
-				this.$confirm('您确定要删除改记录, 是否继续?', '提示', {
+				this.$confirm('您确定要删除该记录, 是否继续?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
@@ -124,7 +129,11 @@
 					}
 				});
 			},
+			publishAn(item) {
+				this.$emit("publishAn", item);
+			},
 			sendAn(item) {
+
 				return this.$router.push({
 					path: '/sendpage',
 					query: {
@@ -145,6 +154,12 @@
 			},
 			canclejump() {
 				this.jumpshow = false;
+				//				debugger
+				if(this.$route.query.modelId && this.$route.query.modelname) {
+					this.$router.push({
+						path: '/temPlate'
+					});
+				}
 			},
 			submit() {
 				if(this.ckRadio == "1") {
@@ -189,6 +204,16 @@
 						}
 					});
 				});
+			},
+			gettmpList() {
+				let sendModel = this.searchInfo;
+				delete sendModel.pageTotal;
+				delete sendModel.status;
+				this.$post("/Home/Tpl/tplList", sendModel).then((res) => {
+					let resdata = res;
+					this.templist = resdata.list;
+					debugger
+				});
 			}
 		},
 		mounted() {
@@ -197,8 +222,30 @@
 				self.jumpshow = b;
 			});
 		},
+		watch: {
+			'$route' (to, from) {
+				this.$router.go(0);
+			},
+			templist: function(v) {
+				if(v.length == 0) return;
+				v.forEach((obj, index) => {
+					let moptionitm = {};
+					moptionitm.value = obj.id;
+					moptionitm.label = obj.tmp_name;
+					this.moptions.push(moptionitm);
+					index == 0 && (this.modelId = obj.id);
+				});
+			}
+		},
 		created() {
-
+			if(this.$route.query.modelId && this.$route.query.modelname) {
+				let moptionitm = {};
+				moptionitm.value = this.$route.query.modelId;
+				moptionitm.label = this.$route.query.modelname;
+				this.moptions.push(moptionitm);
+				this.jumpshow = true;
+				this.modelId = this.$route.query.modelId;
+			} 
 		}
 	}
 </script>

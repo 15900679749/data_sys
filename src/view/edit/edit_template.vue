@@ -12,8 +12,8 @@
 				</el-row>
 				<div class="conBottom">
 					<div class="conBottomT">
-						<el-input type="text" v-model="questiontitle" placeholder="问卷标题" class="questiontitle"></el-input>
-						<el-input type="textarea" v-model="contentText" placeholder="问卷说明" class="questiontitle"></el-input>
+						<el-input type="text" v-model="questiontitle" placeholder="模板标题" class="questiontitle"></el-input>
+						<el-input type="textarea" v-model="contentText" placeholder="模板说明" class="questiontitle"></el-input>
 					</div>
 
 					<el-collapse v-model="activeNames" @change="handleChange">
@@ -97,7 +97,7 @@
 				comtaccord: "、",
 				subId: "",
 				parentModle: 0,
-				serial_number:0
+				serial_number: 0
 			}
 		},
 		methods: {
@@ -184,7 +184,7 @@
 				option.sub_cat = "comprehensive";
 				option.poSition = "";
 
-				this.$post("/Home/Subject/createNewMod", {
+				this.$post("/Home/Tpl/createNewMod", {
 					pid: this.subId,
 					chief: option.pid,
 					mod_name: option.title
@@ -389,11 +389,11 @@
 				var option = {};
 				option.mod_name = "模块名称";
 				option.qtitle = self.list.length + 1 + '、';
-				option.id =0;
+				option.id = 0;
 				option.sortId = 0;
 				option.pid = this.subId;
 				option.qlist = [];
-				this.$post("/Home/Subject/createNewMod", {
+				this.$post("/Home/Tpl/createNewMod", {
 					pid: this.subId,
 					chief: 0,
 					mod_name: option.mod_name
@@ -441,7 +441,7 @@
 						break;
 				}
 				console.log(subModel);
-				this.$post("/Home/Subject/createNewItem", subModel).then((res) => {
+				this.$post("/Home/Tpl/createNewItem", subModel).then((res) => {
 					item.id = res.id;
 				});
 			},
@@ -462,28 +462,28 @@
 						modoption.id = this.list[i].id;
 						modoption.mod_name = this.list[i].mod_name;
 						modoption.item = [];
-						
-						
+
 						for(var j = 0; j < this.list[i].qlist.length; j++) {
 
 							let jitem = {
 								id: this.list[i].qlist[j].id,
 								order: j + 1
 							}
+							
 							modoption.item.push(jitem);
 							if(this.list[i].qlist[j].sub_cat == "comprehensive") {
 								//modoption.serial_number=j + 1;
-								let bmodoption={};
-								
-								bmodoption.id=this.list[i].qlist[j].id;
-								bmodoption.mod_name=this.list[i].qlist[j].title;	
-								bmodoption.serial_number = j+1;
-								bmodoption.item=[];
-								
-								for(var b=0;b<this.list[i].qlist[j].qlist.length;b++){
-									let bitem={
-										id:this.list[i].qlist[j].qlist[b].id,
-										order:b+1
+								let bmodoption = {};
+
+								bmodoption.id = this.list[i].qlist[j].id;
+								bmodoption.mod_name = this.list[i].qlist[j].title;
+								bmodoption.serial_number = j + 1;
+								bmodoption.item = [];
+
+								for(var b = 0; b < this.list[i].qlist[j].qlist.length; b++) {
+									let bitem = {
+										id: this.list[i].qlist[j].qlist[b].id,
+										order: b + 1
 									}
 									bmodoption.item.push(bitem);
 								}
@@ -491,16 +491,16 @@
 							}
 
 						}
-						
+
 						SubInfo.mod.push(modoption);
 
 					}
-					this.$post("/Home/Subject/finishSub", SubInfo).then((res) => {
+					this.$post("/Home/Tpl/finishTpl", SubInfo).then((res) => {
 						this.$alert('操作成功！', '提示', {
 							confirmButtonText: '确定',
 							callback: action => {
 								this.$router.push({
-									path: '/questionNaire'
+									path: '/temPlate'
 								})
 							}
 						});
@@ -533,7 +533,6 @@
 						break;
 					case "multiple":
 						{
-							debugger
 							let imultiple = JSON.parse(JSON.stringify(omultiple));
 							for(var km in imultiple) {
 								fatheritem.hasOwnProperty(km) && (imultiple[km] = fatheritem[km])
@@ -629,6 +628,11 @@
 								for(var km in imultistage) {
 									fatheritem.hasOwnProperty(km) && (imultistage[km] = fatheritem[km])
 								}
+								//还原初始化
+								let iobj = fatheritem.option[0] || {};
+								iobj.hasOwnProperty("default_choose") && (imultistage.value = iobj.default_choose);
+								iobj.hasOwnProperty("option_name") && (imultistage.olist = iobj.option_name);
+								debugger
 								resList.push(imultistage);
 							}
 							break;
@@ -668,14 +672,14 @@
 			console.log(this.activeNames);
 		},
 		created() {
-			this.subId = this.$route.query.questionId;
+			this.subId = this.$route.query.templateId;
 
-			this.$post("/Home/Subject/getSingleSub", {
+			this.$post("/Home/Tpl/getSingleTpl", {
 				id: this.subId
 			}).then((res) => {
 
 				this.contentText = res.description || "";
-				this.questiontitle = res.sub_name || "";
+				this.questiontitle = res.tmp_name || "";
 				let modlist = res.mod;
 				for(var k = 0; k < modlist.length; k++) {
 					var option = {};
@@ -695,7 +699,7 @@
 							let icomprehensive = JSON.parse(JSON.stringify(ocomprehensive));
 							for(var km in icomprehensive) {
 								modlist[k].mod[j].hasOwnProperty(km) && (icomprehensive[km] = modlist[k].mod[j][km])
-								if(km=="serial_number"){
+								if(km == "serial_number") {
 									modlist[k].mod[j][km]
 								}
 							}
@@ -706,13 +710,12 @@
 					}
 					this.list.push(option);
 					option.qlist.sort(function(a, b) {
-				
-					return a.serial_number - b.serial_number;
-				});
+
+						return a.serial_number - b.serial_number;
+					});
 
 				}
-			
-				
+
 			});
 		},
 		components: {

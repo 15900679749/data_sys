@@ -4,21 +4,33 @@
 
 <script>
 	import bus from './eventBus';
+	import storage from 'javascripts/utils/storage';
 	export default {
 		data() {
 			return {
-				btnname:''
+				btnname: '',
+				userlevel: 0,
 			}
 		},
-		
+		props: ["templist"],
 		methods: {
 			establish() {
 				if(location.hash.endsWith("#/questionNaire")) {
-					this.btnname="创建问卷";
+					this.btnname = "创建问卷";
 					bus.$emit("getStatus", true);
+					this.$emit("gettmpList");
 				} else {
-					this.btnname="创建模板";
-					bus.$emit("getStatustemp", true);
+					this.btnname = "创建模板";
+					if(this.userlevel > 1) {
+						this.$message({
+							type: 'error',
+							message: '对不起，您没有此权限'
+						});
+						return
+					} else {
+						bus.$emit("getStatustemp", true);
+					}
+
 				}
 				//return this.$router.push({path:'/edit/edit_template'});
 			}
@@ -28,12 +40,13 @@
 		},
 		created() {
 			if(location.hash.endsWith("#/questionNaire")) {
-					this.btnname="创建问卷";
-					
-				} else {
-					this.btnname="创建模板";
-					
-				}
+				this.btnname = "创建问卷";
+
+			} else {
+				this.btnname = "创建模板";
+
+			}
+			this.userlevel = Number(JSON.parse(storage.get('user')).level)
 		}
 	}
 </script>

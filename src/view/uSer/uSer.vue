@@ -71,9 +71,9 @@
 					<el-form-item label="权限" prop="level">
 
 						<el-select v-model="addform.level" placeholder="请选择用户权限">
-							<el-option label="一级用户" value="oneadmain"></el-option>
-							<el-option label="二级用户" value="twoadmain"></el-option>
-							<el-option label="三级用户" value="threeadmain"></el-option>
+							<el-option label="一级用户" value="1"></el-option>
+							<el-option label="二级用户" value="2"></el-option>
+							<el-option label="三级用户" value="3"></el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="用户名" prop="name">
@@ -107,14 +107,16 @@
 </template>
 
 <script type="text/javascript">
+	import storage from 'javascripts/utils/storage';
 	export default {
 		data() {
 			return {
+				userlevel: 0,
 				multipleSelection: [],
 				pageSizes: [10, 20, 50, 100],
-				deleteList:[],
-				idList:[],
-				tag:'',
+				deleteList: [],
+				idList: [],
+				tag: '',
 				searchInfo: {
 					uid: "",
 					name: "",
@@ -189,11 +191,18 @@
 		},
 		methods: {
 			adduser() {
-				this.tag='add';
+				if(this.userlevel > 1) {
+					this.$message({
+						type: 'error',
+						message: '对不起，您没有此权限'
+					});
+					return
+				}
+				this.tag = 'add';
 				this.$refs.addform.resetFields();
-			    
+
 				this.addshow = true;
-				
+
 			},
 			cancleadd() {
 				this.addshow = false;
@@ -208,23 +217,23 @@
 						//						this.tableData.push(JSON.parse(JSON.stringify(this.addform)));
 						//						this.addform = JSON.parse(JSON.stringify(this.naddform));
 						let oData = this.addform;
-						let smessage='';
-						let	subUrl='';
-						if(this.tag=="add"){
-							
-						 smessage = "新增成功!";
-						 subUrl = "/Home/User/createUser";
-						}else{
+						let smessage = '';
+						let subUrl = '';
+						if(this.tag == "add") {
+
+							smessage = "新增成功!";
+							subUrl = "/Home/User/createUser";
+						} else {
 							subUrl = "/Home/User/editUser";
-						smessage = "修改成功!";
+							smessage = "修改成功!";
 						}
-						
-//						if(oData.id == "") {
-//							delete oData.id;
-//						} else {
-//							subUrl = "/Home/User/editUser";
-//							smessage = "修改成功!";
-//						}
+
+						//						if(oData.id == "") {
+						//							delete oData.id;
+						//						} else {
+						//							subUrl = "/Home/User/editUser";
+						//							smessage = "修改成功!";
+						//						}
 						this.$post(subUrl, oData).then((res) => {
 							this.$message({
 								type: 'success',
@@ -239,20 +248,27 @@
 				})
 			},
 			editUser(rindex, rdata) {
-this.tag='edit';
+				if(this.userlevel > 1) {
+					this.$message({
+						type: 'error',
+						message: '对不起，您没有此权限'
+					});
+					return
+				}
+				this.tag = 'edit';
 				//根据Id等到 对象，赋值给修改的对象
-//				this.$post("/Home/User/getUser", {
-//					id: rdata.id
-//				}).then((res) => {
-	this.addshow = true;
-	
-					for(let k in this.addform) {
-						
-						this.addform[k] = rdata[k];
-						
-					}
-					
-//				});
+				//				this.$post("/Home/User/getUser", {
+				//					id: rdata.id
+				//				}).then((res) => {
+				this.addshow = true;
+
+				for(let k in this.addform) {
+
+					this.addform[k] = rdata[k];
+
+				}
+
+				//				});
 
 			},
 			toggleSelection(rows) {
@@ -265,29 +281,38 @@ this.tag='edit';
 				}
 			},
 			handleSelectionChange(val) {
-				
+
 				this.multipleSelection = val;
 				console.log(val);
-			
-			if(val.length){this.deleteList.push(val[val.length-1])};
-			return this.deleteList;
+
+				if(val.length) {
+					this.deleteList.push(val[val.length - 1])
+				};
+				return this.deleteList;
 			},
 			handleEdit(index, row) {
 				console.log(index, row);
 			},
 			handleDelete(index, row) {
+					if(this.userlevel > 1) {
+					this.$message({
+						type: 'error',
+						message: '对不起，您没有此权限'
+					});
+					return
+				}
 				for(let i in this.deleteList) {
-					
-this.idList[i] = this.deleteList[i].id;
-						
-					}
+
+					this.idList[i] = this.deleteList[i].id;
+
+				}
 				console.log(this.idList);
-				let idtem='';
-				var eventbtn=event.target.parentElement.dataset.type;
-				if(eventbtn=="deletlist"){
-					idtem=this.idList;
-				}else if(eventbtn=="deletone"){
-					idtem=row.id;
+				let idtem = '';
+				var eventbtn = event.target.parentElement.dataset.type;
+				if(eventbtn == "deletlist") {
+					idtem = this.idList;
+				} else if(eventbtn == "deletone") {
+					idtem = row.id;
 				}
 				this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
 					confirmButtonText: '确定',
@@ -303,10 +328,9 @@ this.idList[i] = this.deleteList[i].id;
 							type: 'success',
 							message: '删除成功!'
 						});
-						this.deleteList=[];
+						this.deleteList = [];
 					});
 					//					this.tableData.splice(index, 1);
-					
 
 				}).catch(() => {
 					this.$message({
@@ -335,24 +359,22 @@ this.idList[i] = this.deleteList[i].id;
 					this.searchInfo.pageTotal = Number(resdata.page.pageTotal);
 				});
 			},
-		
+
 		},
 		mounted() {
 
 		},
 		created() {
 			this.getList();
+			this.userlevel = Number(JSON.parse(storage.get('user')).level)
 		}
 	}
 </script>
 
 <style>
-	body .el-table th.gutter{
-    display: table-cell!important;
-}
-	
-
-	
+	body .el-table th.gutter {
+		display: table-cell!important;
+	}
 	/*.Templatecontain .el-table__header,
 	.Templatecontain .el-table__body {
 		width: auto !important;
@@ -370,8 +392,9 @@ this.idList[i] = this.deleteList[i].id;
 		width: 300px;
 		display: inline-block;
 	}
-	.useradd .el-form-item__content{
-		margin-bottom:5px;
+	
+	.useradd .el-form-item__content {
+		margin-bottom: 5px;
 	}
 </style>
 <style scoped="scoped" lang="scss">
@@ -390,7 +413,7 @@ this.idList[i] = this.deleteList[i].id;
 		width: 100%;
 		text-align: center;
 		margin-top: 50px;
-		padding-bottom:20px;
+		padding-bottom: 20px;
 	}
 	
 	.Templatecontain {
@@ -437,5 +460,4 @@ this.idList[i] = this.deleteList[i].id;
 	.itemmust {
 		left: -71px;
 	}
-	
 </style>

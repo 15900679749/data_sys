@@ -5,72 +5,74 @@
 		<el-row class="oneTcontain" v-for="(item,index) in list" :key="index">
 			<el-row type="flex" justify="space-between" class="ontemplateTopL">
 				<el-col :span="6">
-					<span class="vote">投票&nbsp;&nbsp;ID:{{item.idNum}}</span>
+					<span class="vote">{{item.tmp_name}}&nbsp;&nbsp;ID:{{item.uid}}</span>
 					<!--<span @click="edting" class="edting"><i class="el-icon-edit-outline"></i>编辑</span>-->
 				</el-col>
 				<el-col :span="6" class="ontemplateTopR">
-					<span>创建者:{{item.creator}}</span>
+					<span>创建者:{{item.create_man}}</span>
 					<span v-text="item.timeNum"></span>
 
 				</el-col>
 			</el-row>
 			<el-row type="flex" justify="space-between">
 				<el-col :span="8">
-
-					<span @click="edtingTemplate"><i class="edtingTemplate"></i>编辑模板</span>
+					<span  @click="publishTemp(item)" v-if="userlevel>0"><i class="edtingTemplate"></i>使用模板</span>
+					<span @click="edtingTemplate(item)"  v-if="userlevel==0"><i class="edtingTemplate"></i>编辑模板</span>
 
 				</el-col>
 				<el-col :span="6" class="ontemplateBotR">
 
-					<el-button class="active"><i class="el-icon-edit"></i>使用模板</el-button>
+					<el-button class="active" @click="publishTemp(item)" v-if="userlevel==0"><i class="el-icon-edit"></i>使用模板</el-button>
 
-					<el-button><i class="el-icon-delete"></i>删除</el-button>
+					<el-button @click="deleItem(item)" v-if="userlevel==0"><i class="el-icon-delete"></i>删除</el-button>
 				</el-col>
 			</el-row>
-	
+
 		</el-row>
-				<div v-show="jumpshow" class="jump">
-				<div class="jumpitem">
-					<p>创建模板</p>
-					<template>
-						<el-radio v-model="ckRadio" label="1" class="establish" disabled>从模板创建</el-radio>
-						<el-radio v-model="ckRadio" label="2" class="establish">从空白创建</el-radio>
-					</template>
-					<div class="jumpitemcontent">
-						<ul>
-							<li>选择模板：</li>
-							<li>所属区：</li>
-						</ul>
-						<ul>
-							<li>
-								<el-select v-model="modelId" placeholder="请选择" :disabled="ckRadio=='2'">
-									<el-option v-for="item in moptions" :key="item.value" :label="item.label" :value="item.value">
-									</el-option>
-								</el-select>
-							</li>
-							<li>
-								<el-select v-model="region" placeholder="请选择" disabled>
-									<el-option v-for="item in qoptions" :key="item.value" :label="item.label" :value="item.value">
-									</el-option>
-								</el-select>
-							</li>
-						</ul>
-					</div>
-					<el-button @click="canclejump" size="medium">取消</el-button>
-					<el-button size="medium" @click="submit">确定</el-button>
+		<div v-show="jumpshow" class="jump">
+			<div class="jumpitem">
+				<p>创建模板</p>
+				<template>
+					<el-radio v-model="ckRadio" label="1" class="establish" disabled>从模板创建</el-radio>
+					<el-radio v-model="ckRadio" label="2" class="establish">从空白创建</el-radio>
+				</template>
+				<div class="jumpitemcontent">
+					<ul>
+						<li>选择模板：</li>
+						<li>所属区：</li>
+					</ul>
+					<ul>
+						<li>
+							<el-select v-model="modelId" placeholder="请选择" :disabled="ckRadio=='2'">
+								<el-option v-for="item in moptions" :key="item.value" :label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+						</li>
+						<li>
+							<el-select v-model="region" placeholder="请选择" disabled>
+								<el-option v-for="item in qoptions" :key="item.value" :label="item.label" :value="item.value">
+								</el-option>
+							</el-select>
+						</li>
+					</ul>
 				</div>
+				<el-button @click="canclejump" size="medium">取消</el-button>
+				<el-button size="medium" @click="submit">确定</el-button>
 			</div>
+		</div>
 	</div>
 </template>
 
 <script>
 	import bus from './eventBus';
 	import { Message } from "element-ui";
+	import storage from 'javascripts/utils/storage';
 	export default {
 		data() {
 			return {
+				userlevel: 0,
 				jumpshow: false,
-				ckRadio: '1',
+				ckRadio: '2',
 				region: "",
 				modelId: "",
 				qoptions: [{
@@ -92,82 +94,141 @@
 		},
 		props: ["list"],
 		methods: {
-			edtingTemplate() {
-
+			edtingTemplate(item) {
+				return this.$router.push({
+					path: '/edit/edit_template',
+					query: {
+						templateId: item.id,
+					}
+				})
 			},
-			designAn() {
-
-			},
-			sendAn() {
-
-			},
-			analyzeDown() {
-
+			deleItem(item) {
+				this.$confirm('您确定要删除该记录，是否继续？', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					this.$post("/Home/Tpl/delTpl", {
+						"id": item.id
+					}).then((res) => {
+						this.$alert('删除成功！', '提示', {
+							confirmButtonText: '确定',
+							callback: action => {
+								this.$emit("getList");
+							}
+						});
+					});
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消删除'
+					});
+				});
 			},
 			canclejump() {
 				this.jumpshow = false;
+				//				if(this.ckRadio == "2") {
+				//					this.$router.push({
+				//						path: '/temPlate'
+				//					});
+				//				}
 			},
+			publishTemp(item) {
+				this.$router.push({
+					path: '/questionNaire',
+					query: {
+						"modelId": item.id,
+						"modelname": item.tmp_name
+					}
+				});
+			},
+
 			submit() {
-				if(this.ckRadio == "1") {
-					if(this.modelId == "") {
-						Message({
-							showClose: true,
-							message: "请选择模板!",
-							type: 'warning',
-							duration: 2000
-						});
-						return false;
-					}
-					if(this.modelId == "" || this.region == "") {
-						Message({
-							showClose: true,
-							message: "请选择所属区域!",
-							type: 'warning',
-							duration: 2000
-						});
-						return false;
-					}
-				} else {
-					if(this.region == "") {
-						Message({
-							showClose: true,
-							message: "请选择所属区域!",
-							type: 'warning',
-							duration: 3000
-						});
-						return false;
-					}
-				}
-				
-				this.$post("/Home/Subject/createNewTpl",{
-//					template:this.modeId||0,
-//					area_belong:this.region
-				}).then((res)=>{
+				//				if(this.ckRadio == "1") {
+				//					if(this.modelId == "") {
+				//						Message({
+				//							showClose: true,
+				//							message: "请选择模板!",
+				//							type: 'warning',
+				//							duration: 2000
+				//						});
+				//						return false;
+				//					}
+				//					if(this.modelId == "" || this.region == "") {
+				//						Message({
+				//							showClose: true,
+				//							message: "请选择所属区域!",
+				//							type: 'warning',
+				//							duration: 2000
+				//						});
+				//						return false;
+				//					}
+				//				} else {
+				//					if(this.region == "") {
+				//						Message({
+				//							showClose: true,
+				//							message: "请选择所属区域!",
+				//							type: 'warning',
+				//							duration: 3000
+				//						});
+				//						return false;
+				//					}
+				//				}
+
+				this.$post("/Home/Tpl/createNewTpl", {
+					//					template:this.modeId||0,
+					//					area_belong:this.region
+				}).then((res) => {
 					console.log(res);
-				}).catch(()=>{
-					console.log("222");
-				})
-				
-				
-				
-//				this.$router.push({
-//					path: 'edit/edit_template',
-//					query: {
-//						modelId: this.modelId,
-//						region: this.region
-//					}
-//				});
+					this.$router.push({
+						path: 'edit/edit_template',
+						query: {
+							templateId: res.id,
+						}
+					});
+				});
+
+				//				this.$router.push({
+				//					path: 'edit/edit_template',
+				//					query: {
+				//						modelId: this.modelId,
+				//						region: this.region
+				//					}
+				//				});
 			}
 		},
 		mounted() {
 			let self = this;
 			bus.$on("getStatustemp", function(b) {
-				self.jumpshow = b;
+			
+				if(this.userlevel > 1) {
+					debugger
+					this.$message({
+						type: 'error',
+						message: '对不起，您没有此权限'
+					});
+					return
+				}else{
+					self.jumpshow = b;
+				}
+				
 			});
 		},
+		created(){
+			this.userlevel = Number(JSON.parse(storage.get('user')).level)
+		}
 	}
 </script>
-
+<style type="text/css">
+	.establish .el-radio__input.is-checked+.el-radio__label {
+		color: #fff;
+	}
+	
+	.establish .el-radio__input.is-checked .el-radio__inner {
+		border-color: #333;
+		background: #333;
+	}
+</style>
 <style scoped="scoped" lang="scss">
 	.oneTcontain {
 		margin-bottom: 14px;
@@ -300,43 +361,44 @@
 		background-image: url(../statics/images/edtingTemplateicon.png);
 		height: 16px;
 	}
-		.jumpitem {
-			position: absolute;
-			z-index: 300;
-			top: 50%;
-			left: 50%;
-			width: 30%;
-			background: #409EFF;
-			color: #fff;
-			transform: translate(-50%, -50%);
-			padding: 20px 2% 30px;
-			text-align: center;
-			.el-button {
-				width: 40%;
-				display: inline-block;
-				margin-top: 30px;
-				&:nth-of-type(1) {
-					margin-left: 5%;
-				}
+	
+	.jumpitem {
+		position: absolute;
+		z-index: 300;
+		top: 50%;
+		left: 50%;
+		width: 30%;
+		background: #409EFF;
+		color: #fff;
+		transform: translate(-50%, -50%);
+		padding: 20px 2% 30px;
+		text-align: center;
+		.el-button {
+			width: 40%;
+			display: inline-block;
+			margin-top: 30px;
+			&:nth-of-type(1) {
+				margin-left: 5%;
 			}
-			.jumpitemcontent {
-				width: 100%;
-				margin: 30px auto 0;
-				float: left;
-				ul {
-					&:nth-of-type(1) {
-						width: 30%;
-						li {
-							padding: 14px 0;
-						}
-					}
-					width: 70%;
-					float:left;
+		}
+		.jumpitemcontent {
+			width: 100%;
+			margin: 30px auto 0;
+			float: left;
+			ul {
+				&:nth-of-type(1) {
+					width: 30%;
 					li {
-						text-align: center;
-						padding: 8px 0;
+						padding: 14px 0;
 					}
+				}
+				width: 70%;
+				float:left;
+				li {
+					text-align: center;
+					padding: 8px 0;
 				}
 			}
 		}
+	}
 </style>

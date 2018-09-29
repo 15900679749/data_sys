@@ -137,7 +137,8 @@ export function getUrlParamsObj(furl) {
 
 export {
 	cookie,
-	storage
+	storage,
+	
 };
 
 const

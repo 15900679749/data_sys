@@ -13,17 +13,21 @@
 		mixins: [appMixin],
 		data() {
 			return {
-				token: "defaulttoken"
+				token: "defaulttoken",
+				
 			}
 		},
 		created() {
 			let href = window.location.href.split('#');
 			let router = href[1];
+			
 			if(!storage.get("token")) {
 				this.$router.push("/login");
 			}
 			this.initializationEnv();
 			this.initializationLogin(router);
+			
+		
 		},
 		mounted() {
 			let self = this;

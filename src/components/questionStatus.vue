@@ -13,13 +13,13 @@
 					"label": "全部",
 					"value": 0
 				}, {
-					"label": "未完成",
+					"label": "草稿",
 					"value": 1
 				}, {
-					"label": "创建中",
+					"label": "进行中",
 					"value": 2
 				}, {
-					"label": "已结束",
+					"label": "暂停",
 					"value": 3
 				}]
 			}
@@ -33,9 +33,15 @@
 		methods: {
 			handleIconClick() {
 				if(this.svalue.length == 0) return;
-				if(this.search == "ques") {
-					this.$emit("sgetList", "status", this.svalue);
-				}
+			
+				this.$emit("sgetList", "status", this.svalue);
+				
+//				if(this.search == "ques") {
+//					this.$emit("sgetList", "status", this.svalue);
+//				}
+//				if(this.search=="temp"){
+//					this.$emit("sgetList","")
+//				}
 			}
 		},
 		mounted() {
