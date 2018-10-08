@@ -735,6 +735,7 @@
 <style>
 	.conBottom .el-collapse-item__wrap {
 		border: none;
+		    overflow: initial;
 		border-radius: 0 0 4px 4px;
 	}
 	

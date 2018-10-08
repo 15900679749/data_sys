@@ -107,6 +107,8 @@
 				console.log(val);
 			},
 			addfill(index) {
+				ofill.show=true;
+				ofill.edittextinput=true;
 				let ix = this.comitem.qlist.length + 1;
 				let ifill = JSON.parse(JSON.stringify(ofill));
 				ifill.ppid = this.comitem.pid;
@@ -116,6 +118,8 @@
 				this.comitem.qlist.push(ifill);
 			},
 			addsingle(index) {
+				osingle.show=true;
+				osingle.edittextinput=true;
 				let ix = this.comitem.qlist.length + 1;
 				let isingle = JSON.parse(JSON.stringify(osingle));				
 				isingle.ppid = this.comitem.pid;
@@ -126,6 +130,8 @@
 				this.comitem.qlist.push(isingle);
 			},
 			addmultiple(index) {
+				omultiple.show=true;
+				omultiple.edittextinput=true;
 				let ix = this.comitem.qlist.length + 1;
 				let imultiple = JSON.parse(JSON.stringify(omultiple));
 				imultiple.ppid = this.comitem.pid;
@@ -135,6 +141,8 @@
 				this.comitem.qlist.push(imultiple);
 			},
 			addmultistage(index) {
+				omultistage.show=true;
+				omultistage.edittextinput=true;
 				let ix = this.comitem.qlist.length + 1;
 				let imultistage = JSON.parse(JSON.stringify(omultistage));
 				imultistage.ppid = this.comitem.pid;
@@ -144,6 +152,8 @@
 				this.comitem.qlist.push(imultistage);
 			},
 			adduploadimg(index) {
+				ouploadimg.show=true;
+				ouploadimg.edittextinput=true;
 				let ix = this.comitem.qlist.length + 1;
 				let iuploadimg = JSON.parse(JSON.stringify(ouploadimg));
 				iuploadimg.ppid = this.comitem.pid;
@@ -153,6 +163,8 @@
 				this.comitem.qlist.push(iuploadimg);
 			},
 			addloCation(index) {
+				oloCation.show=true;
+				oloCation.edittextinput=true;
 				let ix = this.comitem.qlist.length + 1;
 				let iloCation = JSON.parse(JSON.stringify(oloCation));
 				iloCation.ppid = this.comitem.pid;
@@ -162,6 +174,8 @@
 				this.comitem.qlist.push(iloCation);
 			},
 			addfractions(index) {
+				ofractions.show=true;
+				ofractions.edittextinput=true;
 				let ix = this.comitem.qlist.length + 1;
 				let ifractions = JSON.parse(JSON.stringify(ofractions));
 				ifractions.ppid = this.comitem.pid;

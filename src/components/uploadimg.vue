@@ -6,7 +6,7 @@
 				<el-row justify="start">
 
 					<el-col :span="6" v-for="(inx,index) in item.option[0].option_name" :key="index">
-						<el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list='false' :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" :limit="item.imageLength">
+						<el-upload :disabled="true" class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list='false' :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" :limit="item.imageLength" >
 							<img :src="imageUrl[index]" alt="" v-if="imageUrl[index]" class="avatar" />
 							<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 						</el-upload>

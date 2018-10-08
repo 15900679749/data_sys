@@ -42,13 +42,13 @@
 					<ul>
 						<li>
 							<el-select v-model="modelId" placeholder="请选择" :disabled="ckRadio=='2'">
-								<el-option v-for="item in moptions" :key="item.value" :label="item.label" :value="item.value">
+								<el-option v-for="(item,index) in moptions" :key="index" :label="item.label" :value="item.value">
 								</el-option>
 							</el-select>
 						</li>
 						<li>
 							<el-select v-model="region" placeholder="请选择">
-								<el-option v-for="item in qoptions" :key="item.value" :label="item.label" :value="item.value">
+								<el-option v-for="(item,index) in qoptions" :key="index" :label="item.label" :value="item.value">
 								</el-option>
 							</el-select>
 						</li>

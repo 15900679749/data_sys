@@ -105,8 +105,9 @@
 				console.log(val);
 			},
 			addfill(index) {
-
 				let ix = this.list[index].qlist.length + 1;
+				ofill.show=true;
+				ofill.edittextinput=true;
 				let ifill = JSON.parse(JSON.stringify(ofill));
 				ifill.ppid = this.subId;
 				ifill.pid = this.list[index].id;
@@ -115,6 +116,8 @@
 				this.list[index].qlist.push(ifill);
 			},
 			addsingle(index) {
+				osingle.show=true;
+				osingle.edittextinput=true;
 				let ix = this.list[index].qlist.length + 1;
 				let isingle = JSON.parse(JSON.stringify(osingle));
 				isingle.ppid = this.subId;
@@ -124,6 +127,8 @@
 				this.list[index].qlist.push(isingle);
 			},
 			addmultiple(index) {
+				omultiple.show=true;
+				omultiple.edittextinput=true;
 				let ix = this.list[index].qlist.length + 1;
 				let imultiple = JSON.parse(JSON.stringify(omultiple));
 				imultiple.ppid = this.subId;
@@ -134,6 +139,8 @@
 
 			},
 			addmultistage(index) {
+				omultistage.show=true;
+				omultistage.edittextinput=true;
 				let ix = this.list[index].qlist.length + 1;
 				let imultistage = JSON.parse(JSON.stringify(omultistage));
 				imultistage.ppid = this.subId;
@@ -143,6 +150,8 @@
 				this.list[index].qlist.push(imultistage);
 			},
 			adduploadimg(index) {
+				ouploadimg.show=true;
+				ouploadimg.edittextinput=true;
 				let ix = this.list[index].qlist.length + 1;
 				let iuploadimg = JSON.parse(JSON.stringify(ouploadimg));
 				iuploadimg.ppid = this.subId;
@@ -152,6 +161,8 @@
 				this.list[index].qlist.push(iuploadimg);
 			},
 			addloCation(index) {
+				oloCation.show=true;
+				oloCation.edittextinput=true;
 				let ix = this.list[index].qlist.length + 1;
 				let iloCation = JSON.parse(JSON.stringify(oloCation));
 				iloCation.ppid = this.subId;
@@ -161,6 +172,8 @@
 				this.list[index].qlist.push(iloCation);
 			},
 			addfractions(index) {
+				ofractions.show=true;
+				ofractions.edittextinput=true;
 				let ix = this.list[index].qlist.length + 1;
 				let ifractions = JSON.parse(JSON.stringify(ofractions));
 				ifractions.ppid = this.subId;
@@ -198,7 +211,8 @@
 				this.list[index].qlist.splice(pindex, 1);
 			},
 			addItem(index, type) {
-
+				let that=this;
+			
 				switch(type) {
 					case "fill":
 						{
@@ -404,6 +418,8 @@
 			},
 			submitForm(item, index) {
 				let subModel = JSON.parse(JSON.stringify(item));
+				item.show=false;
+				item.edittextinput=false;
 				delete subModel.changeButton;
 				delete subModel.edittextinput;
 				delete subModel.show;
@@ -739,6 +755,7 @@
 <style>
 	.conBottom .el-collapse-item__wrap {
 		border: none;
+		  overflow: initial;
 		border-radius: 0 0 4px 4px;
 	}
 	

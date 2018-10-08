@@ -9,8 +9,8 @@ let ofill = {
 	sub_cat: "fill",
 	is_must: false,
 	title: '标题',
-	show: true,
-	edittextinput: true,
+	show: false,
+	edittextinput: false,
 	changeButton: false
 };
 
@@ -24,8 +24,8 @@ let osingle = {
 	sub_cat: "single",
 	is_must: false,
 	title: '标题',
-	show: true,
-	edittextinput: true,
+	show: false,
+	edittextinput: false,
 	changeButton: false,
 	default_choose: '',
 	option: [{
@@ -48,8 +48,8 @@ let omultiple = {
 	poSition: "",
 	is_must: false,
 	title: '标题',
-	show: true,
-	edittextinput: true,
+	show: false,
+	edittextinput: false,
 	changeButton: false,
 	option: [{
 		id: 0,
@@ -72,8 +72,8 @@ let omultistage = {
 	serial_number: 0,
 	is_must: false,
 	title: '标题',
-	show: true,
-	edittextinput: true,
+	show: false,
+	edittextinput: false,
 	changeButton: false,
 	doptions: [{
 			value: '2',
@@ -129,8 +129,8 @@ let ouploadimg = {
 	qtitle: 0,
 	is_must: false,
 	title: '标题',
-	show: true,
-	edittextinput: true,
+	show: false,
+	edittextinput: false,
 	changeButton: false,
 	option: [{
 		option_name: '1'
@@ -148,8 +148,8 @@ let oloCation = {
 	qtitle: 0,
 	option: [],
 	is_must: false,
-	show: true,
-	edittextinput: true,
+	show: false,
+	edittextinput: false,
 	changeButton: false,
 };
 
@@ -166,8 +166,8 @@ let ofractions = {
 	serial_number: 0,
 	is_must: false,
 	title: '标题',
-	show: true,
-	edittextinput: true,
+	show: false,
+	edittextinput: false,
 	changeButton: false
 };
 
@@ -182,8 +182,8 @@ let ocomprehensive = {
 	serial_number: 0,
 	is_must: false,
 	title: "综合题名称",
-	show: true,
-	edittextinput: true,
+	show: false,
+	edittextinput: false,
 	changeButton: false
 };
 
