@@ -6,7 +6,7 @@
 				<el-row justify="start">
 
 					<el-col :span="6" v-for="(inx,index) in item.option[0].option_name" :key="index">
-						<el-upload :disabled="true" class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list='false' :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" :limit="item.imageLength" >
+						<el-upload :disabled="true" class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/" :show-file-list='false' :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload" :limit="item.imageLength">
 							<img :src="imageUrl[index]" alt="" v-if="imageUrl[index]" class="avatar" />
 							<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 						</el-upload>
@@ -29,7 +29,7 @@
 					<el-col class="singleinputcontent">
 						<el-form-item :label="'题目文本'">
 							<el-input v-model="item.title"></el-input>
-							<el-checkbox label="必答" name="type" v-model="item.is_must"></el-checkbox>
+							<el-checkbox label="必答" name="type" v-model="item.is_must" :disabled="status!='1' && type!='0'"></el-checkbox>
 							<div class="singleedit">
 								<el-row type="flex">
 									<el-col :span="3">最大上传数量:</el-col>
@@ -58,7 +58,6 @@
 				poSition: '',
 				cformlistFour: {},
 				imageUrl: []
-
 			}
 		},
 		props: {
@@ -77,27 +76,47 @@
 			taccord: {
 				type: String,
 				default: ""
+			},
+			status: {
+				type: String,
+				default: "1"
+			},
+			type: {
+				type: String,
+				default: ""
 			}
 
 		},
 		methods: {
 			showedit(item) {
+				if(this.status != "1") {
+					return;
+				}
 				item.edittextinput = !item.edittextinput;
 			},
 			showcart(item) {
+				if(this.status != "1") {
+					return;
+				}
 				item.show = item.edittextinput || !item.show;
-				//				item.style={
-				//					"border":"1px solid #eee",
-				//				}
 			},
 			submitForm(item) {
+				if(this.status != "1") {
+					return;
+				}
 				this.$emit("submitForm", item, this.index);
 			},
 			removeDomain() {
+				if(this.status != "1") {
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				this.$emit("removeDomain", this.index, this.qindex);
 			},
 			command(callback, vc) {
-				debugger
 				console.log("回调参数" + callback);
 				if(!callback) {
 					var ctx = this;
@@ -109,7 +128,13 @@
 				}
 			},
 			addDomain() { //这个相当于是item就是formlistOne的每一项
-				//debugger
+				if(this.status != "1") {
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				this.cformlistThree[0].domains.push({
 					"value": ""
 				})
@@ -118,9 +143,25 @@
 				//				});
 			},
 			itemSortdown: function(index, qindex, type) {
+				if(this.status != "1") {
+
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				this.$emit("itemSortdown", index, qindex, type);
 			},
 			changeposition(item) {
+				if(this.status != "1") {
+
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				item.changeButton = !item.changeButton;
 			},
 			handleAvatarSuccess(res, file) {

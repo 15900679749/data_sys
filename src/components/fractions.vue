@@ -30,7 +30,7 @@
 					<el-col class="singleinputcontent">
 						<el-form-item :label="'题目文本'">
 							<el-input v-model="item.title"></el-input>
-							<el-checkbox label="必答" name="type" v-model="item.is_must"></el-checkbox>
+							<el-checkbox label="必答" name="type" v-model="item.is_must" :disabled="status!='1' && type!='0' "></el-checkbox>
 
 						</el-form-item>
 						<el-form-item :label="'总分'">
@@ -72,6 +72,14 @@
 			taccord: {
 				type: String,
 				default: ""
+			},
+			status: {
+				type: String,
+				default: "1"
+			},
+			type: {
+				type: String,
+				default: ""
 			}
 		},
 		methods: {
@@ -79,15 +87,26 @@
 				item.edittextinput = !item.edittextinput;
 			},
 			showcart(item) {
+				if(this.status != "1") {
+					return;
+				}
 				item.show = item.edittextinput || !item.show;
-				//				item.style={
-				//					"border":"1px solid #eee",
-				//				}
 			},
 			submitForm(item) {
+				if(this.status != "1") {
+					return;
+				}
 				this.$emit("submitForm", item, this.index);
 			},
 			removeDomain() {
+				if(this.status != "1") {
+
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				this.$emit("removeDomain", this.index, this.qindex);
 			},
 			command(callback, vc) {
@@ -104,6 +123,14 @@
 			},
 			addDomain() { //这个相当于是item就是formlistOne的每一项
 				//debugger
+				if(this.status != "1") {
+
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				this.cformlistSix[0].domains.push({
 					"value": ""
 				})
@@ -111,27 +138,27 @@
 				//					value: ''
 				//				});
 			},
-			moveupDomain() {
-				var index = this.formlistSix.indexOf(item);
-				var netitem = this.formlistSix[index - 1]
-			},
 			itemSortdown: function(index, qindex, type) {
+				if(this.status != "1") {
+
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				this.$emit("itemSortdown", index, qindex, type);
 			},
 			changeposition(item) {
-				item.changeButton = !item.changeButton;
-			},
-			handleAvatarSuccess(res, file) {
-				this.imageUrl = URL.createObjectURL(file.raw);
-			},
-			beforeAvatarUpload(file) {
-				const isJPG = file.type === 'image/jpeg';
-				const isLt2M = file.size / 1024 / 1024 < 2;
+				if(this.status != "1") {
 
-				if(!isJPG) {
-					this.$message.error('上传头像图片只能是JPG格式！')
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
 				}
-				return isJPG && isLt2M;
+				item.changeButton = !item.changeButton;
 			}
 		},
 		created() {

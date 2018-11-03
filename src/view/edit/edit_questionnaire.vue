@@ -39,28 +39,28 @@
 								<div class="topic" v-for="(qitem,qindex) in item.qlist" :key="qindex">
 
 									<template v-if="qitem.sub_cat=='fill'">
-										<fill :item="qitem" @removeDomain="removeDomain" :taccord="taccord" :index="index" :qindex="qindex" @itemSortdown="itemSortdown" @submitForm="submitForm"></fill>
+										<fill :item="qitem" @removeDomain="removeDomain" :taccord="taccord" :index="index" :qindex="qindex" @itemSortdown="itemSortdown" @submitForm="submitForm" :status="status"></fill>
 									</template>
 									<template v-if="qitem.sub_cat=='single'">
-										<single :item="qitem" :qlist="item.qlist" :taccord="taccord" @changeDomainRadio="changeDomainRadio" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm"></single>
+										<single :item="qitem" :qlist="item.qlist" :taccord="taccord" @changeDomainRadio="changeDomainRadio" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm" :status="status"></single>
 									</template>
 									<template v-if="qitem.sub_cat=='multiple'">
-										<multiple :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm"></multiple>
+										<multiple :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm" :status="status"></multiple>
 									</template>
 									<template v-if="qitem.sub_cat=='multistage'">
-										<multistage :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></multistage>
+										<multistage :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm" :status="status"></multistage>
 									</template>
 									<template v-if="qitem.sub_cat=='loCation'">
-										<loCation :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></loCation>
+										<loCation :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm" :status="status"></loCation>
 									</template>
 									<template v-if="qitem.sub_cat=='uploadimg'">
-										<uploadimg :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></uploadimg>
+										<uploadimg :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm" :status="status"></uploadimg>
 									</template>
 									<template v-if="qitem.sub_cat=='fractions'">
-										<fractions :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></fractions>
+										<fractions :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm" :status="status"></fractions>
 									</template>
 									<template v-if="qitem.sub_cat=='comprehensive'">
-										<comprehensive @deleCom="delem" :comtaccord="comtaccord" :index="index" :comitem="qitem" :qindex="qindex" @itemSortdown="itemSortdown"></comprehensive>
+										<comprehensive @deleCom="delem" :comtaccord="comtaccord" :index="index" :comitem="qitem" :status="status" :qindex="qindex" @itemSortdown="itemSortdown"></comprehensive>
 									</template>
 								</div>
 							</el-collapse-item>
@@ -74,6 +74,7 @@
 </template>
 
 <script>
+	import { jsNumDX } from 'javascripts/utils/index';
 	import topic from 'components/topic.vue';
 	import fill from 'components/fill.vue';
 	import single from 'components/single.vue';
@@ -97,7 +98,8 @@
 				comtaccord: "、",
 				subId: "",
 				parentModle: 0,
-				serial_number: 0
+				serial_number: 0,
+				status: ""
 			}
 		},
 		methods: {
@@ -106,8 +108,8 @@
 			},
 			addfill(index) {
 				let ix = this.list[index].qlist.length + 1;
-				ofill.show=true;
-				ofill.edittextinput=true;
+				ofill.show = true;
+				ofill.edittextinput = true;
 				let ifill = JSON.parse(JSON.stringify(ofill));
 				ifill.ppid = this.subId;
 				ifill.pid = this.list[index].id;
@@ -116,8 +118,8 @@
 				this.list[index].qlist.push(ifill);
 			},
 			addsingle(index) {
-				osingle.show=true;
-				osingle.edittextinput=true;
+				osingle.show = true;
+				osingle.edittextinput = true;
 				let ix = this.list[index].qlist.length + 1;
 				let isingle = JSON.parse(JSON.stringify(osingle));
 				isingle.ppid = this.subId;
@@ -127,8 +129,8 @@
 				this.list[index].qlist.push(isingle);
 			},
 			addmultiple(index) {
-				omultiple.show=true;
-				omultiple.edittextinput=true;
+				omultiple.show = true;
+				omultiple.edittextinput = true;
 				let ix = this.list[index].qlist.length + 1;
 				let imultiple = JSON.parse(JSON.stringify(omultiple));
 				imultiple.ppid = this.subId;
@@ -139,8 +141,8 @@
 
 			},
 			addmultistage(index) {
-				omultistage.show=true;
-				omultistage.edittextinput=true;
+				omultistage.show = true;
+				omultistage.edittextinput = true;
 				let ix = this.list[index].qlist.length + 1;
 				let imultistage = JSON.parse(JSON.stringify(omultistage));
 				imultistage.ppid = this.subId;
@@ -150,8 +152,8 @@
 				this.list[index].qlist.push(imultistage);
 			},
 			adduploadimg(index) {
-				ouploadimg.show=true;
-				ouploadimg.edittextinput=true;
+				ouploadimg.show = true;
+				ouploadimg.edittextinput = true;
 				let ix = this.list[index].qlist.length + 1;
 				let iuploadimg = JSON.parse(JSON.stringify(ouploadimg));
 				iuploadimg.ppid = this.subId;
@@ -161,8 +163,8 @@
 				this.list[index].qlist.push(iuploadimg);
 			},
 			addloCation(index) {
-				oloCation.show=true;
-				oloCation.edittextinput=true;
+				oloCation.show = true;
+				oloCation.edittextinput = true;
 				let ix = this.list[index].qlist.length + 1;
 				let iloCation = JSON.parse(JSON.stringify(oloCation));
 				iloCation.ppid = this.subId;
@@ -172,8 +174,8 @@
 				this.list[index].qlist.push(iloCation);
 			},
 			addfractions(index) {
-				ofractions.show=true;
-				ofractions.edittextinput=true;
+				ofractions.show = true;
+				ofractions.edittextinput = true;
 				let ix = this.list[index].qlist.length + 1;
 				let ifractions = JSON.parse(JSON.stringify(ofractions));
 				ifractions.ppid = this.subId;
@@ -208,11 +210,25 @@
 
 			},
 			delem(index, pindex) {
+				if(this.status != "1") {
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				this.list[index].qlist.splice(pindex, 1);
 			},
 			addItem(index, type) {
-				let that=this;
-			
+				let that = this;
+				if(this.status != "1") {
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
+
 				switch(type) {
 					case "fill":
 						{
@@ -262,6 +278,13 @@
 				this.activeNames.indexOf(index) == -1 && this.activeNames.push(index)
 			},
 			addDomain(index, qindex) {
+				if(this.status != "1") {
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				let sort = this.list[index].qlist[qindex].option.length + 1;
 				let options = {
 					id: 0,
@@ -283,6 +306,7 @@
 				}
 			},
 			removeDomain(index, qindex) {
+
 				this.$confirm('您确定要删除吗?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
@@ -300,16 +324,29 @@
 				}).catch(() => {});
 			},
 			removeDomainitem(index, qindex, dindex) {
+				if(this.status != "1") {
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				let dlist = this.list[index].qlist[qindex].option.deleteIndex(dindex);
 				this.list[index].qlist[qindex].option = dlist;
 			},
 			itemSortdown(index, qindex, type) {
+				if(this.status != "1") {
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				var listItem = this.list[index].qlist[qindex];
 				var sortList = this.list[index].qlist;
 				var serial_number = listItem.serial_number;
 				listItem.changeButton = false;
 				if(type == 'up') {
-					debugger
 					let uitem = this.list[index].qlist[qindex - 1];
 					if(uitem != undefined && uitem != null) {
 						let usort = uitem.serial_number;
@@ -374,6 +411,13 @@
 
 			},
 			domainSortdown(index, qindex, dindex, type) {
+				if(this.status != "1") {
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				var sdomainItem = this.list[index].qlist[qindex].option[dindex];
 				var sortList = this.list[index].qlist[qindex].option;
 				var sortId = sdomainItem.order_num; //排序
@@ -399,10 +443,18 @@
 
 			},
 			openModel() {
+				if(this.status != "1") {
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				let self = this;
 				var option = {};
 				option.mod_name = "模块名称";
-				option.qtitle = self.list.length + 1 + '、';
+				option.qtitle = self.list.length + 1;
+				option.qtitle = jsNumDX(option.qtitle);
 				option.id = 0;
 				option.sortId = 0;
 				option.pid = this.subId;
@@ -418,8 +470,8 @@
 			},
 			submitForm(item, index) {
 				let subModel = JSON.parse(JSON.stringify(item));
-				item.show=false;
-				item.edittextinput=false;
+				item.show = false;
+				item.edittextinput = false;
 				delete subModel.changeButton;
 				delete subModel.edittextinput;
 				delete subModel.show;
@@ -647,7 +699,7 @@
 								let iobj = fatheritem.option[0] || {};
 								iobj.hasOwnProperty("default_choose") && (imultistage.value = iobj.default_choose);
 								iobj.hasOwnProperty("option_name") && (imultistage.olist = iobj.option_name);
-								debugger
+
 								resList.push(imultistage);
 							}
 							break;
@@ -680,7 +732,7 @@
 							break;
 					}
 				});
-			
+
 				return resList;
 			}
 		},
@@ -689,29 +741,27 @@
 		},
 		created() {
 			this.subId = this.$route.query.questionId;
-
 			this.$post("/Home/Subject/getSingleSub", {
 				id: this.subId
 			}).then((res) => {
-
+				this.status = res.status;
 				this.contentText = res.description || "";
 				this.questiontitle = res.sub_name || "";
 				let modlist = res.mod;
-				
+
 				for(var k = 0; k < modlist.length; k++) {
 					var option = {};
 					option.mod_name = modlist[k].mod_name;
-					option.qtitle = this.list.length + 1 + '、';
+					option.qtitle = this.list.length + 1;
+					option.qtitle = jsNumDX(option.qtitle);
 					option.id = modlist[k].id;
 					option.sortId = modlist[k].order_num;
 					option.qlist = [];
 					option.pid = modlist[k].pid;
-
 					if(modlist[k].item.length != 0) {
-				
-							let opList = this.getItemOptions(modlist[k].item);
-					
-						
+
+						let opList = this.getItemOptions(modlist[k].item);
+
 						option.qlist = opList;
 					}
 					if(modlist[k].mod && modlist[k].mod.length != 0) {
@@ -755,7 +805,7 @@
 <style>
 	.conBottom .el-collapse-item__wrap {
 		border: none;
-		  overflow: initial;
+		overflow: initial;
 		border-radius: 0 0 4px 4px;
 	}
 	
@@ -763,6 +813,8 @@
 		padding-left: 22px;
 		border: none;
 		border-radius: 4px;
+		font-weight: bold;
+		font-size: 16px;
 	}
 	
 	.conBottom .el-collapse-item__content {
@@ -778,26 +830,36 @@
 		border-top-color: #005ad4;
 	}
 	
-	.questiontitle .el-input__inner {
-		border: none;
-		text-align: center;
-	}
-	
-	.questiontitle .el-textarea__inner {
-		border: none;
-		text-align: left;
-	}
-	
 	.titlename .el-input__inner {
 		width: 40%;
 		margin-top: 5px;
 		border: none;
+		font-size: 14px;
+		font-weight: bold;
+	}
+	
+	.edit_item>.titlename .el-input__inner {
+		font-size: 16px;
+		font-weight: bold;
 	}
 	
 	.topic .el-form-item__label {
 		display: block;
 		width: 100%;
 		text-align: left;
+		font-size: 14px;
+		font-weight: bold;
+	}
+	
+	.el-form-item__content>.topic .el-form-item__label {
+		font-weight: normal;
+	}
+	
+	.questiontitle .el-input__inner {
+		border: none;
+		text-align: center;
+		font-size: 20px;
+		font-weight: bold;
 	}
 </style>
 <style scoped="scoped" lang="scss">
@@ -940,11 +1002,6 @@
 	
 	.edit_item {
 		position: relative;
-	}
-	
-	.questiontitle .el-input__inner {
-		border: none;
-		text-align: center;
 	}
 	
 	.titlename {

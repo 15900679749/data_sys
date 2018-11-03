@@ -58,6 +58,7 @@
 						return
 					}
 					storage.set("token", res.token);
+					debugger
 					storage.set("user", JSON.stringify(res));
 				
 					this.$router.push({

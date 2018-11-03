@@ -8,16 +8,16 @@
 				<el-form-item label="用户名">
 					<el-input v-model="searchInfo.name"></el-input>
 				</el-form-item>
-				<el-form-item label="微信号">
+				<!--<el-form-item label="微信号">
 					<el-input v-model="searchInfo.wx_name"></el-input>
+				</el-form-item>-->
+				<el-form-item label="手机号">
+					<el-input v-model="searchInfo.mobile"></el-input>
 				</el-form-item>
 			</el-row>
 			<el-row>
-				<el-col :span="16">
+				<el-col :span="12">
 
-					<el-form-item label="手机号">
-						<el-input v-model="searchInfo.mobile"></el-input>
-					</el-form-item>
 					<el-form-item label="权限">
 						<el-select v-model="searchInfo.level" placeholder="请选择用户权限">
 							<el-option label="一级用户" value="oneadmain"></el-option>
@@ -26,7 +26,7 @@
 						</el-select>
 					</el-form-item>
 				</el-col>
-				<el-col :span="8">
+				<el-col :span="12">
 					<el-button @click="searchBtn">查询</el-button>
 					<el-button @click="adduser">新增</el-button>
 					<el-button @click="handleDelete" data-type="deletlist">删除</el-button>
@@ -39,14 +39,19 @@
 			</el-table-column>
 			<el-table-column prop="uid" label="ID" width="90" align="center"></el-table-column>
 			<el-table-column prop="name" label="用户名" width="100" align="center"></el-table-column>
-			<el-table-column prop="wx_name" label="微信号" width="100" align="center"></el-table-column>
-			<el-table-column prop="wx_url" label="微信头像" width="80" align="center"></el-table-column>
-			<el-table-column prop="wx_nickname" label="微信昵称" width="83" align="center"></el-table-column>
-			<el-table-column prop="mobile" label="手机号" width="110" align="center"></el-table-column>
-			<el-table-column prop="addr" label="地址" width="150" align="center"></el-table-column>
-			<el-table-column prop="level" label="权限" width="80" align="center"></el-table-column>
+			<!--<el-table-column prop="wx_name" label="微信号" width="100" align="center"></el-table-column>-->
+			<el-table-column prop="wx_url" label="微信头像" width="80" align="center">
+				<template slot-scope="scope">
+					<image :src="wx_url"></image>
+				</template>
+
+			</el-table-column>
+			<el-table-column prop="wx_nickname" label="微信昵称" width="113" align="center"></el-table-column>
+			<el-table-column prop="mobile" label="手机号" width="130" align="center"></el-table-column>
+			<el-table-column prop="addr" label="地址" width="180" align="center"></el-table-column>
+			<el-table-column prop="levelName" label="权限" width="80" align="center"></el-table-column>
 			<el-table-column prop="create_at" label="创建时间" width="100" align="center"></el-table-column>
-			<el-table-column prop="action" label="操作" width="150" align="center">
+			<el-table-column prop="action" label="操作" width="170" align="center">
 				<template slot-scope="scope">
 					<!--<el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>-->
 					<el-button size="mini" @click="editUser(scope.$index, scope.row)">编辑</el-button>
@@ -88,10 +93,10 @@
 
 						<el-input v-model="addform.mobile"></el-input>
 					</el-form-item>
-					<el-form-item label="微信号" prop="wx_name">
+					<!--<el-form-item label="微信号" prop="wx_name">
 
 						<el-input v-model="addform.wx_name"></el-input>
-					</el-form-item>
+					</el-form-item>-->
 					<el-form-item label="地址" prop="addr">
 						<el-input v-model="addform.addr"></el-input>
 					</el-form-item>
@@ -112,15 +117,17 @@
 		data() {
 			return {
 				userlevel: 0,
+				roleArrary: ["","一级用户", "二级用户", "三级用户"],
 				multipleSelection: [],
 				pageSizes: [10, 20, 50, 100],
 				deleteList: [],
 				idList: [],
 				tag: '',
+				wx_url: '',
 				searchInfo: {
 					uid: "",
 					name: "",
-					wx_name: "",
+					//					wx_name: "",
 					mobile: "",
 					level: "",
 					pageIndex: 1,
@@ -144,7 +151,7 @@
 					id: "",
 					name: "",
 					password: '',
-					wx_name: '',
+					//					wx_name: '',
 					mobile: '',
 					level: '',
 					addr: ''
@@ -167,11 +174,11 @@
 						message: '请输入手机号',
 						trigger: 'blur'
 					}],
-					wx_name: [{
-						required: true,
-						message: '请输入微信号',
-						trigger: 'blur'
-					}],
+					//					wx_name: [{
+					//						required: true,
+					//						message: '请输入微信号',
+					//						trigger: 'blur'
+					//					}],
 					addr: [{
 						required: false,
 						message: '请输入地址',
@@ -294,7 +301,7 @@
 				console.log(index, row);
 			},
 			handleDelete(index, row) {
-					if(this.userlevel > 1) {
+				if(this.userlevel > 1) {
 					this.$message({
 						type: 'error',
 						message: '对不起，您没有此权限'
@@ -355,7 +362,18 @@
 				delete sendModel.pageTotal;
 				this.$post("/Home/User/userList", sendModel).then((res) => {
 					let resdata = res;
+					for(let v in resdata.list) {
+						var rol = parseInt(resdata.list[v].level);
+						rol = rol > 3 ? 3 : rol;
+						resdata.list[v].levelName =this.roleArrary[rol];
+							if(!!resdata.list[v]) {
+								resdata.list[v] = resdata.list[v]
+							} else {
+								resdata.list[v] = ""
+							}
+					}
 					this.tableData = resdata.list;
+
 					this.searchInfo.pageTotal = Number(resdata.page.pageTotal);
 				});
 			},

@@ -39,7 +39,7 @@
 		data() {
 			return {
 				d: "abc",
-				baseImgPath: "../../src/statics/images/photoicon.png",
+				baseImgPath:storage.getObject("user").wx_url||"",
 				name: '',
 				key: '',
 				

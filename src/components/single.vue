@@ -26,7 +26,7 @@
 					<el-col class="singleinputcontent">
 						<el-form-item :label="'题目文本'">
 							<el-input v-model="item.title"></el-input>
-							<el-checkbox label="必答" name="type" v-model="item.is_must"></el-checkbox>
+							<el-checkbox label="必答" name="type" v-model="item.is_must" :disabled="status!='1' && type!='0'"></el-checkbox>
 							<div class="singleedit">
 								<el-row type="flex">
 									<el-col :span="16">项目编辑:</el-col>
@@ -86,7 +86,6 @@
 				poSition: '',
 				jumpshow: false,
 				relevanceshow: false,
-
 			}
 		},
 		props: {
@@ -109,10 +108,21 @@
 			taccord: {
 				type: String,
 				default: ""
+			},
+			status: {
+				type: String,
+				default: "1"
+			},
+			type: {
+				type: String,
+				default: ""
 			}
 		},
 		methods: {
 			showedit(item) {
+				if(this.status != "1") {
+					return;
+				}
 				item.edittextinput = !item.edittextinput;
 			},
 			dochange(item) {
@@ -120,29 +130,55 @@
 				//				this.gdomack = item;
 			},
 			gdochange(item) {
-
+				if(this.status != "1") {
+					return;
+				}
 				this.$emit("changeDomainRadio", this.index, this.qindex, item);
 
 			},
 			showcart(item) {
+				if(this.status != "1") {
+					return;
+				}
 				item.show = item.edittextinput || !item.show;
-				//				item.style={
-				//					"border":"1px solid #eee",
-				//				}
 			},
 			submitForm(item) {
+				if(this.status != "1") {
+					return;
+				}
 				this.$emit("submitForm", item, this.index);
-				//				item.edittextinput = !item.edittextinput;
-				//				item.show = !item.show;
 			},
 			removeDomain() {
+				if(this.status != "1" && this.type != '0') {
+
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				this.$emit("removeDomain", this.index, this.qindex);
 			},
 			itemSortdown: function(index, qindex, type) {
+				if(this.status != "1" && this.type != '0') {
+
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				this.$emit("itemSortdown", index, qindex, type);
 			},
 			domainSortdown: function(index, qindex, dindex, type) {
-				!event.target.classList.contains("radioDisable") && this.$emit("domainSortdown", index, qindex, dindex, type)
+				if(this.status != "1" && this.type != '0') {
+
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}!event.target.classList.contains("radioDisable") && this.$emit("domainSortdown", index, qindex, dindex, type)
 			},
 			command(callback, vc) {
 				console.log("回调参数" + callback);
@@ -156,19 +192,58 @@
 				}
 			},
 			addDomain() {
+				if(this.status != "1" && this.type != '0') {
+
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				this.$emit("addDomain", this.index, this.qindex);
 			},
 			removeDomainitem(index, qindex, dindex) {
+				if(this.status != "1" && this.type != '0') {
+
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				this.$emit("removeDomainitem", index, qindex, dindex);
 			},
 			changeposition(item) {
+				if(this.status != "1" && this.type != '0') {
+
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				item.changeButton = !item.changeButton;
 			},
 			jump() {
+				if(this.status != "1" && this.type != '0') {
 
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				this.jumpshow = true;
 			},
 			relevance() {
+				if(this.status != "1" && this.type != '0') {
+
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				this.relevanceshow = true;
 			},
 			canclejump(item) {
@@ -195,6 +270,9 @@
 			headTop,
 			jump,
 			relevance
+		},
+		created() {
+
 		}
 	}
 </script>
@@ -395,8 +473,6 @@
 			}
 		}
 	}
-	
-
 	
 	.positionsure {
 		width: 40px;

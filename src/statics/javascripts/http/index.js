@@ -4,7 +4,7 @@ import storage from 'javascripts/utils/storage';
 
 let
 	cfig = {
-		"timeout": 4000,
+		"timeout": 5000,
 		"root": process.env.http.root,
 		"ContentType": "application/x-www-form-urlencoded;charset=UTF-8"
 	};
@@ -51,7 +51,7 @@ axios.interceptors.response.use(response => {
 		let data = response.data;
 		Message.closeAll();
 		if(data.code != "200") {
-			if(data.code == "500") {
+			if(data.code == "500"||data.code == "501") {
 				return location.href = location.protocol + "//" + location.host + location.pathname + "#/login";
 			} else {
 				return Message({
@@ -71,7 +71,7 @@ axios.interceptors.response.use(response => {
 				showClose: true,
 				message: "网络异常,请求接口错误!",
 				type: 'warning',
-				duration: 3000
+				duration: 30000
 			});
 		}
 		return Promise.reject(error);

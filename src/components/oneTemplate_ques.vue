@@ -4,7 +4,7 @@
 
 		<el-row class="oneTcontain" v-for="(item,index) in list" :key="index">
 			<el-row type="flex" justify="space-between" class="ontemplateTopL">
-				<el-col :span="6">
+				<el-col :span="18">
 					<span class="vote">{{item.sub_name}}&nbsp;&nbsp;ID:{{item.uid}}</span>
 				</el-col>
 				<el-col :span="6" class="ontemplateTopR">
@@ -181,18 +181,7 @@
 						});
 						return false;
 					}
-				} else {
-					if(this.region == "") {
-						Message({
-							showClose: true,
-							message: "请选择所属区域!",
-							type: 'warning',
-							duration: 3000
-						});
-						return false;
-					}
-				}
-				this.$post("/Home/Subject/createNewSubject", {
+						this.$post("/Home/Subject/createNewSubject", {
 					template: this.modelId || 0,
 					area_belong: this.region
 				}).then((res) => {
@@ -204,6 +193,36 @@
 						}
 					});
 				});
+				} else {
+					if(this.region == "") {
+						Message({
+							showClose: true,
+							message: "请选择所属区域!",
+							type: 'warning',
+							duration: 3000
+						});
+						return false;
+					}
+					
+								this.$post("/Home/Subject/createNewSubject", {
+					
+					area_belong: this.region
+				}).then((res) => {
+					console.log(res);
+					this.$router.push({
+						path: 'edit/edit_questionnaire',
+						query: {
+							questionId: res.id,
+						}
+					});
+				});
+			
+					
+					
+					
+					
+				}
+		
 			},
 			gettmpList() {
 				let sendModel = this.searchInfo;
@@ -212,7 +231,6 @@
 				this.$post("/Home/Tpl/tplList", sendModel).then((res) => {
 					let resdata = res;
 					this.templist = resdata.list;
-					debugger
 				});
 			}
 		},

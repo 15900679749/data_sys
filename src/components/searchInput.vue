@@ -35,8 +35,8 @@
 				return [];
 			},
 			querySearchAsync(queryString, callback) {
-				if(queryString.length < 2) return;
-				if(!this.ajaxb) return;
+//				if(queryString.length < 2) return;
+//				if(!this.ajaxb) return;
 				let slist = [];
 				if(this.search == "ques") {
 					let sendModel = this.searchInfo;
@@ -90,7 +90,7 @@
 //					debugger
 			},
 			handleIconClick(ev) {
-				if(this.sName == "") return;
+//				if(this.sName == "") return;
 				if(this.search == "ques") {
 					this.$emit("sgetList", "name", this.sName);
 				}else{

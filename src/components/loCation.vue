@@ -23,7 +23,7 @@
 					<el-col class="singleinputcontent">
 						<el-form-item :label="'题目文本'">
 							<el-input v-model="item.title"></el-input>
-							<el-checkbox label="必答" name="type" v-model="item.is_must"></el-checkbox>
+							<el-checkbox label="必答" name="type" v-model="item.is_must" :disabled="status!='1' && type!='0'"></el-checkbox>
 						
 							<el-button type="primary" @click="submitForm(item)">保存</el-button>
 						</el-form-item>
@@ -64,19 +64,33 @@
 			taccord:{
 				type:String,
 				default:""
+			},
+			status:{
+				type: String,
+				default: "1"
+			},
+			type:{
+				type: String,
+				default: ""
 			}
 		},
 		methods: {
 			showedit(item) {
+				if(this.status != "1") {
+					return;
+				}
 				item.edittextinput = !item.edittextinput;
 			},
 			showcart(item) {
+				if(this.status != "1") {
+					return;
+				}
 				item.show = item.edittextinput || !item.show;
-				//				item.style={
-				//					"border":"1px solid #eee",
-				//				}
 			},
 			submitForm(item) {
+				if(this.status != "1") {
+					return;
+				}
 				this.$emit("submitForm", item, this.index);
 			},
 			removeDomain() {

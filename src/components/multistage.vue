@@ -28,7 +28,7 @@
 					<el-col class="singleinputcontent">
 						<el-form-item :label="'题目文本'">
 							<el-input v-model="item.title"></el-input>
-							<el-checkbox label="必答" name="type" v-model="item.is_must"></el-checkbox>
+							<el-checkbox label="必答" name="type" v-model="item.is_must" :disabled="status!='1' && type!='0'"></el-checkbox>
 							<div class="singleedit">
 								<el-row type="flex">
 									<el-col :span="24" class="edittext">多级下拉编辑:</el-col>
@@ -44,8 +44,8 @@
 									</el-col>
 								</el-row>
 								<el-row type="flex" justify="space-between">
-									<el-col :span="5" v-for='(oitem,oindex) in item.olist' :key='oindex' >
-										<template v-if="oitem.id<=parseInt(item.value)" >
+									<el-col :span="5" v-for='(oitem,oindex) in item.olist' :key='oindex'>
+										<template v-if="oitem.id<=parseInt(item.value)">
 											<label class="oindex">{{oindex+1}}级选项</label>
 											<!--<el-input placeholder="" v-model="oitem.name"></el-input>-->
 											<el-input type="textarea" @blur="txtBlur(oitem,oindex)" v-model="oitem.value" :autosize="{ minRows: 2, maxRows: 4}">
@@ -87,25 +87,46 @@
 				type: Number,
 				default: 0
 			},
-			taccord:{
-				type:String,
-				default:""
+			taccord: {
+				type: String,
+				default: ""
+			},
+			status: {
+				type: String,
+				default: "1"
+			},
+			type: {
+				type: String,
+				default: ""
 			}
 		},
 		methods: {
 			showedit(item) {
+				if(this.status != "1") {
+					return;
+				}
 				item.edittextinput = !item.edittextinput;
 			},
 			showcart(item) {
+				if(this.status != "1") {
+					return;
+				}
 				item.show = item.edittextinput || !item.show;
-				//				item.style={
-				//					"border":"1px solid #eee",
-				//				}
 			},
 			submitForm(item) {
+				if(this.status != "1") {
+					return;
+				}
 				this.$emit("submitForm", item, this.index);
 			},
 			removeDomain() {
+				if(this.status != "1") {
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				this.$emit("removeDomain", this.index, this.qindex);
 			},
 			command(callback, vc) {
@@ -130,7 +151,10 @@
 					let noption = sd.value.split(",");
 					noption.forEach(sop => {
 						if(sop != "") {
-							this.item.olist[oindex + 1].options.push({"label":sop,"value":sop});
+							this.item.olist[oindex + 1].options.push({
+								"label": sop,
+								"value": sop
+							});
 						}
 					})
 				}
@@ -238,6 +262,14 @@
 			},
 			addDomain() { //这个相当于是item就是formlistOne的每一项
 				//debugger
+				if(this.status != "1") {
+
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				this.cformlistThree[0].domains.push({
 					"value": ""
 				})
@@ -246,10 +278,18 @@
 				//				});
 			},
 			changeposition(item) {
+				if(this.status != "1") {
+
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				item.changeButton = !item.changeButton;
 			},
-			itemSortdown:function(index, qindex,type){
-				this.$emit("itemSortdown", index, qindex,type);
+			itemSortdown: function(index, qindex, type) {
+				this.$emit("itemSortdown", index, qindex, type);
 			},
 		},
 		created() {
@@ -272,8 +312,6 @@
 	.custom-tree-container .el-button[data-v-50eb698a] {
 		display: inline-block;
 	}
-	
-	
 	
 	.changeposition .inputposition .el-input__inner {
 		background-color: rgb(245, 245, 245);
@@ -309,11 +347,13 @@
 		font-size: 14px;
 		padding-right: 8px;
 	}
-		.seletlevel .el-form-item__content{
-		top:0px;
+	
+	.seletlevel .el-form-item__content {
+		top: 0px;
 		display: inline-block;
 	}
-	.seletlevel .topic .el-form-item__label{
+	
+	.seletlevel .topic .el-form-item__label {
 		display: inline-block;
 	}
 </style>
@@ -498,25 +538,31 @@
 			text-align: center;
 		}
 	}
-	.selectdiv{
+	
+	.selectdiv {
 		display: inline-block;
-		margin-right:15px;
-		width:23%;
+		margin-right: 15px;
+		width: 23%;
 	}
-	.edittext{
-		background:rgb(242,242,242);
-		padding-left:5px;
+	
+	.edittext {
+		background: rgb(242, 242, 242);
+		padding-left: 5px;
 		box-sizing: border-box;
-		margin-top:20px;
+		margin-top: 20px;
 	}
-.olistlabel label{
-	width: 100%;
-	text-align: center;
-	display: inline-block;
-}
-.olistlabel .el-textarea .el-textarea__inner{
-	height:200px !important;}
-	.oindex{
+	
+	.olistlabel label {
+		width: 100%;
+		text-align: center;
+		display: inline-block;
+	}
+	
+	.olistlabel .el-textarea .el-textarea__inner {
+		height: 200px !important;
+	}
+	
+	.oindex {
 		width: 100%;
 		display: inline-block;
 		text-align: center;

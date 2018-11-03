@@ -32,6 +32,8 @@
 .el-header{
 	width:100%;
 	padding:0;
+	    position: fixed;
+    z-index: 100;
 }
 .el-main{
 	/*max-width:100%;
@@ -39,5 +41,6 @@
 	overflow-x: hidden;
 	overflow-y: scroll;*/
 	padding:0;
+	margin-top:30px;
 }
 </style>

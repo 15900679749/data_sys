@@ -30,25 +30,25 @@
 
 				<div class="topic" v-for="(qitem,qindex) in comitem.qlist" :key="qindex">
 					<template v-if="qitem.sub_cat=='fill'">
-						<fill :item="qitem" @removeDomain="removeDomain" :taccord="taccord" :index="index" :qindex="qindex" @itemSortdown="itemSortdown" @submitForm="submitForm"></fill>
+						<fill :item="qitem" @removeDomain="removeDomain" :taccord="taccord" :type="type" :index="index" :qindex="qindex" @itemSortdown="itemSortdown" @submitForm="submitForm" :status="status"></fill>
 					</template>
 					<template v-if="qitem.sub_cat=='single'">
-						<single :item="qitem" @changeDomainRadio="changeDomainRadio" :taccord="taccord" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm"></single>
+						<single :item="qitem" @changeDomainRadio="changeDomainRadio" :type="type" :qlist="comitem.qlist" :taccord="taccord" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm" :status="status"></single>
 					</template>
 					<template v-if="qitem.sub_cat=='multiple'">
-						<multiple :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm"></multiple>
+						<multiple :item="qitem" @addDomain="addDomain" :taccord="taccord" :type="type" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm" :status="status"></multiple>
 					</template>
 					<template v-if="qitem.sub_cat=='multistage'">
-						<multistage :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></multistage>
+						<multistage :item="qitem" :taccord="taccord" :index="index" :type="type" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm" :status="status"></multistage>
 					</template>
 					<template v-if="qitem.sub_cat=='loCation'">
-						<loCation :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></loCation>
+						<loCation :item="qitem" :taccord="taccord" :index="index" :type="type" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm" :status="status"></loCation>
 					</template>
 					<template v-if="qitem.sub_cat=='uploadimg'">
-						<uploadimg :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></uploadimg>
+						<uploadimg :item="qitem" :taccord="taccord" :index="index" :type="type" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm" :status="status"></uploadimg>
 					</template>
 					<template v-if="qitem.sub_cat=='fractions'">
-						<fractions :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></fractions>
+						<fractions :item="qitem" :taccord="taccord" :index="index" :type="type" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm" :status="status"></fractions>
 					</template>
 				</div>
 			</el-form-item>
@@ -85,6 +85,10 @@
 				type: Number,
 				default: 0
 			},
+			type: {
+				type: String,
+				default: ''
+			},
 			qindex: {
 				type: Number,
 				default: 0
@@ -96,11 +100,17 @@
 			comtaccord: {
 				type: String,
 				default: ""
-			}
+			},
+			status:{
+				type: String,
+				default: ""
+			},
+			
 		},
 		created() {
 			//			debugger
 			//let aa = this.comitem;
+
 		},
 		methods: {
 			handleChange(val) {
@@ -111,7 +121,8 @@
 				ofill.edittextinput=true;
 				let ix = this.comitem.qlist.length + 1;
 				let ifill = JSON.parse(JSON.stringify(ofill));
-				ifill.ppid = this.comitem.pid;
+				ifill.ppid = this.$route.query.questionId;
+				ifill.edittextinput=true;
 				ifill.pid = this.comitem.id;
 				ifill.serial_number = ix;
 				ifill.qtitle = ix;
@@ -122,11 +133,12 @@
 				osingle.edittextinput=true;
 				let ix = this.comitem.qlist.length + 1;
 				let isingle = JSON.parse(JSON.stringify(osingle));				
-				isingle.ppid = this.comitem.pid;
+				isingle.ppid = this.$route.query.questionId;
 			
 				isingle.pid = this.comitem.id;
 				isingle.serial_number = ix;
 				isingle.qtitle = ix;
+				isingle.edittextinput=true;
 				this.comitem.qlist.push(isingle);
 			},
 			addmultiple(index) {
@@ -134,10 +146,11 @@
 				omultiple.edittextinput=true;
 				let ix = this.comitem.qlist.length + 1;
 				let imultiple = JSON.parse(JSON.stringify(omultiple));
-				imultiple.ppid = this.comitem.pid;
+				imultiple.ppid = this.$route.query.questionId;
 				imultiple.pid = this.comitem.id;
 				imultiple.serial_number = ix;
 				imultiple.qtitle = ix;
+				imultiple.edittextinput=true;
 				this.comitem.qlist.push(imultiple);
 			},
 			addmultistage(index) {
@@ -145,10 +158,11 @@
 				omultistage.edittextinput=true;
 				let ix = this.comitem.qlist.length + 1;
 				let imultistage = JSON.parse(JSON.stringify(omultistage));
-				imultistage.ppid = this.comitem.pid;
+				imultistage.ppid = this.$route.query.questionId;
 				imultistage.pid = this.comitem.id;
 				imultistage.serial_number = ix;
 				imultistage.qtitle = ix;
+				imultistage.edittextinput=true;
 				this.comitem.qlist.push(imultistage);
 			},
 			adduploadimg(index) {
@@ -156,10 +170,11 @@
 				ouploadimg.edittextinput=true;
 				let ix = this.comitem.qlist.length + 1;
 				let iuploadimg = JSON.parse(JSON.stringify(ouploadimg));
-				iuploadimg.ppid = this.comitem.pid;
+				iuploadimg.ppid = this.$route.query.questionId;
 				iuploadimg.pid = this.comitem.id;
 				iuploadimg.serial_number = ix;
 				iuploadimg.qtitle = ix;
+				iuploadimg.edittextinput=true;
 				this.comitem.qlist.push(iuploadimg);
 			},
 			addloCation(index) {
@@ -167,10 +182,11 @@
 				oloCation.edittextinput=true;
 				let ix = this.comitem.qlist.length + 1;
 				let iloCation = JSON.parse(JSON.stringify(oloCation));
-				iloCation.ppid = this.comitem.pid;
+				iloCation.ppid = this.$route.query.questionId;
 				iloCation.pid = this.comitem.id;
 				iloCation.serial_number = ix;
 				iloCation.qtitle = ix;
+				iloCation.edittextinput=true;
 				this.comitem.qlist.push(iloCation);
 			},
 			addfractions(index) {
@@ -178,13 +194,21 @@
 				ofractions.edittextinput=true;
 				let ix = this.comitem.qlist.length + 1;
 				let ifractions = JSON.parse(JSON.stringify(ofractions));
-				ifractions.ppid = this.comitem.pid;
+				ifractions.ppid =this.$route.query.questionId;
 				ifractions.pid = this.comitem.id;
 				ifractions.serial_number = ix;
 				ifractions.qtitle = ix;
+				ifractions.edittextinput=true;
 				this.comitem.qlist.push(ifractions);
 			},
 			addItem(index, type) {
+					if(this.status != "1") {
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				switch(type) {
 					case "fill":
 						{
@@ -232,6 +256,13 @@
 				this.activeNames.indexOf(index) == -1 && this.activeNames.push(index)
 			},
 			addDomain(index, qindex) {
+					if(this.status != "1") {
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				let sort = this.comitem.qlist[qindex].option.length + 1;
 				let options = {
 					id: 0,
@@ -269,19 +300,47 @@
 				}).catch(() => {});
 			},
 			deletecomp() {
+					if(this.status != "1") {
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				this.$emit("deleCom", this.index, this.qindex);
 			},
 			changeposition(item) {
 				item.changeButton = !item.changeButton;
 			},
 			removeDomainitem(index, qindex, dindex) {
+					if(this.status != "1") {
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				let dlist = this.comitem.qlist[qindex].domains.deleteIndex(dindex);
 				this.comitem.qlist[qindex].domains = dlist;
 			},
 			itemSortdownc(index, qindex, type) {
+					if(this.status != "1") {
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				this.$emit("itemSortdown", index, qindex, type);
 			},
 			itemSortdown: function(index, qindex, type) {
+					if(this.status != "1") {
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				var listItem = this.comitem.qlist[qindex];
 				var sortList = this.comitem.qlist;
 				var serial_number = listItem.serial_number;
@@ -350,6 +409,8 @@
 			},
 			submitForm(item, index) {
 				let subModel = JSON.parse(JSON.stringify(item));
+				item.show = false;
+			item.edittextinput=false;
 				delete subModel.changeButton;
 				delete subModel.edittextinput;
 				delete subModel.show;
@@ -386,6 +447,13 @@
 				});
 			},
 			domainSortdown(index, qindex, dindex, type) {
+					if(this.status != "1") {
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				var sdomainItem = this.comitem.qlist[qindex].option[dindex];
 				var sortList = this.comitem.qlist[qindex].option;
 				var sortId = sdomainItem.order_num; //排序

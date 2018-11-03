@@ -4,7 +4,7 @@
 
 		<el-row class="oneTcontain" v-for="(item,index) in list" :key="index">
 			<el-row type="flex" justify="space-between" class="ontemplateTopL">
-				<el-col :span="6">
+				<el-col :span="18">
 					<span class="vote">{{item.tmp_name}}&nbsp;&nbsp;ID:{{item.uid}}</span>
 					<!--<span @click="edting" class="edting"><i class="el-icon-edit-outline"></i>编辑</span>-->
 				</el-col>
@@ -16,15 +16,15 @@
 			</el-row>
 			<el-row type="flex" justify="space-between">
 				<el-col :span="8">
-					<span  @click="publishTemp(item)" v-if="userlevel>0"><i class="edtingTemplate"></i>使用模板</span>
-					<span @click="edtingTemplate(item)"  v-if="userlevel==0"><i class="edtingTemplate"></i>编辑模板</span>
-
+				
+					<span @click="edtingTemplate(item,userlevel)" v-if="userlevel==1"><i class="edtingTemplate"></i>编辑模板</span>
+					<span @click="edtingTemplate(item,userlevel)" v-if="userlevel>1"><i class="edtingTemplate"></i>查看模板</span>
 				</el-col>
 				<el-col :span="6" class="ontemplateBotR">
 
-					<el-button class="active" @click="publishTemp(item)" v-if="userlevel==0"><i class="el-icon-edit"></i>使用模板</el-button>
+					<el-button class="active" @click="publishTemp(item)" v-if="userlevel==1"><i class="el-icon-edit"></i>使用模板</el-button>
 
-					<el-button @click="deleItem(item)" v-if="userlevel==0"><i class="el-icon-delete"></i>删除</el-button>
+					<el-button @click="deleItem(item)" v-if="userlevel==1"><i class="el-icon-delete"></i>删除</el-button>
 				</el-col>
 			</el-row>
 
@@ -94,11 +94,13 @@
 		},
 		props: ["list"],
 		methods: {
-			edtingTemplate(item) {
+			edtingTemplate(item, status) {
+				var edit = parseInt(status) > 1 ? 0 : 1;
 				return this.$router.push({
 					path: '/edit/edit_template',
 					query: {
 						templateId: item.id,
+						status: edit
 					}
 				})
 			},
@@ -200,7 +202,7 @@
 		mounted() {
 			let self = this;
 			bus.$on("getStatustemp", function(b) {
-			
+
 				if(this.userlevel > 1) {
 					debugger
 					this.$message({
@@ -208,14 +210,14 @@
 						message: '对不起，您没有此权限'
 					});
 					return
-				}else{
+				} else {
 					self.jumpshow = b;
 				}
-				
+
 			});
 		},
-		created(){
-			this.userlevel = Number(JSON.parse(storage.get('user')).level)
+		created() {
+			this.userlevel = 1;//Number(JSON.parse(storage.get('user')).level);
 		}
 	}
 </script>

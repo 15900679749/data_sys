@@ -3,12 +3,12 @@
 		<el-row :gutter="20" class="top">
 			<el-col :span="3" :offset="9">
 				<i class="el-icon-search"></i>预览</el-col>
-			<el-col :span="3" @click.native="finishSub()"><i class="el-icon-check"></i>完成</el-col>
+			<el-col :span="3" @click.native="finishSub()" v-if="status=='1'"><i class="el-icon-check"></i>完成</el-col>
 		</el-row>
 		<div class="editTemContain">
 			<div>
 				<el-row type="flex" justify="end" class="conTop">
-					<el-col :span="3" @click.native="openModel"><i class="el-icon-plus"></i>新建模块</el-col>
+					<el-col :span="3" @click.native="openModel" v-if="status=='1'"><i class="el-icon-plus"></i>新建模块</el-col>
 				</el-row>
 				<div class="conBottom">
 					<div class="conBottomT">
@@ -39,28 +39,28 @@
 								<div class="topic" v-for="(qitem,qindex) in item.qlist" :key="qindex">
 
 									<template v-if="qitem.sub_cat=='fill'">
-										<fill :item="qitem" @removeDomain="removeDomain" :taccord="taccord" :index="index" :qindex="qindex" @itemSortdown="itemSortdown" @submitForm="submitForm"></fill>
+										<fill :item="qitem" @removeDomain="removeDomain" :taccord="taccord" :index="index" :qindex="qindex" @itemSortdown="itemSortdown" @submitForm="submitForm" :status="status" :type="type"></fill>
 									</template>
 									<template v-if="qitem.sub_cat=='single'">
-										<single :item="qitem" :qlist="item.qlist" :taccord="taccord" @changeDomainRadio="changeDomainRadio" @addDomain="addDomain" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm"></single>
+										<single :item="qitem" :qlist="item.qlist" :taccord="taccord" @changeDomainRadio="changeDomainRadio" @addDomain="addDomain" :index="index" :type="type" :qindex="qindex" :status="status" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm"></single>
 									</template>
 									<template v-if="qitem.sub_cat=='multiple'">
-										<multiple :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm"></multiple>
+										<multiple :item="qitem" @addDomain="addDomain" :taccord="taccord" :index="index" :qindex="qindex" @removeDomainitem="removeDomainitem" :type="type" :status="status" @removeDomain="removeDomain" @domainSortdown="domainSortdown" @itemSortdown="itemSortdown" @submitForm="submitForm"></multiple>
 									</template>
 									<template v-if="qitem.sub_cat=='multistage'">
-										<multistage :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></multistage>
+										<multistage :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" :type="type" :status="status" @submitForm="submitForm"></multistage>
 									</template>
 									<template v-if="qitem.sub_cat=='loCation'">
-										<loCation :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></loCation>
+										<loCation :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" :type="type" :status="status" @submitForm="submitForm"></loCation>
 									</template>
 									<template v-if="qitem.sub_cat=='uploadimg'">
-										<uploadimg :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></uploadimg>
+										<uploadimg :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" :type="type" :status="status" @submitForm="submitForm"></uploadimg>
 									</template>
 									<template v-if="qitem.sub_cat=='fractions'">
-										<fractions :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" @submitForm="submitForm"></fractions>
+										<fractions :item="qitem" :taccord="taccord" :index="index" :qindex="qindex" @removeDomain="removeDomain" @itemSortdown="itemSortdown" :type="type" :status="status" @submitForm="submitForm"></fractions>
 									</template>
 									<template v-if="qitem.sub_cat=='comprehensive'">
-										<comprehensive @deleCom="delem" :comtaccord="comtaccord" :index="index" :comitem="qitem" :qindex="qindex" @itemSortdown="itemSortdown"></comprehensive>
+										<comprehensive @deleCom="delem" :comtaccord="comtaccord" :index="index" :comitem="qitem" :qindex="qindex" @itemSortdown="itemSortdown" :type="type" :status="status"></comprehensive>
 									</template>
 								</div>
 							</el-collapse-item>
@@ -83,6 +83,7 @@
 	import loCation from 'components/loCation.vue';
 	import fractions from 'components/fractions.vue';
 	import { Message } from "element-ui";
+	import { jsNumDX } from 'javascripts/utils/index';
 	import comprehensive from 'components/comprehensive.vue';
 	import { ofill, osingle, omultiple, omultistage, ouploadimg, oloCation, ofractions, ocomprehensive } from "components/itemType";
 
@@ -97,7 +98,9 @@
 				comtaccord: "、",
 				subId: "",
 				parentModle: 0,
-				serial_number: 0
+				serial_number: 0,
+				type: "0",
+				status: "0"
 			}
 		},
 		methods: {
@@ -112,6 +115,7 @@
 				ifill.pid = this.list[index].id;
 				ifill.serial_number = ix;
 				ifill.qtitle = ix;
+				ifill.edittextinput = true;
 				this.list[index].qlist.push(ifill);
 			},
 			addsingle(index) {
@@ -120,6 +124,7 @@
 				isingle.ppid = this.subId;
 				isingle.pid = this.list[index].id;
 				isingle.serial_number = ix;
+				isingle.edittextinput = true;
 				isingle.qtitle = ix;
 				this.list[index].qlist.push(isingle);
 			},
@@ -129,6 +134,7 @@
 				imultiple.ppid = this.subId;
 				imultiple.pid = this.list[index].id;
 				imultiple.serial_number = ix;
+				imultiple.edittextinput = true;
 				imultiple.qtitle = ix;
 				this.list[index].qlist.push(imultiple);
 
@@ -140,6 +146,7 @@
 				imultistage.pid = this.list[index].id;
 				imultistage.serial_number = ix;
 				imultistage.qtitle = ix;
+				imultistage.edittextinput = true;
 				this.list[index].qlist.push(imultistage);
 			},
 			adduploadimg(index) {
@@ -149,6 +156,7 @@
 				iuploadimg.pid = this.list[index].id;
 				iuploadimg.serial_number = ix;
 				iuploadimg.qtitle = ix;
+				iuploadimg.edittextinput = true;
 				this.list[index].qlist.push(iuploadimg);
 			},
 			addloCation(index) {
@@ -158,6 +166,7 @@
 				iloCation.pid = this.list[index].id;
 				iloCation.serial_number = ix;
 				iloCation.qtitle = ix;
+				iloCation.edittextinput = true;
 				this.list[index].qlist.push(iloCation);
 			},
 			addfractions(index) {
@@ -167,6 +176,7 @@
 				ifractions.pid = this.list[index].id;
 				ifractions.serial_number = ix;
 				ifractions.qtitle = ix;
+				ifractions.edittextinput = true;
 				this.list[index].qlist.push(ifractions);
 
 			},
@@ -198,7 +208,13 @@
 				this.list[index].qlist.splice(pindex, 1);
 			},
 			addItem(index, type) {
-
+				if(this.status != "1") {
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				switch(type) {
 					case "fill":
 						{
@@ -388,7 +404,8 @@
 				let self = this;
 				var option = {};
 				option.mod_name = "模块名称";
-				option.qtitle = self.list.length + 1 + '、';
+				option.qtitle = self.list.length + 1;
+				option.qtitle = jsNumDX(option.qtitle);
 				option.id = 0;
 				option.sortId = 0;
 				option.pid = this.subId;
@@ -403,6 +420,8 @@
 				});
 			},
 			submitForm(item, index) {
+				item.show = false;
+				item.edittextinput = false;
 				let subModel = JSON.parse(JSON.stringify(item));
 				delete subModel.changeButton;
 				delete subModel.edittextinput;
@@ -469,7 +488,7 @@
 								id: this.list[i].qlist[j].id,
 								order: j + 1
 							}
-							
+
 							modoption.item.push(jitem);
 							if(this.list[i].qlist[j].sub_cat == "comprehensive") {
 								//modoption.serial_number=j + 1;
@@ -632,7 +651,7 @@
 								let iobj = fatheritem.option[0] || {};
 								iobj.hasOwnProperty("default_choose") && (imultistage.value = iobj.default_choose);
 								iobj.hasOwnProperty("option_name") && (imultistage.olist = iobj.option_name);
-								debugger
+
 								resList.push(imultistage);
 							}
 							break;
@@ -673,7 +692,7 @@
 		},
 		created() {
 			this.subId = this.$route.query.templateId;
-
+			this.status = this.$route.query.status ? this.$route.query.status : "0";
 			this.$post("/Home/Tpl/getSingleTpl", {
 				id: this.subId
 			}).then((res) => {
@@ -684,7 +703,8 @@
 				for(var k = 0; k < modlist.length; k++) {
 					var option = {};
 					option.mod_name = modlist[k].mod_name;
-					option.qtitle = this.list.length + 1 + '、';
+					option.qtitle = this.list.length + 1;
+					option.qtitle = jsNumDX(option.qtitle);
 					option.id = modlist[k].id;
 					option.sortId = modlist[k].order_num;
 					option.qlist = [];
@@ -735,7 +755,7 @@
 <style>
 	.conBottom .el-collapse-item__wrap {
 		border: none;
-		    overflow: initial;
+		overflow: initial;
 		border-radius: 0 0 4px 4px;
 	}
 	
@@ -743,6 +763,8 @@
 		padding-left: 22px;
 		border: none;
 		border-radius: 4px;
+		font-weight: bold;
+		font-size: 16px;
 	}
 	
 	.conBottom .el-collapse-item__content {
@@ -758,26 +780,41 @@
 		border-top-color: #005ad4;
 	}
 	
-	.questiontitle .el-input__inner {
-		border: none;
-		text-align: center;
-	}
-	
 	.questiontitle .el-textarea__inner {
 		border: none;
 		text-align: left;
 	}
 	
-	.titlename .el-input__inner {
-		width: 40%;
-		margin-top: 5px;
+	.questiontitle .el-input__inner {
 		border: none;
+		text-align: center;
+		font-size: 20px;
+		font-weight: bold;
 	}
 	
 	.topic .el-form-item__label {
 		display: block;
 		width: 100%;
 		text-align: left;
+		font-size: 14px;
+		font-weight: bold;
+	}
+	
+	.el-form-item__content>.topic .el-form-item__label {
+		font-weight: normal;
+	}
+	
+	.titlename .el-input__inner {
+		width: 40%;
+		margin-top: 5px;
+		border: none;
+		font-size: 14px;
+		font-weight: bold;
+	}
+	
+	.edit_item>.titlename .el-input__inner {
+		font-size: 16px;
+		font-weight: bold;
 	}
 </style>
 <style scoped="scoped" lang="scss">

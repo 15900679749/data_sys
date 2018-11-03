@@ -22,7 +22,7 @@
 					<el-col>
 						<el-form-item :label="'题目文本'">
 							<el-input v-model="item.title"></el-input>
-							<el-checkbox label="必答" name="type" v-model="item.is_must"></el-checkbox>
+							<el-checkbox label="必答" name="type" v-model="item.is_must" :disabled="status!='1' && type!='0'"></el-checkbox>
 							<el-button type="primary" @click="submitForm(item)">保存</el-button>
 						</el-form-item>
 					</el-col>
@@ -60,22 +60,50 @@
 			taccord: {
 				type: String,
 				default: ""
+			},
+			status: {
+				type: String,
+				default: "1"
+			},
+			type: {
+				type: String,
+				default: ""
 			}
+		},
+		created() {
+
 		},
 		methods: {
 			showedit(item) {
+				if(this.status != "1") {
+					return;
+				}
 				item.edittextinput = !item.edittextinput;
 			},
 			showcart(item) {
+				if(this.status != "1") {
+					return;
+				}
 				item.show = item.edittextinput || !item.show;
 			},
 			submitForm(item) {
+				if(this.status != "1") {
+					return;
+				}
 				this.$emit("submitForm", item, this.index);
 			},
 			itemSortdown: function(index, qindex, type) {
 				this.$emit("itemSortdown", index, qindex, type);
 			},
 			removeDomain(item) {
+				if(this.status != "1") {
+
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				this.$emit("removeDomain", this.index, this.qindex);
 			},
 			command(callback, vc) {
@@ -90,6 +118,14 @@
 				}
 			},
 			changeposition(item) {
+				if(this.status != "1") {
+
+					this.$message({
+						type: 'error',
+						message: '当前问卷状态无法进行此操作'
+					});
+					return;
+				}
 				item.changeButton = !item.changeButton;
 			}
 		},
@@ -112,7 +148,6 @@
 		margin-left: 0;
 	}
 	
-
 	.topic .fillcontent .el-form-item__label {
 		width: auto;
 	}
