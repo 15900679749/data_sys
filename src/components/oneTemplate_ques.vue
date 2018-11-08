@@ -4,13 +4,13 @@
 
 		<el-row class="oneTcontain" v-for="(item,index) in list" :key="index">
 			<el-row type="flex" justify="space-between" class="ontemplateTopL">
-				<el-col :span="18">
+				<el-col :span="17">
 					<span class="vote">{{item.sub_name}}&nbsp;&nbsp;ID:{{item.uid}}</span>
 				</el-col>
-				<el-col :span="6" class="ontemplateTopR">
+				<el-col :span="7" class="ontemplateTopR">
 					<span>状态:{{item.statusName}}</span>
 					<span>答卷:<b>{{item.answer}}</b></span>
-					<span v-text="item.sub_name"></span>
+					<span v-text="item.create_time"></span>
 				</el-col>
 			</el-row>
 			<el-row type="flex" justify="space-between">

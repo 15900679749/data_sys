@@ -1,5 +1,5 @@
 <template>
-	<el-select v-model="svalue" @change="handleIconClick" slot="prepend" placeholder="问卷状态" style="width:12%;margin-left:1%;">
+	<el-select v-model="svalue" @change="handleIconClick" slot="prepend" placeholder="问卷状态" style="width:18%;margin-left:1%;">
 		<el-option v-for="(op,index) in soptions" :key="index" :label="op.label" :value="op.value"></el-option>
 	</el-select>
 </template>

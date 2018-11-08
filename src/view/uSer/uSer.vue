@@ -35,23 +35,23 @@
 		</el-form>
 
 		<el-table ref="multipleTable" :data="tableData" tooltip-effect="dark" @selection-change="handleSelectionChange" border :header-cell-style="{background:'#f7f7f7',color:'#1f1f1f'}" style="width:100%">
-			<el-table-column type="selection" width="35">
+			<el-table-column type="selection" min-width="3.24%">
 			</el-table-column>
-			<el-table-column prop="uid" label="ID" width="90" align="center"></el-table-column>
-			<el-table-column prop="name" label="用户名" width="100" align="center"></el-table-column>
+			<el-table-column prop="uid" label="ID" min-width="6.34%" align="center"></el-table-column>
+			<el-table-column prop="name" label="用户名" min-width="9.27%" align="center"></el-table-column>
 			<!--<el-table-column prop="wx_name" label="微信号" width="100" align="center"></el-table-column>-->
-			<el-table-column prop="wx_url" label="微信头像" width="80" align="center">
+			<el-table-column prop="wx_url" label="微信头像" min-width="7.42%" align="center">
 				<template slot-scope="scope">
-					<image :src="wx_url"></image>
+					<img :src="tableData[scope.$index].wx_url" ></img>
 				</template>
 
 			</el-table-column>
-			<el-table-column prop="wx_nickname" label="微信昵称" width="113" align="center"></el-table-column>
-			<el-table-column prop="mobile" label="手机号" width="130" align="center"></el-table-column>
-			<el-table-column prop="addr" label="地址" width="180" align="center"></el-table-column>
-			<el-table-column prop="levelName" label="权限" width="80" align="center"></el-table-column>
-			<el-table-column prop="create_at" label="创建时间" width="100" align="center"></el-table-column>
-			<el-table-column prop="action" label="操作" width="170" align="center">
+			<el-table-column prop="wx_nickname" label="微信昵称" min-width="10.48%" align="center"></el-table-column>
+			<el-table-column prop="mobile" label="手机号" min-width="9.05%" align="center"></el-table-column>
+			<el-table-column prop="addr" label="地址" min-width="13.69%" align="center"></el-table-column>
+			<el-table-column prop="levelName" label="权限" min-width="7.42%" align="center"></el-table-column>
+			<el-table-column prop="create_at" label="创建时间" min-width="14.27%" align="center"></el-table-column>
+			<el-table-column prop="action" label="操作" min-width="18.76%" align="center">
 				<template slot-scope="scope">
 					<!--<el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>-->
 					<el-button size="mini" @click="editUser(scope.$index, scope.row)">编辑</el-button>
@@ -414,6 +414,9 @@
 	.useradd .el-form-item__content {
 		margin-bottom: 5px;
 	}
+		.el-table .cell:nth-last-child(1){
+		padding-left:0;padding-right:0;
+	}
 </style>
 <style scoped="scoped" lang="scss">
 	.zhezhao .el-button {
@@ -478,4 +481,8 @@
 	.itemmust {
 		left: -71px;
 	}
+	.el-table .cell>img{
+		width:100%;
+	}
+
 </style>

@@ -14,30 +14,36 @@
 		data() {
 			return {
 				token: "defaulttoken",
-				
+
 			}
 		},
 		created() {
 			let href = window.location.href.split('#');
 			let router = href[1];
-			
+
 			if(!storage.get("token")) {
 				this.$router.push("/login");
 			}
 			this.initializationEnv();
 			this.initializationLogin(router);
-			
-		
+
 		},
 		mounted() {
 			let self = this;
 			self.$router.beforeEach((to, from, next) => {
 				//this.initializationLogin(router);
-				if(!storage.get("token")&&to.path!='/login') {
+				if(!storage.get("token") && to.path != '/login') {
 					return next("/login");
 				}
 				document.title = to ? to.meta.title : "后台管理";
-				console.log("=======");
+				if(to.fullPath == "/analysis") {
+					this.$message({
+						type: 'error',
+						message: '请通过问卷列表访问',
+						duration: 1500
+					});
+					return next(from.fullPath);
+				}
 				next();
 			});
 		}

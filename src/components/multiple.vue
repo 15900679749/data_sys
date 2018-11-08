@@ -266,7 +266,7 @@
 	}
 	
 	.el-form-item .el-checkbox {
-		margin-left: 10%;
+		margin-right: 10%;
 	}
 	
 	.el-form-item .el-input {

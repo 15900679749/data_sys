@@ -39,22 +39,23 @@
 		data() {
 			return {
 				d: "abc",
-				baseImgPath:storage.getObject("user").wx_url||"",
+				baseImgPath: storage.getObject("user").wx_url || "",
 				name: '',
 				key: '',
-				
+
 			}
 		},
 		methods: {
 			handleSelect(key, keyPath) {
 				sessionStorage.setItem("MenuActive", key);
 				//				this.$store.commit("saveMenuActive", key);
+				console.log(key, keyPath);
 			},
 			getname() {
-				if(storage.getObject("user").name){
+				if(storage.getObject("user").name) {
 					this.name = storage.getObject("user").name
 				}
-				
+
 			},
 			exit() {
 				this.$post("/Home/Login/loginOut", {
@@ -66,27 +67,29 @@
 					//					});
 					storage.remove("token");
 					storage.remove("user");
-					
-						this.$router.replace({ path: '/login' })
-					
+
+					this.$router.replace({
+						path: '/login'
+					})
+
 				})
 			}
 		},
 		mounted() {
-		
+
 		},
 		computed: {
 			defaultActive: function() {
-//				debugger
-				if(this.$route.path.split('/').length>1){
+				//				debugger
+				if(this.$route.path.split('/').length > 1) {
 					return this.$route.path.split('/')[1];
-				}else{
+				} else {
 					return sessionStorage.getItem("MenuActive") || "uSer"
 				}
-//				return sessionStorage.getItem("MenuActive") || "uSer"
+				//				return sessionStorage.getItem("MenuActive") || "uSer"
 				//return this.$store.getters.guserInfo;
 				//return this.$store.state.menuActive;
-				
+
 			}
 		},
 		created() {

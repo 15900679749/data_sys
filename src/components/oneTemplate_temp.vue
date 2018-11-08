@@ -4,14 +4,13 @@
 
 		<el-row class="oneTcontain" v-for="(item,index) in list" :key="index">
 			<el-row type="flex" justify="space-between" class="ontemplateTopL">
-				<el-col :span="18">
+				<el-col :span="17">
 					<span class="vote">{{item.tmp_name}}&nbsp;&nbsp;ID:{{item.uid}}</span>
 					<!--<span @click="edting" class="edting"><i class="el-icon-edit-outline"></i>编辑</span>-->
 				</el-col>
-				<el-col :span="6" class="ontemplateTopR">
+				<el-col :span="7" class="ontemplateTopR">
 					<span>创建者:{{item.create_man}}</span>
-					<span v-text="item.timeNum"></span>
-
+					<span v-text="item.create_time"></span>
 				</el-col>
 			</el-row>
 			<el-row type="flex" justify="space-between">
@@ -278,7 +277,7 @@
 	.el-col.ontemplateTopR {
 		display: flex;
 		justify-content: space-between;
-		width: 22%;
+		/*width: 22%;*/
 		>div {
 			width: 66%;
 			display: flex;

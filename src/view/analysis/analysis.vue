@@ -46,7 +46,7 @@
 										</el-table>
 									</el-col>
 									<el-col :span="23" :offset="1" v-else>
-										<el-button size="medium" @click="tagItem(qitem)">查看详细信息</el-button>
+										<el-button size="medium" @click="tagItem(qitem)" class="checkmy">查看详细信息</el-button>
 										<el-table :data="qitem.resultList" border style="width: 100%" v-show="!!qitem.itemshow">
 											<el-table-column prop="rownum" label="序号" width="180"></el-table-column>
 											<el-table-column prop="answer_time" label="日期" width="180"></el-table-column>
@@ -83,6 +83,8 @@
 <script>
 	import headTop from 'view/head/headTop.vue';
 	import topic from 'components/topic.vue';
+	import { jsNumDX } from 'javascripts/utils/index';
+
 	import { ofill, osingle, omultiple, omultistage, ouploadimg, oloCation, ofractions, ocomprehensive } from "components/itemType";
 	export default {
 		data() {
@@ -186,7 +188,7 @@
 					} else if(item.sub_cat == 'loCation') {
 						var obj = res || [];
 						res.forEach((obj, index) => {
-							obj.result = JSON.parse(obj.result).addresname+","+JSON.parse(obj.result).locationName;
+							obj.result = JSON.parse(obj.result).addresname + "," + JSON.parse(obj.result).locationName;
 						});
 						item.resultList = obj; //objres.addresname+obj.locationName;
 					} else {
@@ -212,10 +214,9 @@
 				let modlist = res.mod;
 				let activelist = [];
 				for(var k = 0; k < modlist.length; k++) {
-
 					var option = {};
 					activelist.push(k);
-					option.mod_name = modlist[k].mod_name;
+					option.mod_name =modlist[k].mod_name;
 					option.qtitle = this.quesList.length + 1 + '、';
 					option.id = modlist[k].id;
 					option.sortId = modlist[k].order_num;
@@ -225,9 +226,7 @@
 						let opList = this.getItemOptions(modlist[k].item);
 						option.qlist = modlist[k].item;
 						modlist[k].item = opList;
-
 					}
-
 					if(modlist[k].mod && modlist[k].mod.length != 0) {
 						for(var j = 0; j < modlist[k].mod.length; j++) {
 							for(var v = 0; v < modlist[k].mod[j].item.length; v++) {
@@ -245,7 +244,7 @@
 					for(var j = 0; j < option.qlist.length; j++) {
 						option.qlist[j].itemshow = false;
 					}
-
+					modlist[k].mod_name = jsNumDX(k + 1) + modlist[k].mod_name;
 					//	
 					this.modList.push(modlist[k]);
 					var modList = this.modList;
@@ -386,5 +385,8 @@
 	.comvetitle {
 		display: block;
 		margin: 10px 0 45px;
+	}
+	.checkmy{
+		margin-bottom:20px;
 	}
 </style>
