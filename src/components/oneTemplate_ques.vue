@@ -268,14 +268,14 @@
 	}
 </script>
 <style>
-	.establish .el-radio__input.is-checked+.el-radio__label {
+	/*.establish .el-radio__input.is-checked+.el-radio__label {
 		color: #fff;
 	}
 	
 	.establish .el-radio__input.is-checked .el-radio__inner {
 		border-color: #333;
 		background: #333;
-	}
+	}*/
 </style>
 <style scoped="scoped" lang="scss">
 	.oneTcontain {

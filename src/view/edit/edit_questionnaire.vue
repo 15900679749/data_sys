@@ -8,7 +8,9 @@
 		<div class="editTemContain">
 			<div>
 				<el-row type="flex" justify="end" class="conTop">
+
 					<el-col :span="3" @click.native="openModel"><i class="el-icon-plus"></i>新建模块</el-col>
+
 				</el-row>
 				<div class="conBottom">
 					<div class="conBottomT">
@@ -64,8 +66,11 @@
 									</template>
 								</div>
 							</el-collapse-item>
+							<div class="quetiondelete" @click.stop="removeMode(item)"><i class="el-icon-delete"></i></div>
+
 						</div>
 					</el-collapse>
+
 				</div>
 			</div>
 		</div>
@@ -654,6 +659,29 @@
 				}
 
 			},
+			removeMode(item) {
+				this.$confirm('您确定要删除该模块，是否继续？', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					this.$post("/Home/Subject/deleteMod", {
+						"id": item.id
+					}).then((res) => {
+						this.$alert('删除成功！', '提示', {
+							confirmButtonText: '确定',
+							callback: action => {
+								this.getListArrary(this.subId); //								this.$emit("getList");
+							}
+						});
+					});
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消删除'
+					});
+				});
+			},
 			getItemOptions(itemList) {
 				let resList = [];
 				Array.from(itemList).forEach((obj, index) => {
@@ -734,6 +762,53 @@
 				});
 
 				return resList;
+			},
+			getListArrary(subId) {
+				this.list = [];
+				this.$post("/Home/Subject/getSingleSub", {
+					id: subId
+				}).then((res) => {
+					this.status = res.status;
+					this.contentText = res.description || "";
+					this.questiontitle = res.sub_name || "";
+					let modlist = res.mod;
+					for(var k = 0; k < modlist.length; k++) {
+						var option = {};
+						option.mod_name = modlist[k].mod_name;
+						option.qtitle = this.list.length + 1;
+						option.qtitle = jsNumDX(option.qtitle);
+						option.id = modlist[k].id;
+						option.sortId = modlist[k].order_num;
+						option.qlist = [];
+						option.pid = modlist[k].pid;
+						if(modlist[k].item.length != 0) {
+
+							let opList = this.getItemOptions(modlist[k].item);
+
+							option.qlist = opList;
+						}
+						if(modlist[k].mod && modlist[k].mod.length != 0) {
+							for(var j = 0; j < modlist[k].mod.length; j++) {
+								let icomprehensive = JSON.parse(JSON.stringify(ocomprehensive));
+								for(var km in icomprehensive) {
+									modlist[k].mod[j].hasOwnProperty(km) && (icomprehensive[km] = modlist[k].mod[j][km])
+									if(km == "serial_number") {
+										modlist[k].mod[j][km]
+									}
+								}
+								let copList = this.getItemOptions(modlist[k].mod[j].item);
+								icomprehensive.qlist = copList;
+								option.qlist.push(icomprehensive);
+							}
+						}
+						this.list.push(option);
+						option.qlist.sort(function(a, b) {
+							return a.serial_number - b.serial_number;
+						});
+
+					}
+
+				});
 			}
 		},
 		mounted: function() {
@@ -741,52 +816,7 @@
 		},
 		created() {
 			this.subId = this.$route.query.questionId;
-			this.$post("/Home/Subject/getSingleSub", {
-				id: this.subId
-			}).then((res) => {
-				this.status = res.status;
-				this.contentText = res.description || "";
-				this.questiontitle = res.sub_name || "";
-				let modlist = res.mod;
-
-				for(var k = 0; k < modlist.length; k++) {
-					var option = {};
-					option.mod_name = modlist[k].mod_name;
-					option.qtitle = this.list.length + 1;
-					option.qtitle = jsNumDX(option.qtitle);
-					option.id = modlist[k].id;
-					option.sortId = modlist[k].order_num;
-					option.qlist = [];
-					option.pid = modlist[k].pid;
-					if(modlist[k].item.length != 0) {
-
-						let opList = this.getItemOptions(modlist[k].item);
-
-						option.qlist = opList;
-					}
-					if(modlist[k].mod && modlist[k].mod.length != 0) {
-						for(var j = 0; j < modlist[k].mod.length; j++) {
-							let icomprehensive = JSON.parse(JSON.stringify(ocomprehensive));
-							for(var km in icomprehensive) {
-								modlist[k].mod[j].hasOwnProperty(km) && (icomprehensive[km] = modlist[k].mod[j][km])
-								if(km == "serial_number") {
-									modlist[k].mod[j][km]
-								}
-							}
-							let copList = this.getItemOptions(modlist[k].mod[j].item);
-							icomprehensive.qlist = copList;
-							option.qlist.push(icomprehensive);
-						}
-					}
-					this.list.push(option);
-					option.qlist.sort(function(a, b) {
-
-						return a.serial_number - b.serial_number;
-					});
-
-				}
-
-			});
+			this.getListArrary(this.subId);
 		},
 		components: {
 
@@ -979,7 +1009,7 @@
 	.el-dropdown {
 		position: absolute;
 		top: 0;
-		right: 100px;
+		right: 150px;
 		background: #005ad4;
 		color: #fff;
 		z-index: 100;
@@ -1010,5 +1040,19 @@
 		left: 50px;
 		z-index: 200;
 		width: 50%;
+	}
+	
+	.quetiondelete {
+		position: absolute;
+		top: 10px;
+		right: 60px;
+		z-index: 200;
+		height: 40px;
+		width: 40px;
+	}
+	
+	.quetiondelete i.el-icon-delete {
+		font-size: 28px;
+		color: #005ad4;
 	}
 </style>

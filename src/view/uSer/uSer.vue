@@ -482,7 +482,7 @@
 		left: -71px;
 	}
 	.el-table .cell>img{
-		width:100%;
+		width:60%;
 	}
 
 </style>

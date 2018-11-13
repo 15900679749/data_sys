@@ -3,12 +3,14 @@
 		<div class="editTemContain">
 			<div>
 				<el-row type="flex" justify="space-between" class="conTop">
-					<el-col :span="17">
-						<el-button class="analysisicon">分析&下载</el-button>
+					<el-col :span="12">
+						<!--<el-button class="analysisicon">分析&下载</el-button>-->
 					</el-col>
-					<el-col :span="7" class="toprightbt">
-						<el-button class="downloadicon">下载此报告</el-button>
-						<el-button class="lasticon">下载原始问卷</el-button>
+					<el-col :span="12" class="toprightbt">
+						<!--<el-button class="downloadicon" bindtap="downreport">下载此报告</el-button>
+						<el-button class="lasticon" bindtap="downoriginal">下载原始问卷</el-button>-->
+						<el-button class="downloadicon" @click.prevent="downreport" :href="report">下载此报告</el-button>
+						<el-button class="lasticon" @click.prevent="downoriginal" :href="original">下载原始问卷</el-button>
 					</el-col>
 				</el-row>
 				<div class="conBottom">
@@ -21,13 +23,13 @@
 
 						<el-collapse-item :title="item.mod_name" :name="index">
 							<div class="collapseinner">
-								<el-col :span="24" v-if="item.mod.length!=0" v-for="(mitem,mindex) in item.mod">
+								<el-col :span="24" v-if="item.mod.length!=0" v-for="(mitem,mindex) in item.mod" :key="mitem.id">
 									<!--<span>{{qitem.modorder}}、{{qitem.itemmodname}}</span>-->
 									<!--<span v-if="mitem.serial_number==mindex">{{mitem.serial_number}}、{{mitem.mod_name}}</span>-->
 								</el-col>
 								<el-row v-for="(qitem,qindex) in item.item" :key="qindex" v-bind:class="qitem.modorder?'bordernone':''">
 									<span v-if="qitem.modorder&&qitem.order==1" class="comvetitle">{{Number(qitem.modorder)+1}}、{{qitem.itemmodname}}</span>
-									<el-col :span="24"><span>{{qitem.order}}</span><span>{{qitem.itemmodname?")":"、"}}</span><span>{{qitem.title}}：</span><span class="typetip">【{{qitem.cat}}】</span></el-col>
+									<el-col :span="24" class="itemtitle"><span>{{qitem.order}}</span><span>{{qitem.itemmodname?")":"、"}}</span><span>{{qitem.title}}：</span><span class="typetip">【{{qitem.cat}}】</span></el-col>
 
 									<el-col :span="24" v-if="qitem.sub_cat=='single'||qitem.sub_cat=='multiple'">
 										<el-table :data="qitem.option" border style="width: 100%" :summary-method="getSummaries" show-summary>
@@ -53,7 +55,7 @@
 											<el-table-column label="详细内容" v-if="qitem.sub_cat=='uploadimg'">
 
 												<template slot-scope="scope" v-if="qitem.sub_cat=='uploadimg'">
-													<img :src="imgitem" v-for="(imgitem,imgindex) in qitem.resultList[scope.$index].result" class="uploadimgList" />
+													<img :src="imgitem" v-for="(imgitem,imgindex) in qitem.resultList[scope.$index].result" class="uploadimgList" :key="index"/>
 												</template>
 
 											</el-table-column>
@@ -76,7 +78,24 @@
 					</el-collapse>
 				</div>
 			</div>
+			<div v-show="jumpshow" class="jump">
+			<div class="jumpitem">
+
+				<p>下载问卷</p>
+				<template>
+					<el-radio v-model="ckRadio" label="1" class="establish">下载原答案版</el-radio>
+					<el-radio v-model="ckRadio" label="2" class="establish">下载文字描述版</el-radio>
+				</template>
+		
+				<el-button @click="canclejump" size="medium">取消</el-button>
+				<el-button size="medium" @click="submit">确定</el-button>
+			</div>
 		</div>
+			
+			
+			
+		</div>
+		
 	</div>
 </template>
 
@@ -95,7 +114,11 @@
 				quesId: "",
 				modList: [],
 				quesList: [],
+				report:'',
+				original:'',
 				resultList: [],
+				jumpshow:false,
+				ckRadio: '1',
 				tableData: [{
 					date: '男',
 					name: '0',
@@ -195,6 +218,35 @@
 						item.resultList = res;
 					}
 				})
+			},
+			downreport(){
+				var _this=this;
+				this.$post("/Home/Download/analysis", {
+					id: this.$route.query.questionId
+				}).then((res) => {
+					
+					location.href=process.env.http.root.replace("index.php","")+"/"+res.path;
+					
+					
+					//_this.report=res.path;
+					
+				})
+			},
+			downoriginal(){
+			this.jumpshow=true;
+			},
+			canclejump(){
+				this.jumpshow=false;
+			},
+			submit(){
+				var _this=this;
+				this.$post("/Home/Download/excel", {
+					id: this.$route.query.questionId,
+					status:this.ckRadio
+				}).then((res) => {
+					location.href=process.env.http.root.replace("index.php","")+"/"+res.path;
+				})
+				this.jumpshow=false;
 			}
 		},
 		mounted: function() {
@@ -216,6 +268,7 @@
 				for(var k = 0; k < modlist.length; k++) {
 					var option = {};
 					activelist.push(k);
+//					debugger
 					option.mod_name =modlist[k].mod_name;
 					option.qtitle = this.quesList.length + 1 + '、';
 					option.id = modlist[k].id;
@@ -230,7 +283,8 @@
 					if(modlist[k].mod && modlist[k].mod.length != 0) {
 						for(var j = 0; j < modlist[k].mod.length; j++) {
 							for(var v = 0; v < modlist[k].mod[j].item.length; v++) {
-								modlist[k].mod[j].item[v].itemmodname = modlist[k].mod[j].mod_name
+								modlist[k].mod[j].item[v].itemmodname = modlist[k].mod[j].mod_name;
+								//debugger
 								modlist[k].mod[j].item[v].modorder = modlist[k].mod[j].serial_number
 								modlist[k].item.push(modlist[k].mod[j].item[v]);
 							}
@@ -238,6 +292,7 @@
 						}
 						let opList2 = this.getItemOptions(modlist[k].item);
 						option.qlist = modlist[k].item;
+						//debugger
 						modlist[k].item = opList2;
 					}
 
@@ -245,9 +300,9 @@
 						option.qlist[j].itemshow = false;
 					}
 					modlist[k].mod_name = jsNumDX(k + 1) + modlist[k].mod_name;
-					//	
+					//.debugger
 					this.modList.push(modlist[k]);
-					var modList = this.modList;
+					//var modList = this.modList;
 
 				}
 				this.activeNames = activelist;
@@ -267,6 +322,7 @@
 		padding-left: 22px;
 		border: none;
 		border-radius: 4px;
+		font-weight: 600;
 	}
 	
 	.conBottom .el-collapse-item__content {
@@ -287,12 +343,11 @@
 		padding: 68px 120px 0;
 		background-color: #f3f3f3;
 		>div {
-			background-color: #fff;
 			padding: 0 30px;
 		}
 	}
 	
-	.conTop {
+.conTop {
 		padding: 15px 0;
 		color: #fff;
 		font-size: 14px;
@@ -330,6 +385,8 @@
 		>p {
 			color: #666;
 			line-height: 30px;
+			font-size:14px;
+			font-weight: 600;
 		}
 	}
 	
@@ -388,5 +445,52 @@
 	}
 	.checkmy{
 		margin-bottom:20px;
+	}
+	
+	
+		.jump {
+		position: fixed;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: rgba(0, 0, 0, .3);
+		top: 0;
+		z-index: 200;
+		p {
+			padding: 10px 0 20px;
+		}
+		/*.el-radio__inner {
+			background-color: #333;
+		}
+		.el-radio {
+			color: #fff;
+		}*/
+		.jumpitem {
+			position: absolute;
+			z-index: 300;
+			top: 50%;
+			left: 50%;
+			width: 30%;
+			background: #eef9fb;
+			color: #606266;
+			/*border:1px solid #409EFF;*/
+			box-shadow:0 3px 5px rgba(64,158,255,.3);
+			border-radius: 4px;
+			transform: translate(-50%, -50%);
+			padding: 20px 2% 30px;
+			text-align: center;
+			.el-button {
+				width: 40%;
+				display: inline-block;
+				margin-top: 30px;
+				&:nth-of-type(1) {
+					margin-left: 5%;
+				}
+			}
+		
+		}
+	}
+	.itemtitle{
+		font-weight: bold;
 	}
 </style>
