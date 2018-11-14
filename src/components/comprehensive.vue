@@ -103,7 +103,7 @@
 			},
 			status:{
 				type: String,
-				default: ""
+				default: "1"
 			},
 			
 		},

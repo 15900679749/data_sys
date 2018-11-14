@@ -1,14 +1,12 @@
 <template>
 	<div class="edit_tempbg">
 		<el-row :gutter="20" class="top">
-			<el-col :span="3" :offset="9">
-				<i class="el-icon-search"></i>预览</el-col>
-			<el-col :span="3" @click.native="finishSub()" v-if="status=='1'"><i class="el-icon-check"></i>完成</el-col>
+			<el-col :offset="10" :span="3" @click.native="finishSub()"><i class="el-icon-check"></i>完成</el-col>
 		</el-row>
 		<div class="editTemContain">
 			<div>
 				<el-row type="flex" justify="end" class="conTop">
-					<el-col :span="3" @click.native="openModel" v-if="status=='1'"><i class="el-icon-plus"></i>新建模块</el-col>
+					<el-col :span="3" @click.native="openModel"><i class="el-icon-plus"></i>新建模块</el-col>
 				</el-row>
 				<div class="conBottom">
 					<div class="conBottomT">
@@ -249,7 +247,6 @@
 						break;
 					case "fractions":
 						{
-							debugger
 							this.addfractions(index);
 						}
 						break;
@@ -692,7 +689,7 @@
 		},
 		created() {
 			this.subId = this.$route.query.templateId;
-			this.status = this.$route.query.status ? this.$route.query.status : "0";
+			this.status = this.$route.query.status ? this.$route.query.status + "" : "0";
 			this.$post("/Home/Tpl/getSingleTpl", {
 				id: this.subId
 			}).then((res) => {
@@ -832,7 +829,6 @@
 		>.el-col {
 			display: flex;
 			justify-content: center;
-			border-right: 2px solid #ccc;
 			height: 10px;
 			align-items: center;
 			&:nth-of-type(1) {
