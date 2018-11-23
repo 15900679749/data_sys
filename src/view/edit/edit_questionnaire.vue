@@ -8,7 +8,7 @@
 			<div>
 				<el-row type="flex" justify="end" class="conTop">
 
-					<el-col :span="3" @click.native="openModel"><i class="el-icon-plus"></i>新建模块</el-col>
+					<el-col :span="3" @click.native="openModel" class="openModel"><i class="el-icon-plus"></i>新建模块</el-col>
 
 				</el-row>
 				<div class="conBottom">
@@ -294,6 +294,7 @@
 					id: 0,
 					order_num: sort,
 					option_name: "选项" + sort,
+					grade:'',
 					default_choose: 0,
 					related_sub: '',
 					skip_sub: ''
@@ -514,6 +515,7 @@
 				}
 				console.log(subModel);
 				this.$post("/Home/Subject/createNewItem", subModel).then((res) => {
+					debugger
 					item.id = res.id;
 				});
 			},
@@ -890,6 +892,9 @@
 		font-size: 20px;
 		font-weight: bold;
 	}
+	.topic .el-form-item__content>.itemmust{
+		top:-38px;
+	}
 </style>
 <style scoped="scoped" lang="scss">
 	* {
@@ -903,6 +908,13 @@
 	.top {
 		padding: 29px 0;
 		background-color: #fff;
+		    position: absolute;
+		    margin-left:0 !important;
+		    margin-right:0 !important;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 20;
 		>.el-col {
 			display: flex;
 			justify-content: center;
@@ -924,7 +936,7 @@
 	}
 	
 	.editTemContain {
-		padding: 68px 120px 0;
+		padding: 88px 120px 0;
 		background-color: #f3f3f3;
 		height: 100%;
 		>div {
@@ -933,10 +945,15 @@
 	}
 	
 	.conTop {
-		padding: 15px 0;
-		background: #303033;
-		color: #fff;
-		font-size: 14px;
+		    padding: 15px 0;
+    background: #303033;
+    color: #fff;
+    font-size: 14px;
+    position: absolute;
+    left: 120px;
+    right: 120px;
+    z-index: 200;
+    top: 68px;
 		i {
 			font-size: 20px;
 			margin-right: 18px;
@@ -995,7 +1012,7 @@
 		right: 100px;
 		background: #005ad4;
 		color: #fff;
-		z-index: 100;
+		z-index: 3;
 		padding: 10px 0;
 		li {
 			&:nth-of-type(1) {
@@ -1011,7 +1028,7 @@
 		right: 150px;
 		background: #005ad4;
 		color: #fff;
-		z-index: 100;
+		z-index: 3;
 		padding: 15px 40px;
 	}
 	
@@ -1037,7 +1054,7 @@
 		position: absolute;
 		top: 0;
 		left: 50px;
-		z-index: 200;
+		z-index: 3;
 		width: 50%;
 	}
 	
@@ -1045,13 +1062,17 @@
 		position: absolute;
 		top: 10px;
 		right: 60px;
-		z-index: 200;
+		z-index: 3;
 		height: 40px;
 		width: 40px;
 	}
 	
 	.quetiondelete i.el-icon-delete {
-		font-size: 28px;
+		font-size: 24px;
 		color: #005ad4;
 	}
+	.openModel{
+		/*position:absolute;*/
+	}
+	
 </style>

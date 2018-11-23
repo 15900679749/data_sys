@@ -34,6 +34,7 @@ let osingle = {
 		option_name: '选项1',
 		default_choose: 0,
 		related_sub: "",
+		grade:"",
 		skip_sub: ""
 	}]
 };

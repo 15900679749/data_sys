@@ -62,6 +62,7 @@
 									</template>
 								</div>
 							</el-collapse-item>
+							<div class="quetiondelete" @click.stop="removeMode(item)"><i class="el-icon-delete"></i></div>
 						</div>
 					</el-collapse>
 				</div>
@@ -98,7 +99,7 @@
 				parentModle: 0,
 				serial_number: 0,
 				type: "0",
-				status: "0"
+				status: ""
 			}
 		},
 		methods: {
@@ -206,10 +207,11 @@
 				this.list[index].qlist.splice(pindex, 1);
 			},
 			addItem(index, type) {
+//				debugger
 				if(this.status != "1") {
 					this.$message({
 						type: 'error',
-						message: '当前问卷状态无法进行此操作'
+						message: '当前模板状态无法进行此操作'
 					});
 					return;
 				}
@@ -267,6 +269,7 @@
 					order_num: sort,
 					option_name: "选项" + sort,
 					default_choose: 0,
+					grade:'',
 					related_sub: '',
 					skip_sub: ''
 				}
@@ -290,7 +293,7 @@
 					let dmodel = this.list[index].qlist[qindex];
 
 					if(dmodel.id != 0) {
-						this.$post("/Home/Subject/deleteItem", {
+						this.$post("/Home/Tpl/deleteItem", {
 							id: dmodel.id
 						}).then((res) => {});
 					}
@@ -458,7 +461,31 @@
 				}
 				console.log(subModel);
 				this.$post("/Home/Tpl/createNewItem", subModel).then((res) => {
+				
 					item.id = res.id;
+				});
+			},
+					removeMode(item) {
+				this.$confirm('您确定要删除该模块，是否继续？', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					this.$post("/Home/Tpl/deleteMod", {
+						"id": item.id
+					}).then((res) => {
+						this.$alert('删除成功！', '提示', {
+							confirmButtonText: '确定',
+							callback: action => {
+								this.getListArrary(this.subId); //								this.$emit("getList");
+							}
+						});
+					});
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消删除'
+					});
 				});
 			},
 			finishSub() {
@@ -603,6 +630,55 @@
 				}
 
 			},
+			getListArrary(subId) {
+			this.list = [];
+			this.$post("/Home/Tpl/getSingleTpl", {
+				id: this.subId
+			}).then((res) => {
+
+				this.contentText = res.description || "";
+				this.questiontitle = res.tmp_name || "";
+				let modlist = res.mod;
+				for(var k = 0; k < modlist.length; k++) {
+					var option = {};
+					option.mod_name = modlist[k].mod_name;
+					option.qtitle = this.list.length + 1;
+					option.qtitle = jsNumDX(option.qtitle);
+					option.id = modlist[k].id;
+					option.sortId = modlist[k].order_num;
+					option.qlist = [];
+					option.pid = modlist[k].pid;
+
+					if(modlist[k].item.length != 0) {
+						let opList = this.getItemOptions(modlist[k].item);
+						option.qlist = opList;
+					}
+					if(modlist[k].mod && modlist[k].mod.length != 0) {
+						for(var j = 0; j < modlist[k].mod.length; j++) {
+							let icomprehensive = JSON.parse(JSON.stringify(ocomprehensive));
+							for(var km in icomprehensive) {
+								modlist[k].mod[j].hasOwnProperty(km) && (icomprehensive[km] = modlist[k].mod[j][km])
+								if(km == "serial_number") {
+									modlist[k].mod[j][km]
+								}
+							}
+							let copList = this.getItemOptions(modlist[k].mod[j].item);
+							icomprehensive.qlist = copList;
+							option.qlist.push(icomprehensive);
+						}
+					}
+					this.list.push(option);
+					option.qlist.sort(function(a, b) {
+
+						return a.serial_number - b.serial_number;
+					});
+
+				}
+
+			});
+				
+				
+			},
 			getItemOptions(itemList) {
 				let resList = [];
 				Array.from(itemList).forEach((obj, index) => {
@@ -689,51 +765,8 @@
 		},
 		created() {
 			this.subId = this.$route.query.templateId;
-			this.status = this.$route.query.status ? this.$route.query.status + "" : "0";
-			this.$post("/Home/Tpl/getSingleTpl", {
-				id: this.subId
-			}).then((res) => {
-
-				this.contentText = res.description || "";
-				this.questiontitle = res.tmp_name || "";
-				let modlist = res.mod;
-				for(var k = 0; k < modlist.length; k++) {
-					var option = {};
-					option.mod_name = modlist[k].mod_name;
-					option.qtitle = this.list.length + 1;
-					option.qtitle = jsNumDX(option.qtitle);
-					option.id = modlist[k].id;
-					option.sortId = modlist[k].order_num;
-					option.qlist = [];
-					option.pid = modlist[k].pid;
-
-					if(modlist[k].item.length != 0) {
-						let opList = this.getItemOptions(modlist[k].item);
-						option.qlist = opList;
-					}
-					if(modlist[k].mod && modlist[k].mod.length != 0) {
-						for(var j = 0; j < modlist[k].mod.length; j++) {
-							let icomprehensive = JSON.parse(JSON.stringify(ocomprehensive));
-							for(var km in icomprehensive) {
-								modlist[k].mod[j].hasOwnProperty(km) && (icomprehensive[km] = modlist[k].mod[j][km])
-								if(km == "serial_number") {
-									modlist[k].mod[j][km]
-								}
-							}
-							let copList = this.getItemOptions(modlist[k].mod[j].item);
-							icomprehensive.qlist = copList;
-							option.qlist.push(icomprehensive);
-						}
-					}
-					this.list.push(option);
-					option.qlist.sort(function(a, b) {
-
-						return a.serial_number - b.serial_number;
-					});
-
-				}
-
-			});
+			this.status = this.$route.query.status ? this.$route.query.status + "" : "1";
+		this.getListArrary(this.subId);
 		},
 		components: {
 
@@ -813,6 +846,9 @@
 		font-size: 16px;
 		font-weight: bold;
 	}
+	.topic .el-form-item__content>.itemmust{
+		top:-38px;
+	}
 </style>
 <style scoped="scoped" lang="scss">
 	* {
@@ -826,9 +862,17 @@
 	.top {
 		padding: 29px 0;
 		background-color: #fff;
+		    position: absolute;
+		    margin-left:0 !important;
+		    margin-right:0 !important;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 20;
 		>.el-col {
 			display: flex;
 			justify-content: center;
+			
 			height: 10px;
 			align-items: center;
 			&:nth-of-type(1) {
@@ -846,7 +890,7 @@
 	}
 	
 	.editTemContain {
-		padding: 68px 120px 0;
+		padding: 0 120px 0;
 		background-color: #f3f3f3;
 		height: 100%;
 		>div {
@@ -855,10 +899,15 @@
 	}
 	
 	.conTop {
-		padding: 15px 0;
-		background: #303033;
-		color: #fff;
-		font-size: 14px;
+			    padding: 15px 0;
+    background: #303033;
+    color: #fff;
+    font-size: 14px;
+    position: absolute;
+    left: 120px;
+    right: 120px;
+    z-index: 200;
+    top: 68px;
 		i {
 			font-size: 20px;
 			margin-right: 18px;
@@ -930,10 +979,10 @@
 	.el-dropdown {
 		position: absolute;
 		top: 0;
-		right: 100px;
+		right: 150px;
 		background: #005ad4;
 		color: #fff;
-		z-index: 100;
+		z-index: 3;
 		padding: 15px 40px;
 	}
 	
@@ -964,7 +1013,19 @@
 		position: absolute;
 		top: 0;
 		left: 50px;
-		z-index: 200;
+		z-index: 3;
 		width: 50%;
+	}
+		.quetiondelete {
+		position: absolute;
+		top: 10px;
+		right: 60px;
+		z-index: 3;
+		height: 40px;
+		width: 40px;
+	}
+	.quetiondelete i.el-icon-delete {
+		font-size: 24px;
+		color: #005ad4;
 	}
 </style>

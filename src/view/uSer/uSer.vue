@@ -20,9 +20,10 @@
 
 					<el-form-item label="权限">
 						<el-select v-model="searchInfo.level" placeholder="请选择用户权限">
-							<el-option label="一级用户" value="oneadmain"></el-option>
-							<el-option label="二级用户" value="twoadmain"></el-option>
-							<el-option label="三级用户" value="threeadmain"></el-option>
+							<el-option label="所有用户" value=""></el-option>
+							<el-option label="一级用户" value="1"></el-option>
+							<el-option label="二级用户" value="2"></el-option>
+							<el-option label="三级用户" value="3"></el-option>
 						</el-select>
 					</el-form-item>
 				</el-col>
@@ -363,6 +364,7 @@
 				this.$post("/Home/User/userList", sendModel).then((res) => {
 					let resdata = res;
 					for(let v in resdata.list) {
+						resdata.list[v]?resdata.list[v]=resdata.list[v]:resdata.list[v]=''
 						var rol = parseInt(resdata.list[v].level);
 						rol = rol > 3 ? 3 : rol;
 						resdata.list[v].levelName =this.roleArrary[rol];

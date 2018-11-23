@@ -17,7 +17,7 @@
 				</div>
 				<el-dropdown placement="bottom">
 					<span class="el-dropdown-link">创建小题</span>
-					<el-dropdown-menu slot="dropdown" class="topicdropdown">
+					<el-dropdown-menu slot="dropdown" class="compretopicdropdown" placement="bottom">
 						<el-dropdown-item @click.native="addItem(index,'fill')">填空题</el-dropdown-item>
 						<el-dropdown-item @click.native="addItem(index,'single')">选择题</el-dropdown-item>
 						<el-dropdown-item @click.native="addItem(index,'multiple')">多选题</el-dropdown-item>
@@ -442,9 +442,18 @@
 						}
 						break;
 				}
-				this.$post("/Home/Subject/createNewItem", subModel).then((res) => {
+				if(this.$route.query.templateId){
+						this.$post("/Home/Tpl/createNewItem", subModel).then((res) => {
+					
 					item.id = res.id;
 				});
+				}else{
+					this.$post("/Home/Subject/createNewItem", subModel).then((res) => {
+					
+					item.id = res.id;
+				});
+				}
+				
 			},
 			domainSortdown(index, qindex, dindex, type) {
 					if(this.status != "1") {
@@ -732,7 +741,7 @@
 		padding: 15px 40px;*/
 	}
 	
-	.el-dropdown-menu {
+	.topicdropdown.el-dropdown-menu {
 		top: 170px !important;
 		/*padding: 10px 20px;
 		background: #005ad4;*/

@@ -2,8 +2,8 @@
 	<div>
 		<el-form>
 
-			<el-form-item :label="(qindex+1)+taccord+item.title+':'" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
-				<i v-if="item.is_must" v-text="'*'" class="itemmust"></i>
+			<el-form-item :label="(qindex+1)+taccord+item.title+':'" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show,'itemmust':item.is_must}">
+				<!--<i v-if="item.is_must" v-text="'*'" class="itemmust"></i>-->
 
 				<el-radio-group v-model="item.default_choose" @change="dochange">
 					<el-radio :label="im.option_name" v-for="(im,inx) in item.option" :key="inx">{{im.option_name}}</el-radio>
@@ -29,7 +29,8 @@
 							<el-checkbox label="必答" name="type" v-model="item.is_must" :disabled="status!='1' && type!='0'"></el-checkbox>
 							<div class="singleedit">
 								<el-row type="flex">
-									<el-col :span="16">项目编辑:</el-col>
+									<el-col :span="12">项目编辑:</el-col>
+									<el-col :span="4">分值</el-col>
 									<el-col :span="3">默认</el-col>
 									<el-col :span="5" style="text-align: center;">操作</el-col>
 								</el-row>
@@ -37,8 +38,11 @@
 
 								<el-form-item v-for="(domain, dindex) in item.option" :rules="{required: true, message: '域名不能为空', trigger: 'blur'}" :key="dindex">
 									<el-row>
-										<el-col :span="16">
+										<el-col :span="12" class="option_name">
 											<el-input v-model="domain.option_name"></el-input>
+										</el-col>
+										<el-col :span="4" class="grade">
+											<el-input v-model="domain.grade"></el-input>
 										</el-col>
 										<el-col :span="3">
 											<el-radio-group v-model="item.default_choose" @change="gdochange">
@@ -120,7 +124,7 @@
 		},
 		methods: {
 			showedit(item) {
-				if(this.status != "1") {
+				if(this.status != "1"&& !this.$route.query.templateId) {
 					return;
 				}
 				item.edittextinput = !item.edittextinput;
@@ -130,26 +134,27 @@
 				//				this.gdomack = item;
 			},
 			gdochange(item) {
-				if(this.status != "1") {
+				if(this.status != "1" && !this.$route.query.templateId) {
 					return;
 				}
 				this.$emit("changeDomainRadio", this.index, this.qindex, item);
 
 			},
 			showcart(item) {
-				if(this.status != "1") {
+				console.log(this.$route.query.templateId)
+				if(this.status != "1" && !this.$route.query.templateId) {
 					return;
 				}
 				item.show = item.edittextinput || !item.show;
 			},
 			submitForm(item) {
-				if(this.status != "1") {
+				if(this.status != "1" && !this.$route.query.templateId) {
 					return;
 				}
 				this.$emit("submitForm", item, this.index);
 			},
 			removeDomain() {
-				if(this.status != "1" && this.type != '0') {
+				if(this.status != "1" && this.type != '0' && !this.$route.query.templateId) {
 
 					this.$message({
 						type: 'error',
@@ -160,7 +165,7 @@
 				this.$emit("removeDomain", this.index, this.qindex);
 			},
 			itemSortdown: function(index, qindex, type) {
-				if(this.status != "1" && this.type != '0') {
+				if(this.status != "1" && this.type != '0'&& !this.$route.query.templateId) {
 
 					this.$message({
 						type: 'error',
@@ -171,7 +176,7 @@
 				this.$emit("itemSortdown", index, qindex, type);
 			},
 			domainSortdown: function(index, qindex, dindex, type) {
-				if(this.status != "1" && this.type != '0') {
+				if(this.status != "1" && this.type != '0'&& !this.$route.query.templateId) {
 
 					this.$message({
 						type: 'error',
@@ -192,7 +197,7 @@
 				}
 			},
 			addDomain() {
-				if(this.status != "1" && this.type != '0') {
+				if(this.status != "1" && this.type != '0'&& !this.$route.query.templateId) {
 
 					this.$message({
 						type: 'error',
@@ -203,7 +208,7 @@
 				this.$emit("addDomain", this.index, this.qindex);
 			},
 			removeDomainitem(index, qindex, dindex) {
-				if(this.status != "1" && this.type != '0') {
+				if(this.status != "1" && this.type != '0'&& !this.$route.query.templateId) {
 
 					this.$message({
 						type: 'error',
@@ -214,7 +219,7 @@
 				this.$emit("removeDomainitem", index, qindex, dindex);
 			},
 			changeposition(item) {
-				if(this.status != "1" && this.type != '0') {
+				if(this.status != "1" && this.type != '0'&& !this.$route.query.templateId) {
 
 					this.$message({
 						type: 'error',
@@ -225,7 +230,7 @@
 				item.changeButton = !item.changeButton;
 			},
 			jump() {
-				if(this.status != "1" && this.type != '0') {
+				if(this.status != "1" && this.type != '0'&& !this.$route.query.templateId) {
 
 					this.$message({
 						type: 'error',
@@ -236,7 +241,7 @@
 				this.jumpshow = true;
 			},
 			relevance() {
-				if(this.status != "1" && this.type != '0') {
+				if(this.status != "1" && this.type != '0'&& !this.$route.query.templateId) {
 
 					this.$message({
 						type: 'error',
@@ -480,4 +485,10 @@
 		margin: 0;
 		padding: 3px 0;
 	}
+	.singleedit .option_name .el-input{
+		width:90%;
+	}
+	/*.singleedit .el-row > .el-col.grade{
+		text-align: left;
+	}*/
 </style>

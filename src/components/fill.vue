@@ -2,8 +2,8 @@
 	<div>
 		<el-form class="fillcontent">
 			<!--v-for="(item,index) in formlist" :key="index"-->
-			<el-form-item :label="(qindex+1)+taccord+item.title+':'" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
-				<i v-if="item.is_must" v-text="'*'" class="itemmust"></i>
+			<el-form-item :label="(qindex+1)+taccord+item.title+':'" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show,'itemmust':item.is_must}">
+				<!--<i v-if="item.is_must" v-text="'*'" class="itemmust"></i>-->
 				<el-input></el-input>
 				<div v-show="item.show" class="transition-box">
 					<span @click="showedit(item)">编辑</span>

@@ -432,7 +432,8 @@
 	}
 	
 	.uploadimgList {
-		margin: 0 10px;
+		width:50%;
+		height:auto;
 	}
 	
 	.bordernone:not(:last-child) {
@@ -493,4 +494,5 @@
 	.itemtitle{
 		font-weight: bold;
 	}
+	.conBottomT h6{font-size:20px;}
 </style>

@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<el-form>
-			<el-form-item :label="(qindex+1)+taccord+item.title+':'" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="[{'bordernone':item.edittextinput,'itemborder':item.show}]">
-				<i v-if="item.is_must" v-text="'*'" class="itemmust"></i>
+			<el-form-item :label="(qindex+1)+taccord+item.title+':'" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="[{'bordernone':item.edittextinput,'itemborder':item.show,'itemmust':item.is_must}]">
+				<!--<i v-if="item.is_must" v-text="'*'" class="itemmust"></i>-->
 				<el-row type="flex" justify="start" class="loCationtips">
 					<div class="block">
 						<span class="demonstration">{{item.option[0].option_name}}</span>

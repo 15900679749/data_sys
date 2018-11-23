@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<el-form class="mulcontent">
-			<el-form-item :label="(qindex+1)+taccord+item.title+':'" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show}">
-				<i v-if="item.is_must" v-text="'*'" class="itemmust"></i>
+			<el-form-item :label="(qindex+1)+taccord+item.title+':'" :key="index" @mouseover.native.prevent="showcart(item)" @mouseout.native.prevent="showcart(item)" :class="{'bordernone':item.edittextinput,'itemborder':item.show,'itemmust':item.is_must}">
+				<!--<i v-if="item.is_must" v-text="'*'" class="itemmust"></i>-->
 				<div v-for="(oitem,oindex) in item.olist" class="selectdiv">
 					<template v-if="oitem.id<=parseInt(item.value)">
 						<!--<span>{{oitem.name}}</span>-->

@@ -9,13 +9,18 @@ $font-size-small:12px;
 @mixin vertical-align($direction:middle){
     vertical-align:$direction;
 }
-.itemmust{
+.itemmust{ position: relative;}
+.itemmust:before{
+    content:"*" !important;
+  
         color:red;
         font-style: normal;
             position: absolute;
-    left: -13px;
-    top: 0;
+    left: 33px;
+    font-size:14px;
+    top: 20px;
     }
+    .compre .itemmust:before{top:14px;}
 .changeposition .el-button.positionsure{
     width: 40px;
     display: inline-block;
